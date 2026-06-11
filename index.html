@@ -1724,22 +1724,39 @@ async function loadVoices(){
     sel.onchange = function(){selectedVoiceId = this.value;};
   }catch(e){
     console.log('Voice load failed:', e.message);
-    document.getElementById('voiceSel').innerHTML = '<option value="">Voice load failed</option>';
+    voiceRetries++;
+    if(voiceRetries <= 3){
+      document.getElementById('voiceSel').innerHTML = '<option value="">Voice studio waking up... retrying ('+voiceRetries+'/3)</option>';
+      setTimeout(loadVoices, 9000); // Render free tier takes ~30-60s to wake
+    } else {
+      document.getElementById('voiceSel').innerHTML = '<option value="">Tap Preview to retry loading voices</option>';
+      voiceRetries = 0;
+    }
   }
 }
+var voiceRetries = 0;
 
 function previewVoice(){
   var sel = document.getElementById('voiceSel');
+  if(!sel.value && (!allVoices || allVoices.length === 0)){
+    toast('Reloading voice library...');
+    voiceRetries = 0;
+    loadVoices();
+    return;
+  }
   var opt = sel.options[sel.selectedIndex];
   var previewUrl = opt ? opt.getAttribute('data-preview') : '';
   var audio = document.getElementById('voicePreview');
   if(previewUrl){
     audio.src = previewUrl;
     audio.style.display = 'block';
-    audio.play();
-    toast('Playing voice preview...');
+    audio.play().then(function(){
+      toast('▶ Playing voice preview');
+    }).catch(function(){
+      toast('Tap again to play preview');
+    });
   }else{
-    toast('No preview available for this voice');
+    toast('No preview clip for this voice — it will still work in your video');
   }
 }
 
@@ -1863,66 +1880,39 @@ function handleCustomBg(input){
   reader.readAsDataURL(file);
 }
 
-// Avatar database — photos via pravatar (placeholder for HeyGen avatar photos)
-function AV(id, name, img, desc){ return {id:id, name:name, img:'https://i.pravatar.cc/150?img='+img, desc:desc}; }
-var AVATARS = {
-  professional: {
-    female: {
-      office: [AV('pf1','Sarah Chen',47,'Business attire, modern office'),AV('pf2','Maria Rodriguez',45,'Corporate executive, boardroom'),AV('pf3','Jennifer Park',44,'Business casual, bright office'),AV('pf4','Emily Watson',43,'Consultant style, glass office'),AV('pf5','Anna Kowalski',41,'Finance professional, desk setting'),AV('pf6','Priya Sharma',40,'Tech lead, open office')],
-      studio: [AV('pf7','Amanda White',38,'Studio presenter, neutral backdrop'),AV('pf8','Lisa Johnson',36,'Anchor style, clean studio'),AV('pf9','Claire Dubois',35,'Premium studio lighting'),AV('pf10','Nina Petrov',34,'Broadcast quality studio')],
-      outdoor: [AV('pf11','Emma Davis',32,'Corporate campus, outdoor'),AV('pf12','Rachel Green',31,'Natural light, garden setting'),AV('pf13','Sofia Rossi',29,'Urban professional, city view'),AV('pf14','Layla Hassan',26,'Rooftop terrace, daylight')],
-      custom: [AV('pf15','Alexandra Kim',25,'Adapts to your background'),AV('pf16','Sophia Martinez',24,'Any custom setting'),AV('pf17','Grace Liu',23,'Flexible green-screen ready'),AV('pf18','Diana Moreau',22,'Universal presenter')]
-    },
-    male: {
-      office: [AV('pm1','James Wilson',12,'Senior executive, office'),AV('pm2','Michael Chen',13,'Tech professional, modern office'),AV('pm3','David Brown',14,'Corporate, professional attire'),AV('pm4','Robert King',15,'Director style, executive desk'),AV('pm5','Omar Farouk',17,'Consultant, glass meeting room'),AV('pm6','Lucas Silva',18,'Manager, open workspace')],
-      studio: [AV('pm7','Robert Taylor',33,'Broadcast anchor, studio'),AV('pm8','Kevin Lee',50,'Clean studio presenter'),AV('pm9','Marcus Reed',51,'Premium studio setting'),AV('pm10','Victor Stone',52,'Professional studio look')],
-      outdoor: [AV('pm11','Thomas Garcia',53,'Corporate campus outdoor'),AV('pm12','Daniel Martinez',54,'Urban professional, daylight'),AV('pm13','Andre Williams',55,'City skyline backdrop'),AV('pm14','Hans Mueller',56,'Business park setting')],
-      custom: [AV('pm15','Christopher Moore',57,'Adapts to your background'),AV('pm16','Matthew Harris',58,'Any custom setting'),AV('pm17','Ali Reza',59,'Flexible presenter'),AV('pm18','John Carter',60,'Universal style')]
+// ===== REAL HEYGEN AVATARS — loaded live from your HeyGen account =====
+var heygenAvatars = null; // cached after first load
+var heygenLoadError = null;
+
+async function loadHeyGenAvatars(){
+  var grid = document.getElementById('avatarGrid');
+  var count = document.getElementById('avatarCount');
+  if(grid) grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--tm);padding:16px;text-align:center;">⏳ Loading avatars from EnerStudio Avatar Engine...</div>';
+  try{
+    var r = await fetch(BACKEND+'/api/heygen/avatars');
+    var d = await r.json();
+    if(!r.ok || !d.avatars){
+      heygenLoadError = d.error || 'Avatar service unavailable';
+      heygenAvatars = null;
+      renderAvatarGridError();
+      return;
     }
-  },
-  casual: {
-    female: {
-      office: [AV('cf1','Emma Thompson',1,'Friendly, casual office'),AV('cf2','Olivia Scott',5,'Warm personality, relaxed'),AV('cf3','Mia Anderson',9,'Approachable, creative space'),AV('cf4','Zoe Bennett',10,'Startup vibe, casual desk')],
-      studio: [AV('cf5','Hannah Wilson',16,'Casual studio presenter'),AV('cf6','Grace Lee',20,'Engaging, friendly style'),AV('cf7','Ruby Sanchez',21,'Relaxed studio setting'),AV('cf8','Tara Singh',27,'Conversational style')],
-      outdoor: [AV('cf9','Sophie Brown',28,'Natural outdoor, friendly'),AV('cf10','Natalie Clark',30,'Park setting, casual'),AV('cf11','Chloe Adams',37,'Beach boardwalk, relaxed'),AV('cf12','Yuki Tanaka',39,'Garden cafe setting')],
-      custom: [AV('cf13','Isabella Young',42,'Your custom background'),AV('cf14','Lily Zhang',46,'Adapts anywhere'),AV('cf15','Amelie Laurent',48,'Flexible casual style')]
-    },
-    male: {
-      office: [AV('cm1','Jake Anderson',3,'Friendly, casual office'),AV('cm2','Ryan Cooper',7,'Approachable, startup style'),AV('cm3','Sam Taylor',8,'Relaxed, creative workspace'),AV('cm4','Leo Costa',11,'Casual desk setting')],
-      studio: [AV('cm5','Tyler Morris',61,'Casual studio style'),AV('cm6','Brandon Hughes',62,'Engaging presenter'),AV('cm7','Noah Walker',63,'Conversational studio'),AV('cm8','Raj Patel',64,'Friendly studio look')],
-      outdoor: [AV('cm9','Connor Bailey',65,'Casual outdoor setting'),AV('cm10','Mason Rivera',66,'Park, natural light'),AV('cm11','Felix Wagner',67,'Urban casual, street'),AV('cm12','Kai Nakamura',68,'Waterfront setting')],
-      custom: [AV('cm13','Ethan Foster',69,'Your custom background'),AV('cm14','Oscar Lindberg',70,'Adapts anywhere')]
-    }
-  },
-  educator: {
-    female: {
-      office: [AV('ef1','Dr. Patricia Adams',49,'Academic office, authoritative'),AV('ef2','Prof. Susan Miller',41,'Clear educational style'),AV('ef3','Dr. Helen Wright',44,'University office setting')],
-      studio: [AV('ef4','Dr. Laura Evans',36,'Training video specialist'),AV('ef5','Ms. Rachel Turner',34,'Clear educator, studio'),AV('ef6','Prof. Carmen Ortiz',32,'Lecture studio style')],
-      outdoor: [AV('ef7','Dr. Karen Campbell',29,'Campus outdoor setting'),AV('ef8','Prof. Aisha Mohammed',26,'University quad backdrop')],
-      custom: [AV('ef9','Prof. Michelle Price',24,'Your custom background'),AV('ef10','Dr. Eva Novak',22,'Flexible educator')]
-    },
-    male: {
-      office: [AV('em1','Dr. Richard Watson',12,'Academic authority, office'),AV('em2','Prof. Andrew Phillips',14,'Structured educator'),AV('em3','Dr. Carlos Mendez',17,'Professor office setting')],
-      studio: [AV('em4','Dr. Charles Bennett',33,'Training specialist studio'),AV('em5','Mr. George Collins',51,'Clear instructional style'),AV('em6','Prof. Ahmed Khan',53,'Lecture format studio')],
-      outdoor: [AV('em7','Dr. Patrick Stewart',55,'Campus outdoor'),AV('em8','Prof. Ivan Sokolov',57,'University grounds')],
-      custom: [AV('em9','Prof. William Hayes',59,'Your custom background'),AV('em10','Dr. Marco Bianchi',61,'Flexible educator')]
-    }
-  },
-  news: {
-    female: {
-      office: [AV('nf1','Victoria Stone',45,'Anchor, formal office'),AV('nf2','Charlotte Webb',43,'Broadcast journalist'),AV('nf3','Megan Foster',40,'News desk setting')],
-      studio: [AV('nf4','Stephanie Ross',38,'Studio news anchor'),AV('nf5','Amber Knight',35,'Professional broadcaster'),AV('nf6','Elena Volkov',31,'Prime time anchor style')],
-      outdoor: [AV('nf7','Diana Fox',28,'Field reporter style'),AV('nf8','Fatima Al-Said',25,'On-location correspondent')],
-      custom: [AV('nf9','Natasha Pierce',23,'Your custom background'),AV('nf10','Julia Berg',21,'Flexible anchor')]
-    },
-    male: {
-      office: [AV('nm1','Alexander Grant',13,'News anchor, formal'),AV('nm2','Benjamin West',15,'Corporate broadcast'),AV('nm3','Nathan Pierce',18,'News desk style')],
-      studio: [AV('nm4','Harrison Cole',50,'Studio anchor'),AV('nm5','Theodore Banks',52,'Broadcast journalist'),AV('nm6','Sergei Popov',54,'Evening news style')],
-      outdoor: [AV('nm7','Samuel Cross',56,'Field correspondent'),AV('nm8','Diego Torres',58,'On-location reporter')],
-      custom: [AV('nm9','Maxwell Stone',60,'Your custom background'),AV('nm10','Pierre Dubois',62,'Flexible anchor')]
-    }
+    heygenAvatars = d.avatars;
+    heygenLoadError = null;
+    populateAvatarGrid();
+  }catch(e){
+    heygenLoadError = e.message;
+    heygenAvatars = null;
+    renderAvatarGridError();
   }
-};
+}
+
+function renderAvatarGridError(){
+  var grid = document.getElementById('avatarGrid');
+  var count = document.getElementById('avatarCount');
+  if(count) count.textContent = '';
+  if(grid) grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--tm);padding:16px;text-align:center;background:var(--sur);border-radius:10px;">Avatar library is connecting...<br><span style="font-size:11px;">The avatar service may be waking up. </span><br><button onclick="loadHeyGenAvatars()" style="margin-top:10px;background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:7px 16px;font-family:DM Sans,sans-serif;font-size:12px;font-weight:600;color:var(--ac);cursor:pointer;">🔄 Retry Loading Avatars</button></div>';
+}
 
 function updateAvatarSummary(){
   var el = document.getElementById('avatarConfigSummary');
@@ -1932,35 +1922,43 @@ function updateAvatarSummary(){
     var bg = avatarConfig.background.charAt(0).toUpperCase()+avatarConfig.background.slice(1);
     el.textContent = style+' · '+gender+' · '+bg+' background';
   }
-  populateAvatarGrid();
+  if(heygenAvatars === null && !heygenLoadError){
+    loadHeyGenAvatars();
+  } else {
+    populateAvatarGrid();
+  }
 }
 
 function getAvatarList(){
-  var s = AVATARS[avatarConfig.style];
-  if(!s) return [];
-  var g = s[avatarConfig.gender];
-  if(!g) return [];
-  return g[avatarConfig.background] || [];
+  if(!heygenAvatars) return [];
+  // Filter live HeyGen avatars by selected gender; show all if gender unknown
+  var g = avatarConfig.gender;
+  var filtered = heygenAvatars.filter(function(a){
+    return a.gender === g || a.gender === 'unknown';
+  });
+  return filtered.length > 0 ? filtered : heygenAvatars;
 }
 
 function populateAvatarGrid(){
   var grid = document.getElementById('avatarGrid');
   var count = document.getElementById('avatarCount');
   if(!grid) return;
+  if(!heygenAvatars){ renderAvatarGridError(); return; }
   var list = getAvatarList();
   grid.innerHTML = '';
-  if(count) count.textContent = list.length + ' avatars available';
+  if(count) count.textContent = list.length + ' live avatars available';
   if(list.length === 0){
-    grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--tm);padding:12px;text-align:center;">No avatars for this combination — try another selection</div>';
+    grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--tm);padding:12px;text-align:center;">No avatars match this selection</div>';
     return;
   }
-  list.forEach(function(av, i){
+  list.slice(0, 60).forEach(function(av){
     var card = document.createElement('div');
     card.id = 'avcard-'+av.id;
     card.style.cssText = 'background:var(--sur);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;';
-    card.innerHTML = '<img src="'+av.img+'" style="width:52px;height:52px;border-radius:50%;object-fit:cover;margin-bottom:6px;" loading="lazy" onerror="this.style.display=\'none\'">' +
+    var img = av.photo ? '<img src="'+av.photo+'" style="width:52px;height:52px;border-radius:50%;object-fit:cover;margin-bottom:6px;" loading="lazy">' : '<div style="width:52px;height:52px;border-radius:50%;background:var(--card);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:22px;">👤</div>';
+    card.innerHTML = img +
       '<div style="font-size:11px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+av.name+'</div>' +
-      '<div style="font-size:9px;color:var(--tm);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+av.desc+'</div>';
+      '<div style="font-size:9px;color:var(--tm);margin-top:2px;">'+(av.premium ? '⭐ Premium' : 'Standard')+'</div>';
     card.onclick = function(){ selectAvatarCard(av); };
     grid.appendChild(card);
   });
@@ -1970,9 +1968,9 @@ function populateAvatarGrid(){
 
 function selectAvatarCard(av){
   avatarConfig.selectedId = av.id;
-  // Highlight selected card
+  avatarConfig.selectedName = av.name;
   var list = getAvatarList();
-  list.forEach(function(a){
+  list.slice(0, 60).forEach(function(a){
     var c = document.getElementById('avcard-'+a.id);
     if(!c) return;
     if(a.id === av.id){
@@ -1983,16 +1981,16 @@ function selectAvatarCard(av){
       c.style.background = 'var(--sur)';
     }
   });
-  // Update preview
   var wrap = document.getElementById('avatarPreviewWrap');
   var img = document.getElementById('avatarPreviewImg');
   var name = document.getElementById('avatarPreviewName');
   var desc = document.getElementById('avatarPreviewDesc');
   if(wrap) wrap.style.display = 'flex';
-  if(img) img.src = av.img;
+  if(img && av.photo) img.src = av.photo;
   if(name) name.textContent = av.name;
-  if(desc) desc.textContent = av.desc;
+  if(desc) desc.textContent = (av.premium ? 'Premium avatar' : 'Standard avatar') + (av.previewVideo ? ' · video preview available' : '');
 }
+
 
 function comingSoon(name){
   toast(name + ' is coming soon to EnerStudio!');
