@@ -172,10 +172,10 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <div class="ptitle">Create New Video</div>
     <div class="psub" id="brandsub">Solar Canada · SolarCanadaPro.ca · Cinematic AI Video</div>
     <div class="sgrid">
-      <div class="sc"><div class="slb">Runway Credits</div><div class="sv" id="statCred">...</div><div class="ss up" id="statCredSub">Loading...</div></div>
+      <div class="sc"><div class="slb">My Video Credits</div><div class="sv" id="statCred">...</div><div class="ss up" id="statCredSub">Loading...</div></div>
       <div class="sc"><div class="slb">Active Brand</div><div class="sv" style="font-size:13px;padding-top:4px" id="statBrand">Solar Canada</div><div class="ss">SolarCanadaPro.ca</div></div>
       <div class="sc"><div class="slb">Videos Created</div><div class="sv" id="statVids">0</div><div class="ss up">This session</div></div>
-      <div class="sc"><div class="slb">ElevenLabs</div><div class="sv">✓ Active</div><div class="ss up">Credits available</div></div>
+      <div class="sc"><div class="slb">Membership</div><div class="sv" style="font-size:15px;padding-top:4px" id="statPlan">Starter</div><div class="ss up" id="statPlanSub">✓ Active · Annual</div></div>
     </div>
 
     <!-- BRAND LOGO MANAGER -->
@@ -317,21 +317,23 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;margin-bottom:1.25rem;">
           <div style="font-size:12px;color:var(--tm);margin-bottom:4px;">Selected Configuration</div>
           <div style="font-size:13px;color:var(--tx);font-weight:500;" id="avatarConfigSummary">Professional · Female · Office background</div>
-          <div style="font-size:11px;color:var(--tm);margin-top:4px;">AI Avatar videos use HeyGen API · ~$1.50 per 30-second video from your plan</div>
+          <div style="font-size:11px;color:var(--tm);margin-top:4px;">Powered by EnerStudio Avatar Engine · Uses your Premium video credits</div>
         </div>
 
-        <!-- AVATAR SELECTION DROPDOWN -->
+        <!-- AVATAR SELECTION GRID WITH PHOTOS -->
         <div>
-          <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Select Avatar Presenter</div>
-          <select id="avatarSelect" style="width:100%;background:var(--sur);border:1px solid var(--p);border-radius:10px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);outline:none;cursor:pointer;" onchange="previewAvatar(this.value)">
-            <option value="">Choose avatar based on your selection above...</option>
-          </select>
-          <div id="avatarPreviewWrap" style="display:none;margin-top:12px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px;display:none;align-items:center;gap:12px;">
-            <div id="avatarPreviewEmoji" style="font-size:40px;width:60px;height:60px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;">Select Your Avatar Presenter</div>
+            <div style="font-size:11px;color:var(--ac);" id="avatarCount"></div>
+          </div>
+          <div id="avatarGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;"></div>
+          <div id="avatarPreviewWrap" style="margin-top:12px;background:var(--sur);border:1px solid var(--p);border-radius:10px;padding:12px;display:none;align-items:center;gap:12px;">
+            <img id="avatarPreviewImg" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--p);flex-shrink:0;">
             <div>
               <div style="font-size:13px;font-weight:600;color:var(--tx);" id="avatarPreviewName">Select an avatar</div>
-              <div style="font-size:11px;color:var(--tm);margin-top:3px;" id="avatarPreviewDesc">Choose your presenter style, gender, and background first</div>
+              <div style="font-size:11px;color:var(--tm);margin-top:3px;" id="avatarPreviewDesc">Choose your presenter above</div>
             </div>
+            <div style="margin-left:auto;font-size:11px;font-weight:700;color:var(--gr);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);border-radius:20px;padding:4px 12px;white-space:nowrap;">✓ Selected</div>
           </div>
         </div>
       </div>
@@ -604,7 +606,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div>Motion Graphics: <strong style="color:var(--tx);">$0.50</strong></div>
         <div style="color:var(--go);font-weight:600;">🔄 Plan Refresh: $49</div>
       </div>
-      <button style="width:100%;padding:11px;border-radius:10px;background:transparent;border:1px solid var(--bdr);color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Get Started</button>
+      <button id="planbtn-starter" onclick="changePlan('starter')" style="width:100%;padding:11px;border-radius:10px;background:transparent;border:1px solid var(--bdr);color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Select Plan</button>
       <div style="text-align:center;font-size:11px;color:var(--tm);margin-top:8px;">✓ 1 free 30-sec video included</div>
     </div>
 
@@ -645,7 +647,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div>Motion Graphics: <strong style="color:var(--tx);">$0.40</strong></div>
         <div style="color:var(--go);font-weight:600;">🔄 Plan Refresh: $99</div>
       </div>
-      <button style="width:100%;padding:11px;border-radius:10px;background:linear-gradient(135deg,var(--p),var(--pd));border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Get Started</button>
+      <button id="planbtn-pro" onclick="changePlan('pro')" style="width:100%;padding:11px;border-radius:10px;background:linear-gradient(135deg,var(--p),var(--pd));border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Select Plan</button>
       <div style="text-align:center;font-size:11px;color:var(--tm);margin-top:8px;">✓ 1 free 30-sec video included</div>
     </div>
 
@@ -685,7 +687,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div>Motion Graphics: <strong style="color:var(--tx);">$0.30</strong></div>
         <div style="color:var(--go);font-weight:600;">🔄 Plan Refresh: $199</div>
       </div>
-      <button style="width:100%;padding:11px;border-radius:10px;background:transparent;border:1px solid var(--bdr);color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Get Started</button>
+      <button id="planbtn-business" onclick="changePlan('business')" style="width:100%;padding:11px;border-radius:10px;background:transparent;border:1px solid var(--bdr);color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Select Plan</button>
       <div style="text-align:center;font-size:11px;color:var(--tm);margin-top:8px;">✓ 1 free 30-sec video included</div>
     </div>
   </div>
@@ -1033,12 +1035,10 @@ async function loadBalance(){
     var r=await fetch(BACKEND+'/api/runway/balance');
     var d=await r.json();
     var credits=d.creditBalance||0;
-    document.getElementById('statCred').textContent=credits.toLocaleString();
-    var vids=Math.floor(credits/35);
-    document.getElementById('statCredSub').textContent='~'+vids+' clips available';
+    window._adminRunwayBalance = credits; // stored for admin panel only
+    updateCreditDisplay(); // member-facing stat shows THEIR credits, not API credits
   }catch(e){
-    document.getElementById('statCred').textContent='--';
-    document.getElementById('statCredSub').textContent='Check Render';
+    updateCreditDisplay();
   }
 }
 
@@ -1863,62 +1863,63 @@ function handleCustomBg(input){
   reader.readAsDataURL(file);
 }
 
-// Avatar database — in real app these come from HeyGen API
+// Avatar database — photos via pravatar (placeholder for HeyGen avatar photos)
+function AV(id, name, img, desc){ return {id:id, name:name, img:'https://i.pravatar.cc/150?img='+img, desc:desc}; }
 var AVATARS = {
   professional: {
     female: {
-      office: [{id:'pf-off-1',name:'Sarah Chen',emoji:'👩‍💼',desc:'Professional business attire, office setting'},{id:'pf-off-2',name:'Maria Rodriguez',emoji:'👩‍💻',desc:'Corporate executive, boardroom background'},{id:'pf-off-3',name:'Jennifer Park',emoji:'👩‍🏫',desc:'Business casual, modern office'}],
-      studio: [{id:'pf-st-1',name:'Amanda White',emoji:'🎤',desc:'Studio presenter, neutral background'},{id:'pf-st-2',name:'Lisa Johnson',emoji:'📊',desc:'News anchor style, studio setting'}],
-      outdoor: [{id:'pf-out-1',name:'Emma Davis',emoji:'🌿',desc:'Professional, outdoor corporate setting'},{id:'pf-out-2',name:'Rachel Green',emoji:'☀️',desc:'Business casual, natural environment'}],
-      custom: [{id:'pf-cu-1',name:'Alexandra Kim',emoji:'✨',desc:'Your custom background'},{id:'pf-cu-2',name:'Sophia Martinez',emoji:'🎨',desc:'Adaptable to any background'}]
+      office: [AV('pf1','Sarah Chen',47,'Business attire, modern office'),AV('pf2','Maria Rodriguez',45,'Corporate executive, boardroom'),AV('pf3','Jennifer Park',44,'Business casual, bright office'),AV('pf4','Emily Watson',43,'Consultant style, glass office'),AV('pf5','Anna Kowalski',41,'Finance professional, desk setting'),AV('pf6','Priya Sharma',40,'Tech lead, open office')],
+      studio: [AV('pf7','Amanda White',38,'Studio presenter, neutral backdrop'),AV('pf8','Lisa Johnson',36,'Anchor style, clean studio'),AV('pf9','Claire Dubois',35,'Premium studio lighting'),AV('pf10','Nina Petrov',34,'Broadcast quality studio')],
+      outdoor: [AV('pf11','Emma Davis',32,'Corporate campus, outdoor'),AV('pf12','Rachel Green',31,'Natural light, garden setting'),AV('pf13','Sofia Rossi',29,'Urban professional, city view'),AV('pf14','Layla Hassan',26,'Rooftop terrace, daylight')],
+      custom: [AV('pf15','Alexandra Kim',25,'Adapts to your background'),AV('pf16','Sophia Martinez',24,'Any custom setting'),AV('pf17','Grace Liu',23,'Flexible green-screen ready'),AV('pf18','Diana Moreau',22,'Universal presenter')]
     },
     male: {
-      office: [{id:'pm-off-1',name:'James Wilson',emoji:'👨‍💼',desc:'Senior executive, office environment'},{id:'pm-off-2',name:'Michael Chen',emoji:'👨‍💻',desc:'Tech professional, modern office'},{id:'pm-off-3',name:'David Brown',emoji:'🏢',desc:'Corporate setting, professional attire'}],
-      studio: [{id:'pm-st-1',name:'Robert Taylor',emoji:'🎙️',desc:'Broadcast anchor style'},{id:'pm-st-2',name:'Kevin Lee',emoji:'📺',desc:'Studio presenter, clean background'}],
-      outdoor: [{id:'pm-out-1',name:'Thomas Garcia',emoji:'🌲',desc:'Professional outdoor setting'},{id:'pm-out-2',name:'Daniel Martinez',emoji:'🏙️',desc:'Urban professional environment'}],
-      custom: [{id:'pm-cu-1',name:'Christopher Moore',emoji:'⚡',desc:'Your custom background'},{id:'pm-cu-2',name:'Matthew Harris',emoji:'🎯',desc:'Adaptable presenter'}]
+      office: [AV('pm1','James Wilson',12,'Senior executive, office'),AV('pm2','Michael Chen',13,'Tech professional, modern office'),AV('pm3','David Brown',14,'Corporate, professional attire'),AV('pm4','Robert King',15,'Director style, executive desk'),AV('pm5','Omar Farouk',17,'Consultant, glass meeting room'),AV('pm6','Lucas Silva',18,'Manager, open workspace')],
+      studio: [AV('pm7','Robert Taylor',33,'Broadcast anchor, studio'),AV('pm8','Kevin Lee',50,'Clean studio presenter'),AV('pm9','Marcus Reed',51,'Premium studio setting'),AV('pm10','Victor Stone',52,'Professional studio look')],
+      outdoor: [AV('pm11','Thomas Garcia',53,'Corporate campus outdoor'),AV('pm12','Daniel Martinez',54,'Urban professional, daylight'),AV('pm13','Andre Williams',55,'City skyline backdrop'),AV('pm14','Hans Mueller',56,'Business park setting')],
+      custom: [AV('pm15','Christopher Moore',57,'Adapts to your background'),AV('pm16','Matthew Harris',58,'Any custom setting'),AV('pm17','Ali Reza',59,'Flexible presenter'),AV('pm18','John Carter',60,'Universal style')]
     }
   },
   casual: {
     female: {
-      office: [{id:'cf-off-1',name:'Emma Thompson',emoji:'😊',desc:'Friendly, approachable, office casual'},{id:'cf-off-2',name:'Olivia Scott',emoji:'👋',desc:'Warm personality, casual office'}],
-      studio: [{id:'cf-st-1',name:'Hannah Wilson',emoji:'🌟',desc:'Casual studio presenter'},{id:'cf-st-2',name:'Grace Lee',emoji:'💫',desc:'Engaging, friendly style'}],
-      outdoor: [{id:'cf-out-1',name:'Sophie Brown',emoji:'🌸',desc:'Natural, outdoor casual setting'},{id:'cf-out-2',name:'Natalie Clark',emoji:'🌻',desc:'Relaxed outdoor environment'}],
-      custom: [{id:'cf-cu-1',name:'Isabella Young',emoji:'🎀',desc:'Your custom background'}]
+      office: [AV('cf1','Emma Thompson',1,'Friendly, casual office'),AV('cf2','Olivia Scott',5,'Warm personality, relaxed'),AV('cf3','Mia Anderson',9,'Approachable, creative space'),AV('cf4','Zoe Bennett',10,'Startup vibe, casual desk')],
+      studio: [AV('cf5','Hannah Wilson',16,'Casual studio presenter'),AV('cf6','Grace Lee',20,'Engaging, friendly style'),AV('cf7','Ruby Sanchez',21,'Relaxed studio setting'),AV('cf8','Tara Singh',27,'Conversational style')],
+      outdoor: [AV('cf9','Sophie Brown',28,'Natural outdoor, friendly'),AV('cf10','Natalie Clark',30,'Park setting, casual'),AV('cf11','Chloe Adams',37,'Beach boardwalk, relaxed'),AV('cf12','Yuki Tanaka',39,'Garden cafe setting')],
+      custom: [AV('cf13','Isabella Young',42,'Your custom background'),AV('cf14','Lily Zhang',46,'Adapts anywhere'),AV('cf15','Amelie Laurent',48,'Flexible casual style')]
     },
     male: {
-      office: [{id:'cm-off-1',name:'Jake Anderson',emoji:'😄',desc:'Friendly, casual office presenter'},{id:'cm-off-2',name:'Ryan Cooper',emoji:'🤝',desc:'Approachable, casual business'}],
-      studio: [{id:'cm-st-1',name:'Tyler Morris',emoji:'🎬',desc:'Casual studio style'},{id:'cm-st-2',name:'Brandon Hughes',emoji:'🎯',desc:'Engaging presenter'}],
-      outdoor: [{id:'cm-out-1',name:'Connor Bailey',emoji:'🌿',desc:'Casual outdoor setting'},{id:'cm-out-2',name:'Mason Rivera',emoji:'☀️',desc:'Relaxed natural environment'}],
-      custom: [{id:'cm-cu-1',name:'Ethan Foster',emoji:'✌️',desc:'Your custom background'}]
+      office: [AV('cm1','Jake Anderson',3,'Friendly, casual office'),AV('cm2','Ryan Cooper',7,'Approachable, startup style'),AV('cm3','Sam Taylor',8,'Relaxed, creative workspace'),AV('cm4','Leo Costa',11,'Casual desk setting')],
+      studio: [AV('cm5','Tyler Morris',61,'Casual studio style'),AV('cm6','Brandon Hughes',62,'Engaging presenter'),AV('cm7','Noah Walker',63,'Conversational studio'),AV('cm8','Raj Patel',64,'Friendly studio look')],
+      outdoor: [AV('cm9','Connor Bailey',65,'Casual outdoor setting'),AV('cm10','Mason Rivera',66,'Park, natural light'),AV('cm11','Felix Wagner',67,'Urban casual, street'),AV('cm12','Kai Nakamura',68,'Waterfront setting')],
+      custom: [AV('cm13','Ethan Foster',69,'Your custom background'),AV('cm14','Oscar Lindberg',70,'Adapts anywhere')]
     }
   },
   educator: {
     female: {
-      office: [{id:'ef-off-1',name:'Dr. Patricia Adams',emoji:'📚',desc:'Academic, authoritative presenter'},{id:'ef-off-2',name:'Prof. Susan Miller',emoji:'🎓',desc:'Educational, clear communication style'}],
-      studio: [{id:'ef-st-1',name:'Dr. Laura Evans',emoji:'📖',desc:'Training video specialist'},{id:'ef-st-2',name:'Ms. Rachel Turner',emoji:'✏️',desc:'Clear educator style'}],
-      outdoor: [{id:'ef-out-1',name:'Dr. Karen Campbell',emoji:'🌱',desc:'Environmental educator style'}],
-      custom: [{id:'ef-cu-1',name:'Prof. Michelle Price',emoji:'🏫',desc:'Your custom background'}]
+      office: [AV('ef1','Dr. Patricia Adams',49,'Academic office, authoritative'),AV('ef2','Prof. Susan Miller',41,'Clear educational style'),AV('ef3','Dr. Helen Wright',44,'University office setting')],
+      studio: [AV('ef4','Dr. Laura Evans',36,'Training video specialist'),AV('ef5','Ms. Rachel Turner',34,'Clear educator, studio'),AV('ef6','Prof. Carmen Ortiz',32,'Lecture studio style')],
+      outdoor: [AV('ef7','Dr. Karen Campbell',29,'Campus outdoor setting'),AV('ef8','Prof. Aisha Mohammed',26,'University quad backdrop')],
+      custom: [AV('ef9','Prof. Michelle Price',24,'Your custom background'),AV('ef10','Dr. Eva Novak',22,'Flexible educator')]
     },
     male: {
-      office: [{id:'em-off-1',name:'Dr. Richard Watson',emoji:'🧑‍🏫',desc:'Academic authority, office setting'},{id:'em-off-2',name:'Prof. Andrew Phillips',emoji:'📐',desc:'Educational, structured presenter'}],
-      studio: [{id:'em-st-1',name:'Dr. Charles Bennett',emoji:'🎓',desc:'Training specialist'},{id:'em-st-2',name:'Mr. George Collins',emoji:'📊',desc:'Clear instructional style'}],
-      outdoor: [{id:'em-out-1',name:'Dr. Patrick Stewart',emoji:'🌳',desc:'Outdoor education setting'}],
-      custom: [{id:'em-cu-1',name:'Prof. William Hayes',emoji:'📝',desc:'Your custom background'}]
+      office: [AV('em1','Dr. Richard Watson',12,'Academic authority, office'),AV('em2','Prof. Andrew Phillips',14,'Structured educator'),AV('em3','Dr. Carlos Mendez',17,'Professor office setting')],
+      studio: [AV('em4','Dr. Charles Bennett',33,'Training specialist studio'),AV('em5','Mr. George Collins',51,'Clear instructional style'),AV('em6','Prof. Ahmed Khan',53,'Lecture format studio')],
+      outdoor: [AV('em7','Dr. Patrick Stewart',55,'Campus outdoor'),AV('em8','Prof. Ivan Sokolov',57,'University grounds')],
+      custom: [AV('em9','Prof. William Hayes',59,'Your custom background'),AV('em10','Dr. Marco Bianchi',61,'Flexible educator')]
     }
   },
   news: {
     female: {
-      office: [{id:'nf-off-1',name:'Victoria Stone',emoji:'📰',desc:'News anchor, formal setting'},{id:'nf-off-2',name:'Charlotte Webb',emoji:'🎙️',desc:'Broadcast journalist style'}],
-      studio: [{id:'nf-st-1',name:'Stephanie Ross',emoji:'📡',desc:'Studio news anchor'},{id:'nf-st-2',name:'Amber Knight',emoji:'🗞️',desc:'Professional broadcaster'}],
-      outdoor: [{id:'nf-out-1',name:'Diana Fox',emoji:'🌆',desc:'Field reporter style'}],
-      custom: [{id:'nf-cu-1',name:'Natasha Pierce',emoji:'📢',desc:'Your custom background'}]
+      office: [AV('nf1','Victoria Stone',45,'Anchor, formal office'),AV('nf2','Charlotte Webb',43,'Broadcast journalist'),AV('nf3','Megan Foster',40,'News desk setting')],
+      studio: [AV('nf4','Stephanie Ross',38,'Studio news anchor'),AV('nf5','Amber Knight',35,'Professional broadcaster'),AV('nf6','Elena Volkov',31,'Prime time anchor style')],
+      outdoor: [AV('nf7','Diana Fox',28,'Field reporter style'),AV('nf8','Fatima Al-Said',25,'On-location correspondent')],
+      custom: [AV('nf9','Natasha Pierce',23,'Your custom background'),AV('nf10','Julia Berg',21,'Flexible anchor')]
     },
     male: {
-      office: [{id:'nm-off-1',name:'Alexander Grant',emoji:'📰',desc:'News anchor, formal delivery'},{id:'nm-off-2',name:'Benjamin West',emoji:'🎙️',desc:'Corporate broadcast style'}],
-      studio: [{id:'nm-st-1',name:'Harrison Cole',emoji:'📺',desc:'Professional studio anchor'},{id:'nm-st-2',name:'Theodore Banks',emoji:'🗞️',desc:'Broadcast journalist'}],
-      outdoor: [{id:'nm-out-1',name:'Samuel Cross',emoji:'🏙️',desc:'Field correspondent style'}],
-      custom: [{id:'nm-cu-1',name:'Maxwell Stone',emoji:'📢',desc:'Your custom background'}]
+      office: [AV('nm1','Alexander Grant',13,'News anchor, formal'),AV('nm2','Benjamin West',15,'Corporate broadcast'),AV('nm3','Nathan Pierce',18,'News desk style')],
+      studio: [AV('nm4','Harrison Cole',50,'Studio anchor'),AV('nm5','Theodore Banks',52,'Broadcast journalist'),AV('nm6','Sergei Popov',54,'Evening news style')],
+      outdoor: [AV('nm7','Samuel Cross',56,'Field correspondent'),AV('nm8','Diego Torres',58,'On-location reporter')],
+      custom: [AV('nm9','Maxwell Stone',60,'Your custom background'),AV('nm10','Pierre Dubois',62,'Flexible anchor')]
     }
   }
 };
@@ -1931,58 +1932,66 @@ function updateAvatarSummary(){
     var bg = avatarConfig.background.charAt(0).toUpperCase()+avatarConfig.background.slice(1);
     el.textContent = style+' · '+gender+' · '+bg+' background';
   }
-  populateAvatarDropdown();
+  populateAvatarGrid();
 }
 
-function populateAvatarDropdown(){
-  var sel = document.getElementById('avatarSelect');
-  if(!sel) return;
-  sel.innerHTML = '<option value="">Choose your avatar presenter...</option>';
+function getAvatarList(){
+  var s = AVATARS[avatarConfig.style];
+  if(!s) return [];
+  var g = s[avatarConfig.gender];
+  if(!g) return [];
+  return g[avatarConfig.background] || [];
+}
 
-  var styleAvatars = AVATARS[avatarConfig.style];
-  if(!styleAvatars) return;
-  var genderAvatars = styleAvatars[avatarConfig.gender];
-  if(!genderAvatars) return;
-  var bgAvatars = genderAvatars[avatarConfig.background];
-  if(!bgAvatars || bgAvatars.length === 0){
-    sel.innerHTML = '<option value="">No avatars for this combination — try another</option>';
+function populateAvatarGrid(){
+  var grid = document.getElementById('avatarGrid');
+  var count = document.getElementById('avatarCount');
+  if(!grid) return;
+  var list = getAvatarList();
+  grid.innerHTML = '';
+  if(count) count.textContent = list.length + ' avatars available';
+  if(list.length === 0){
+    grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--tm);padding:12px;text-align:center;">No avatars for this combination — try another selection</div>';
     return;
   }
-
-  bgAvatars.forEach(function(av){
-    var opt = document.createElement('option');
-    opt.value = av.id;
-    opt.textContent = av.emoji + ' ' + av.name + ' — ' + av.desc;
-    opt.setAttribute('data-emoji', av.emoji);
-    opt.setAttribute('data-name', av.name);
-    opt.setAttribute('data-desc', av.desc);
-    sel.appendChild(opt);
+  list.forEach(function(av, i){
+    var card = document.createElement('div');
+    card.id = 'avcard-'+av.id;
+    card.style.cssText = 'background:var(--sur);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;';
+    card.innerHTML = '<img src="'+av.img+'" style="width:52px;height:52px;border-radius:50%;object-fit:cover;margin-bottom:6px;" loading="lazy" onerror="this.style.display=\'none\'">' +
+      '<div style="font-size:11px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+av.name+'</div>' +
+      '<div style="font-size:9px;color:var(--tm);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+av.desc+'</div>';
+    card.onclick = function(){ selectAvatarCard(av); };
+    grid.appendChild(card);
   });
-
-  // Auto-select first avatar
-  if(bgAvatars.length > 0){
-    sel.value = bgAvatars[0].id;
-    previewAvatar(bgAvatars[0].id);
-  }
-  toast(bgAvatars.length + ' avatars available for your selection');
+  // Auto-select first
+  selectAvatarCard(list[0]);
 }
 
-function previewAvatar(avatarId){
-  if(!avatarId) return;
-  var sel = document.getElementById('avatarSelect');
-  var opt = sel ? sel.querySelector('option[value="'+avatarId+'"]') : null;
+function selectAvatarCard(av){
+  avatarConfig.selectedId = av.id;
+  // Highlight selected card
+  var list = getAvatarList();
+  list.forEach(function(a){
+    var c = document.getElementById('avcard-'+a.id);
+    if(!c) return;
+    if(a.id === av.id){
+      c.style.borderColor = 'var(--p)';
+      c.style.background = 'rgba(99,102,241,0.12)';
+    } else {
+      c.style.borderColor = 'var(--bdr)';
+      c.style.background = 'var(--sur)';
+    }
+  });
+  // Update preview
   var wrap = document.getElementById('avatarPreviewWrap');
-  var emoji = document.getElementById('avatarPreviewEmoji');
+  var img = document.getElementById('avatarPreviewImg');
   var name = document.getElementById('avatarPreviewName');
   var desc = document.getElementById('avatarPreviewDesc');
-  if(!wrap) return;
-  if(opt){
-    wrap.style.display = 'flex';
-    if(emoji) emoji.textContent = opt.getAttribute('data-emoji') || '👤';
-    if(name) name.textContent = opt.getAttribute('data-name') || avatarId;
-    if(desc) desc.textContent = opt.getAttribute('data-desc') || '';
-  }
-  avatarConfig.selectedId = avatarId;
+  if(wrap) wrap.style.display = 'flex';
+  if(img) img.src = av.img;
+  if(name) name.textContent = av.name;
+  if(desc) desc.textContent = av.desc;
 }
 
 function comingSoon(name){
@@ -2416,7 +2425,7 @@ function submitTicket(){
 
 // Update showPage to include support and settings logo init
 // MEMBERSHIP BILLING TOGGLE
-var memIsAnnual = false;
+var memIsAnnual = true; // default to annual
 function toggleMemBilling(){
   memIsAnnual = !memIsAnnual;
   var thumb = document.getElementById('memThumb');
@@ -2489,6 +2498,59 @@ function updateCreditDisplay(){
   if(sub) sub.textContent = 'videos left at '+dur+'s';
 }
 
+// ADMIN UNLOCK — passcode protected, invisible to customers
+function unlockAdmin(){
+  var code = prompt('Admin access code:');
+  if(code === 'ener2026'){
+    var panel = document.getElementById('adminPanel');
+    if(panel){ panel.style.display = 'block'; loadAdminCredits(); toast('Admin panel unlocked'); }
+  } else if(code !== null){
+    toast('Incorrect code');
+  }
+}
+
+// UPDATE / CHANGE PLAN (upgrade or downgrade)
+var PLAN_ORDER = ['starter','pro','business'];
+function changePlan(plan){
+  if(plan === memberCredits.plan){
+    toast('You are already on the '+PLAN_POOLS[plan].name+' plan');
+    return;
+  }
+  var oldIdx = PLAN_ORDER.indexOf(memberCredits.plan);
+  var newIdx = PLAN_ORDER.indexOf(plan);
+  var action = newIdx > oldIdx ? 'Upgrade' : 'Downgrade';
+  var pool = PLAN_POOLS[plan];
+  if(!confirm(action+' to '+pool.name+' plan ($'+pool.price+'/mo)?\n\nYour video allocation will be updated to the new plan limits. With Stripe integration, billing will be prorated automatically.')) return;
+  memberCredits.plan = plan;
+  memberCredits.premiumRemaining = pool.premium;
+  memberCredits.standardRemaining = pool.standard;
+  memberCredits.motionRemaining = pool.motion;
+  var sp = document.getElementById('statPlan');
+  if(sp) sp.textContent = pool.name;
+  updateCreditDisplay();
+  updateMembershipCredits();
+  updatePlanButtons();
+  toast('✓ '+action+'d to '+pool.name+' — your new allocation is active');
+}
+
+function updatePlanButtons(){
+  PLAN_ORDER.forEach(function(p){
+    var btn = document.getElementById('planbtn-'+p);
+    if(!btn) return;
+    if(p === memberCredits.plan){
+      btn.textContent = '✓ Current Plan';
+      btn.style.opacity = '0.6';
+      btn.style.cursor = 'default';
+    } else {
+      var oldIdx = PLAN_ORDER.indexOf(memberCredits.plan);
+      var newIdx = PLAN_ORDER.indexOf(p);
+      btn.textContent = newIdx > oldIdx ? '⬆ Upgrade' : '⬇ Downgrade';
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+    }
+  });
+}
+
 // ADMIN CREDITS LOADER
 async function loadAdminCredits(){
   var el = document.getElementById('adminRunwayCredits');
@@ -2548,7 +2610,9 @@ loadVoices();
 renderLibrary();
 setTimeout(renderLogoGrid, 100);
 updateCreditDisplay();
-setTimeout(loadAdminCredits, 3000);
+// Apply default ANNUAL billing display
+memIsAnnual = false; toggleMemBilling(); // flips to true and updates all prices
+updatePlanButtons();
 </script>
 </body>
 </html>  <!-- SETTINGS PAGE -->
@@ -2585,8 +2649,13 @@ setTimeout(loadAdminCredits, 3000);
       <div id="serverStatusResult" style="margin-top:8px;font-size:12px;color:var(--ts);"></div>
     </div>
 
-    <!-- ADMIN SECTION - Internal use only -->
-    <div style="background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;">
+    <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
+    <div style="text-align:center;margin-top:8px;">
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v7.3</span>
+    </div>
+
+    <!-- ADMIN SECTION - hidden until passcode entered -->
+    <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
       <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px;">🔐 Admin — API Credits</div>
       <div style="font-size:12px;color:var(--re);margin-bottom:1rem;font-weight:500;">⚠️ Internal use only — not visible to members</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
