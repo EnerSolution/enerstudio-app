@@ -207,7 +207,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div style="font-size:22px;margin-bottom:4px;">✏️</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Whiteboard</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Animation</div>
-          <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
+          <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-cartoon" onclick="comingSoon('Cartoon')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">🎨</div>
@@ -1176,11 +1176,16 @@ async function generateSceneImages(){
 }
 
 async function generateOneImage(prompt){
+  // Whiteboard type: force hand-drawn sketch style for every scene image
+  var finalPrompt = prompt;
+  if(activeVtype === 'whiteboard'){
+    finalPrompt = 'Simple black ink hand-drawn doodle sketch illustration on a clean pure white background, whiteboard marker line-art style, minimalist line drawing, no shading, no color: ' + prompt;
+  }
   // Generate image via Runway gen4_image
   var r=await fetch(BACKEND+'/api/runway/generate-image',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({prompt:prompt})
+    body:JSON.stringify({prompt:finalPrompt})
   });
   if(!r.ok){
     var e=await r.json();
@@ -1554,7 +1559,63 @@ async function approveImages(){
   document.getElementById('step4').scrollIntoView({behavior:'smooth'});
   document.getElementById('approveImagesBtn').disabled=true;
 
-  await generateVideoClips(readyUrls);
+  if(activeVtype === 'whiteboard'){
+    await whiteboardStitch(readyUrls);
+  } else {
+    await generateVideoClips(readyUrls);
+  }
+}
+
+// WHITEBOARD: animate sketches directly via FFmpeg — no Runway video credits used
+async function whiteboardStitch(imageUrls){
+  document.getElementById('overallStatus').textContent='Animating...';
+  document.getElementById('overallStatus').className='status-val pending';
+  document.getElementById('clipsComplete').textContent=imageUrls.length+' scenes';
+  document.getElementById('statusMsg').textContent='✏️ Drawing your whiteboard animation and recording voiceover (1-2 minutes)...';
+  try{
+    var r=await fetch(BACKEND+'/api/whiteboard/stitch',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        imageUrls:imageUrls,
+        voiceoverText:scriptText,
+        voiceId:selectedVoiceId,
+        secondsPerScene:5
+      })
+    });
+    if(r.ok){
+      var blob=await r.blob();
+      var url=URL.createObjectURL(blob);
+      var vid=document.getElementById('finalVideo');
+      vid.src=url;
+      vid.style.display='block';
+      document.getElementById('overallStatus').textContent='Complete!';
+      document.getElementById('overallStatus').className='status-val ok';
+      document.getElementById('statusMsg').textContent='Your '+(imageUrls.length*5)+'-second whiteboard animation with voiceover is ready!';
+      var dlBtn=document.getElementById('dlBtn');
+      dlBtn.disabled=false;
+      dlBtn.onclick=function(){
+        var a=document.createElement('a');
+        a.href=url;
+        a.download='enerstudio-whiteboard-'+activeBrand.replace(/\s/g,'-')+'.mp4';
+        a.click();
+      };
+      vidCount++;
+      document.getElementById('statVids').textContent=vidCount;
+      toast('✏️ Whiteboard video ready! Click Download to save.');
+      saveToLibrary(activeBrand, (imageUrls.length*5)+'s', 'Whiteboard Animation', url);
+    }else{
+      var e=await r.json();
+      document.getElementById('overallStatus').textContent='Failed';
+      document.getElementById('overallStatus').className='status-val fail';
+      document.getElementById('statusMsg').textContent='Whiteboard animation failed: '+(e.error||'unknown error');
+      document.getElementById('approveImagesBtn').disabled=false;
+    }
+  }catch(err){
+    document.getElementById('overallStatus').textContent='Failed';
+    document.getElementById('statusMsg').textContent='Connection error: '+err.message+' — try again';
+    document.getElementById('approveImagesBtn').disabled=false;
+  }
 }
 
 // STEP 4: GENERATE VIDEO CLIPS
@@ -1799,6 +1860,10 @@ function selectVtype(type, el){
   } else if(type === 'cinematic'){
     if(avatarSection) avatarSection.style.display = 'none';
     if(cinematicSection) cinematicSection.style.display = 'block';
+  } else if(type === 'whiteboard'){
+    if(avatarSection) avatarSection.style.display = 'none';
+    if(cinematicSection) cinematicSection.style.display = 'block';
+    toast('✏️ Whiteboard Animation selected — describe your video below');
   } else {
     if(avatarSection) avatarSection.style.display = 'none';
     if(cinematicSection) cinematicSection.style.display = 'block';
