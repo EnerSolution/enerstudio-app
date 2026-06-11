@@ -314,10 +314,25 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
 
         <!-- Avatar Config Summary -->
-        <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;">
+        <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;margin-bottom:1.25rem;">
           <div style="font-size:12px;color:var(--tm);margin-bottom:4px;">Selected Configuration</div>
           <div style="font-size:13px;color:var(--tx);font-weight:500;" id="avatarConfigSummary">Professional · Female · Office background</div>
           <div style="font-size:11px;color:var(--tm);margin-top:4px;">AI Avatar videos use HeyGen API · ~$1.50 per 30-second video from your plan</div>
+        </div>
+
+        <!-- AVATAR SELECTION DROPDOWN -->
+        <div>
+          <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Select Avatar Presenter</div>
+          <select id="avatarSelect" style="width:100%;background:var(--sur);border:1px solid var(--p);border-radius:10px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);outline:none;cursor:pointer;" onchange="previewAvatar(this.value)">
+            <option value="">Choose avatar based on your selection above...</option>
+          </select>
+          <div id="avatarPreviewWrap" style="display:none;margin-top:12px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px;display:none;align-items:center;gap:12px;">
+            <div id="avatarPreviewEmoji" style="font-size:40px;width:60px;height:60px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--tx);" id="avatarPreviewName">Select an avatar</div>
+              <div style="font-size:11px;color:var(--tm);margin-top:3px;" id="avatarPreviewDesc">Choose your presenter style, gender, and background first</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1848,6 +1863,66 @@ function handleCustomBg(input){
   reader.readAsDataURL(file);
 }
 
+// Avatar database — in real app these come from HeyGen API
+var AVATARS = {
+  professional: {
+    female: {
+      office: [{id:'pf-off-1',name:'Sarah Chen',emoji:'👩‍💼',desc:'Professional business attire, office setting'},{id:'pf-off-2',name:'Maria Rodriguez',emoji:'👩‍💻',desc:'Corporate executive, boardroom background'},{id:'pf-off-3',name:'Jennifer Park',emoji:'👩‍🏫',desc:'Business casual, modern office'}],
+      studio: [{id:'pf-st-1',name:'Amanda White',emoji:'🎤',desc:'Studio presenter, neutral background'},{id:'pf-st-2',name:'Lisa Johnson',emoji:'📊',desc:'News anchor style, studio setting'}],
+      outdoor: [{id:'pf-out-1',name:'Emma Davis',emoji:'🌿',desc:'Professional, outdoor corporate setting'},{id:'pf-out-2',name:'Rachel Green',emoji:'☀️',desc:'Business casual, natural environment'}],
+      custom: [{id:'pf-cu-1',name:'Alexandra Kim',emoji:'✨',desc:'Your custom background'},{id:'pf-cu-2',name:'Sophia Martinez',emoji:'🎨',desc:'Adaptable to any background'}]
+    },
+    male: {
+      office: [{id:'pm-off-1',name:'James Wilson',emoji:'👨‍💼',desc:'Senior executive, office environment'},{id:'pm-off-2',name:'Michael Chen',emoji:'👨‍💻',desc:'Tech professional, modern office'},{id:'pm-off-3',name:'David Brown',emoji:'🏢',desc:'Corporate setting, professional attire'}],
+      studio: [{id:'pm-st-1',name:'Robert Taylor',emoji:'🎙️',desc:'Broadcast anchor style'},{id:'pm-st-2',name:'Kevin Lee',emoji:'📺',desc:'Studio presenter, clean background'}],
+      outdoor: [{id:'pm-out-1',name:'Thomas Garcia',emoji:'🌲',desc:'Professional outdoor setting'},{id:'pm-out-2',name:'Daniel Martinez',emoji:'🏙️',desc:'Urban professional environment'}],
+      custom: [{id:'pm-cu-1',name:'Christopher Moore',emoji:'⚡',desc:'Your custom background'},{id:'pm-cu-2',name:'Matthew Harris',emoji:'🎯',desc:'Adaptable presenter'}]
+    }
+  },
+  casual: {
+    female: {
+      office: [{id:'cf-off-1',name:'Emma Thompson',emoji:'😊',desc:'Friendly, approachable, office casual'},{id:'cf-off-2',name:'Olivia Scott',emoji:'👋',desc:'Warm personality, casual office'}],
+      studio: [{id:'cf-st-1',name:'Hannah Wilson',emoji:'🌟',desc:'Casual studio presenter'},{id:'cf-st-2',name:'Grace Lee',emoji:'💫',desc:'Engaging, friendly style'}],
+      outdoor: [{id:'cf-out-1',name:'Sophie Brown',emoji:'🌸',desc:'Natural, outdoor casual setting'},{id:'cf-out-2',name:'Natalie Clark',emoji:'🌻',desc:'Relaxed outdoor environment'}],
+      custom: [{id:'cf-cu-1',name:'Isabella Young',emoji:'🎀',desc:'Your custom background'}]
+    },
+    male: {
+      office: [{id:'cm-off-1',name:'Jake Anderson',emoji:'😄',desc:'Friendly, casual office presenter'},{id:'cm-off-2',name:'Ryan Cooper',emoji:'🤝',desc:'Approachable, casual business'}],
+      studio: [{id:'cm-st-1',name:'Tyler Morris',emoji:'🎬',desc:'Casual studio style'},{id:'cm-st-2',name:'Brandon Hughes',emoji:'🎯',desc:'Engaging presenter'}],
+      outdoor: [{id:'cm-out-1',name:'Connor Bailey',emoji:'🌿',desc:'Casual outdoor setting'},{id:'cm-out-2',name:'Mason Rivera',emoji:'☀️',desc:'Relaxed natural environment'}],
+      custom: [{id:'cm-cu-1',name:'Ethan Foster',emoji:'✌️',desc:'Your custom background'}]
+    }
+  },
+  educator: {
+    female: {
+      office: [{id:'ef-off-1',name:'Dr. Patricia Adams',emoji:'📚',desc:'Academic, authoritative presenter'},{id:'ef-off-2',name:'Prof. Susan Miller',emoji:'🎓',desc:'Educational, clear communication style'}],
+      studio: [{id:'ef-st-1',name:'Dr. Laura Evans',emoji:'📖',desc:'Training video specialist'},{id:'ef-st-2',name:'Ms. Rachel Turner',emoji:'✏️',desc:'Clear educator style'}],
+      outdoor: [{id:'ef-out-1',name:'Dr. Karen Campbell',emoji:'🌱',desc:'Environmental educator style'}],
+      custom: [{id:'ef-cu-1',name:'Prof. Michelle Price',emoji:'🏫',desc:'Your custom background'}]
+    },
+    male: {
+      office: [{id:'em-off-1',name:'Dr. Richard Watson',emoji:'🧑‍🏫',desc:'Academic authority, office setting'},{id:'em-off-2',name:'Prof. Andrew Phillips',emoji:'📐',desc:'Educational, structured presenter'}],
+      studio: [{id:'em-st-1',name:'Dr. Charles Bennett',emoji:'🎓',desc:'Training specialist'},{id:'em-st-2',name:'Mr. George Collins',emoji:'📊',desc:'Clear instructional style'}],
+      outdoor: [{id:'em-out-1',name:'Dr. Patrick Stewart',emoji:'🌳',desc:'Outdoor education setting'}],
+      custom: [{id:'em-cu-1',name:'Prof. William Hayes',emoji:'📝',desc:'Your custom background'}]
+    }
+  },
+  news: {
+    female: {
+      office: [{id:'nf-off-1',name:'Victoria Stone',emoji:'📰',desc:'News anchor, formal setting'},{id:'nf-off-2',name:'Charlotte Webb',emoji:'🎙️',desc:'Broadcast journalist style'}],
+      studio: [{id:'nf-st-1',name:'Stephanie Ross',emoji:'📡',desc:'Studio news anchor'},{id:'nf-st-2',name:'Amber Knight',emoji:'🗞️',desc:'Professional broadcaster'}],
+      outdoor: [{id:'nf-out-1',name:'Diana Fox',emoji:'🌆',desc:'Field reporter style'}],
+      custom: [{id:'nf-cu-1',name:'Natasha Pierce',emoji:'📢',desc:'Your custom background'}]
+    },
+    male: {
+      office: [{id:'nm-off-1',name:'Alexander Grant',emoji:'📰',desc:'News anchor, formal delivery'},{id:'nm-off-2',name:'Benjamin West',emoji:'🎙️',desc:'Corporate broadcast style'}],
+      studio: [{id:'nm-st-1',name:'Harrison Cole',emoji:'📺',desc:'Professional studio anchor'},{id:'nm-st-2',name:'Theodore Banks',emoji:'🗞️',desc:'Broadcast journalist'}],
+      outdoor: [{id:'nm-out-1',name:'Samuel Cross',emoji:'🏙️',desc:'Field correspondent style'}],
+      custom: [{id:'nm-cu-1',name:'Maxwell Stone',emoji:'📢',desc:'Your custom background'}]
+    }
+  }
+};
+
 function updateAvatarSummary(){
   var el = document.getElementById('avatarConfigSummary');
   if(el){
@@ -1856,6 +1931,58 @@ function updateAvatarSummary(){
     var bg = avatarConfig.background.charAt(0).toUpperCase()+avatarConfig.background.slice(1);
     el.textContent = style+' · '+gender+' · '+bg+' background';
   }
+  populateAvatarDropdown();
+}
+
+function populateAvatarDropdown(){
+  var sel = document.getElementById('avatarSelect');
+  if(!sel) return;
+  sel.innerHTML = '<option value="">Choose your avatar presenter...</option>';
+
+  var styleAvatars = AVATARS[avatarConfig.style];
+  if(!styleAvatars) return;
+  var genderAvatars = styleAvatars[avatarConfig.gender];
+  if(!genderAvatars) return;
+  var bgAvatars = genderAvatars[avatarConfig.background];
+  if(!bgAvatars || bgAvatars.length === 0){
+    sel.innerHTML = '<option value="">No avatars for this combination — try another</option>';
+    return;
+  }
+
+  bgAvatars.forEach(function(av){
+    var opt = document.createElement('option');
+    opt.value = av.id;
+    opt.textContent = av.emoji + ' ' + av.name + ' — ' + av.desc;
+    opt.setAttribute('data-emoji', av.emoji);
+    opt.setAttribute('data-name', av.name);
+    opt.setAttribute('data-desc', av.desc);
+    sel.appendChild(opt);
+  });
+
+  // Auto-select first avatar
+  if(bgAvatars.length > 0){
+    sel.value = bgAvatars[0].id;
+    previewAvatar(bgAvatars[0].id);
+  }
+  toast(bgAvatars.length + ' avatars available for your selection');
+}
+
+function previewAvatar(avatarId){
+  if(!avatarId) return;
+  var sel = document.getElementById('avatarSelect');
+  var opt = sel ? sel.querySelector('option[value="'+avatarId+'"]') : null;
+  var wrap = document.getElementById('avatarPreviewWrap');
+  var emoji = document.getElementById('avatarPreviewEmoji');
+  var name = document.getElementById('avatarPreviewName');
+  var desc = document.getElementById('avatarPreviewDesc');
+  if(!wrap) return;
+  if(opt){
+    wrap.style.display = 'flex';
+    if(emoji) emoji.textContent = opt.getAttribute('data-emoji') || '👤';
+    if(name) name.textContent = opt.getAttribute('data-name') || avatarId;
+    if(desc) desc.textContent = opt.getAttribute('data-desc') || '';
+  }
+  avatarConfig.selectedId = avatarId;
 }
 
 function comingSoon(name){
