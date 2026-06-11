@@ -300,6 +300,19 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           </div>
         </div>
 
+        <!-- Custom Background Upload (shown when custom selected) -->
+        <div id="custom-bg-upload" style="display:none;margin-bottom:1.25rem;">
+          <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Upload Custom Background</div>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <input type="file" id="customBgInput" accept="image/*" style="display:none;" onchange="handleCustomBg(this)">
+            <button onclick="document.getElementById('customBgInput').click()" style="background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:8px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--ac);cursor:pointer;">📁 Choose Image</button>
+            <span id="customBgName" style="font-size:12px;color:var(--tm);">No file selected</span>
+          </div>
+          <div id="customBgPreview" style="margin-top:8px;display:none;">
+            <img id="customBgImg" style="width:100%;max-height:80px;object-fit:cover;border-radius:6px;border:1px solid var(--bdr);">
+          </div>
+        </div>
+
         <!-- Avatar Config Summary -->
         <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;">
           <div style="font-size:12px;color:var(--tm);margin-bottom:4px;">Selected Configuration</div>
@@ -488,8 +501,44 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
 <!-- MEMBERSHIP PAGE -->
 <div id="page-membership" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
-  <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">👥 Membership Plans</div>
-  <div style="font-size:14px;color:var(--ts);margin-bottom:2rem;">Choose your plan. All plans include a free 30-second video after account creation.</div>
+  <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">👥 Membership & Credits</div>
+  <div style="font-size:14px;color:var(--ts);margin-bottom:1.25rem;">Your plan, video credits, and billing information.</div>
+
+  <!-- CURRENT CREDIT STATUS -->
+  <div style="background:var(--card);border:1px solid var(--p);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;">
+    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:1rem;color:var(--ac);">📊 Your Current Video Credits</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1rem;">
+      <div style="background:var(--sur);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">🎬 Cinematic + Avatar</div>
+        <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--ac);" id="creditPremiumVids">--</div>
+        <div style="font-size:10px;color:var(--tm);margin-top:2px;" id="creditPremiumSec">-- seconds remaining</div>
+        <div style="margin-top:6px;height:4px;background:var(--bdr);border-radius:2px;overflow:hidden;">
+          <div id="creditPremiumBar" style="height:100%;background:var(--p);border-radius:2px;width:100%;transition:width 0.3s;"></div>
+        </div>
+      </div>
+      <div style="background:var(--sur);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">✏️ Whiteboard + Cartoon</div>
+        <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--ac);" id="creditStdVids">--</div>
+        <div style="font-size:10px;color:var(--tm);margin-top:2px;" id="creditStdSec">-- seconds remaining</div>
+        <div style="margin-top:6px;height:4px;background:var(--bdr);border-radius:2px;overflow:hidden;">
+          <div id="creditStdBar" style="height:100%;background:var(--gr);border-radius:2px;width:100%;transition:width 0.3s;"></div>
+        </div>
+      </div>
+      <div style="background:var(--sur);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">⚡ Motion Graphics</div>
+        <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--ac);" id="creditMotVids">--</div>
+        <div style="font-size:10px;color:var(--tm);margin-top:2px;" id="creditMotSec">-- seconds remaining</div>
+        <div style="margin-top:6px;height:4px;background:var(--bdr);border-radius:2px;overflow:hidden;">
+          <div id="creditMotBar" style="height:100%;background:var(--go);border-radius:2px;width:100%;transition:width 0.3s;"></div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--tm);text-align:center;">Based on 30-second videos · Select a different duration in Create Video to see adjusted counts</div>
+    <div style="text-align:center;margin-top:10px;">
+      <button onclick="showPage('create',document.getElementById('nav-create'))" style="background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--ac);cursor:pointer;">⚡ Create New Video</button>
+      <button onclick="alert('Plan Refresh coming soon with Stripe integration')" style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--go);cursor:pointer;margin-left:8px;">🔄 Refresh Plan ($49)</button>
+    </div>
+  </div>
 
   <!-- BILLING TOGGLE -->
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;">
@@ -1776,7 +1825,27 @@ function selectAvatarBg(bg, el){
       card.style.borderColor = 'var(--bdr)';
     }
   });
+  // Show custom upload if custom selected
+  var customUpload = document.getElementById('custom-bg-upload');
+  if(customUpload) customUpload.style.display = bg === 'custom' ? 'block' : 'none';
   updateAvatarSummary();
+}
+
+function handleCustomBg(input){
+  if(!input.files || !input.files[0]) return;
+  var file = input.files[0];
+  document.getElementById('customBgName').textContent = file.name;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var img = document.getElementById('customBgImg');
+    var preview = document.getElementById('customBgPreview');
+    if(img) img.src = e.target.result;
+    if(preview) preview.style.display = 'block';
+    avatarConfig.customBg = e.target.result;
+    updateAvatarSummary();
+    toast('Custom background uploaded!');
+  };
+  reader.readAsDataURL(file);
 }
 
 function updateAvatarSummary(){
@@ -1828,7 +1897,8 @@ function showPage(pageId, navEl){
   // Page-specific init
   if(pageId === 'analytics') updateAnalytics();
   if(pageId === 'library') renderLibrary();
-  if(pageId === 'settings') renderLogoGrid();
+  if(pageId === 'settings'){ renderLogoGrid(); loadAdminCredits(); }
+  if(pageId === 'membership') updateMembershipCredits();
 
   // Scroll to top of page
   window.scrollTo(0,0);
@@ -2292,12 +2362,66 @@ function updateCreditDisplay(){
   if(sub) sub.textContent = 'videos left at '+dur+'s';
 }
 
+// ADMIN CREDITS LOADER
+async function loadAdminCredits(){
+  var el = document.getElementById('adminRunwayCredits');
+  var sub = document.getElementById('adminRunwaySub');
+  if(el) el.textContent = '...';
+  try{
+    var r = await fetch(BACKEND+'/api/runway/balance');
+    var d = await r.json();
+    var credits = d.creditBalance || 0;
+    if(el) el.textContent = credits.toLocaleString();
+    if(sub){
+      var vids30 = Math.floor(credits / 33);
+      sub.textContent = '~'+vids30+' x 30s videos remaining';
+      sub.style.color = credits < 100 ? 'var(--re)' : 'var(--gr)';
+    }
+  }catch(e){
+    if(el){ el.textContent = 'Error'; }
+    if(sub){ sub.textContent = 'Check server connection'; }
+  }
+}
+
+// UPDATE MEMBERSHIP CREDIT DISPLAY FOR CUSTOMER
+function updateMembershipCredits(){
+  var dur = 30;
+  var sel = document.getElementById('dsel');
+  if(sel) dur = parseInt(sel.value) || 30;
+  var premVids = Math.floor(memberCredits.premiumRemaining / dur);
+  var stdVids = Math.floor(memberCredits.standardRemaining / dur);
+  var motVids = Math.floor(memberCredits.motionRemaining / dur);
+  var pool = PLAN_POOLS[memberCredits.plan];
+
+  var els = {
+    premiumVids: document.getElementById('creditPremiumVids'),
+    premiumSec: document.getElementById('creditPremiumSec'),
+    premiumBar: document.getElementById('creditPremiumBar'),
+    stdVids: document.getElementById('creditStdVids'),
+    stdSec: document.getElementById('creditStdSec'),
+    stdBar: document.getElementById('creditStdBar'),
+    motVids: document.getElementById('creditMotVids'),
+    motSec: document.getElementById('creditMotSec'),
+    motBar: document.getElementById('creditMotBar')
+  };
+  if(els.premiumVids) els.premiumVids.textContent = premVids;
+  if(els.premiumSec) els.premiumSec.textContent = memberCredits.premiumRemaining + ' sec remaining';
+  if(els.premiumBar && pool) els.premiumBar.style.width = Math.round((memberCredits.premiumRemaining/pool.premium)*100)+'%';
+  if(els.stdVids) els.stdVids.textContent = stdVids;
+  if(els.stdSec) els.stdSec.textContent = memberCredits.standardRemaining + ' sec remaining';
+  if(els.stdBar && pool) els.stdBar.style.width = Math.round((memberCredits.standardRemaining/pool.standard)*100)+'%';
+  if(els.motVids) els.motVids.textContent = motVids;
+  if(els.motSec) els.motSec.textContent = memberCredits.motionRemaining + ' sec remaining';
+  if(els.motBar && pool) els.motBar.style.width = Math.round((memberCredits.motionRemaining/pool.motion)*100)+'%';
+}
+
 // INIT
 loadBalance();
 loadVoices();
 renderLibrary();
 setTimeout(renderLogoGrid, 100);
 updateCreditDisplay();
+setTimeout(loadAdminCredits, 3000);
 </script>
 </body>
 </html>  <!-- SETTINGS PAGE -->
@@ -2327,10 +2451,49 @@ updateCreditDisplay();
         <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;"><div><div style="font-size:13px;font-weight:500;">Stripe</div><div style="font-size:11px;color:var(--tm);">Membership payments</div></div><span style="font-size:12px;background:rgba(251,191,36,0.1);color:var(--go);border:1px solid rgba(251,191,36,0.3);padding:3px 10px;border-radius:20px;">⏳ Coming Soon</span></div>
       </div>
     </div>
-    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;">
+    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
       <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">🖥️ Backend Server</div>
       <div style="font-size:13px;color:var(--ts);margin-bottom:12px;">URL: <span style="color:var(--ac);">https://enerstudio-backend.onrender.com</span></div>
       <button onclick="checkServerStatus()" style="background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--ac);cursor:pointer;">🔄 Check Server Status</button>
       <div id="serverStatusResult" style="margin-top:8px;font-size:12px;color:var(--ts);"></div>
+    </div>
+
+    <!-- ADMIN SECTION - Internal use only -->
+    <div style="background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px;">🔐 Admin — API Credits</div>
+      <div style="font-size:12px;color:var(--re);margin-bottom:1rem;font-weight:500;">⚠️ Internal use only — not visible to members</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--sur);border-radius:8px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;">Runway ML Credits</div>
+            <div style="font-size:11px;color:var(--tm);">Used for Cinematic AI + Avatar video generation</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--go);" id="adminRunwayCredits">...</div>
+            <div style="font-size:11px;color:var(--tm);" id="adminRunwaySub">Loading...</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--sur);border-radius:8px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;">ElevenLabs Voice Credits</div>
+            <div style="font-size:11px;color:var(--tm);">Used for professional voiceover generation</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--gr);">131k</div>
+            <div style="font-size:11px;color:var(--tm);">Creator Plan — Active</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--sur);border-radius:8px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;">Claude API</div>
+            <div style="font-size:11px;color:var(--tm);">Script generation — pay per use</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--gr);">Active</div>
+            <div style="font-size:11px;color:var(--tm);">~$0.003 per script</div>
+          </div>
+        </div>
+        <button onclick="loadAdminCredits()" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--re);cursor:pointer;margin-top:4px;">🔄 Refresh API Credits</button>
+      </div>
     </div>
   </div>
