@@ -137,7 +137,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="pill"><div class="pdot"></div>Live</div>
-    <span style="font-size:12px;color:var(--tm)">Ali Amiri · EnerSolution Inc.</span>
+    <span style="font-size:12px;color:var(--tm)">EnerStudio.io — Beta</span>
   </div>
 </div>
 <div class="layout">
@@ -220,6 +220,91 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Motion</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Graphics</div>
           <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CINEMATIC CONFIG (shown by default) -->
+    <div id="cinematic-config-section" style="display:block;"></div>
+
+    <!-- AVATAR CONFIG SECTION (shown when AI Avatar is selected) -->
+    <div id="avatar-config-section" style="display:none;">
+      <div class="card">
+        <div class="ch">
+          <div class="ct">🎤 AI Avatar Configuration</div>
+          <div class="csub">Choose your presenter style</div>
+        </div>
+
+        <!-- Avatar Style Selection -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Presenter Style</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+            <div id="av-style-professional" onclick="selectAvatarStyle('professional',this)" style="background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s;">
+              <div style="font-size:24px;margin-bottom:6px;">👔</div>
+              <div style="font-size:12px;font-weight:600;color:#fff;">Professional</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-top:2px;">Business</div>
+            </div>
+            <div id="av-style-casual" onclick="selectAvatarStyle('casual',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s;">
+              <div style="font-size:24px;margin-bottom:6px;">😊</div>
+              <div style="font-size:12px;font-weight:600;color:var(--ts);">Casual</div>
+              <div style="font-size:10px;color:var(--tm);margin-top:2px;">Friendly</div>
+            </div>
+            <div id="av-style-educator" onclick="selectAvatarStyle('educator',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s;">
+              <div style="font-size:24px;margin-bottom:6px;">📚</div>
+              <div style="font-size:12px;font-weight:600;color:var(--ts);">Educator</div>
+              <div style="font-size:10px;color:var(--tm);margin-top:2px;">Training</div>
+            </div>
+            <div id="av-style-news" onclick="selectAvatarStyle('news',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s;">
+              <div style="font-size:24px;margin-bottom:6px;">📰</div>
+              <div style="font-size:12px;font-weight:600;color:var(--ts);">News Anchor</div>
+              <div style="font-size:10px;color:var(--tm);margin-top:2px;">Formal</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avatar Gender -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Presenter Gender</div>
+          <div style="display:flex;gap:10px;">
+            <div id="av-gender-female" onclick="selectAvatarGender('female',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+              <div style="font-size:20px;margin-bottom:4px;">👩</div>
+              <div style="font-size:12px;font-weight:600;color:#fff;">Female</div>
+            </div>
+            <div id="av-gender-male" onclick="selectAvatarGender('male',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+              <div style="font-size:20px;margin-bottom:4px;">👨</div>
+              <div style="font-size:12px;font-weight:600;color:var(--ts);">Male</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Background -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Background</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+            <div id="av-bg-office" onclick="selectAvatarBg('office',this)" style="background:var(--p);border:1.5px solid var(--p);border-radius:8px;padding:8px;text-align:center;cursor:pointer;">
+              <div style="font-size:18px;margin-bottom:3px;">🏢</div>
+              <div style="font-size:11px;color:#fff;font-weight:600;">Office</div>
+            </div>
+            <div id="av-bg-studio" onclick="selectAvatarBg('studio',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:8px;padding:8px;text-align:center;cursor:pointer;">
+              <div style="font-size:18px;margin-bottom:3px;">🎥</div>
+              <div style="font-size:11px;color:var(--ts);font-weight:500;">Studio</div>
+            </div>
+            <div id="av-bg-outdoor" onclick="selectAvatarBg('outdoor',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:8px;padding:8px;text-align:center;cursor:pointer;">
+              <div style="font-size:18px;margin-bottom:3px;">🌿</div>
+              <div style="font-size:11px;color:var(--ts);font-weight:500;">Outdoor</div>
+            </div>
+            <div id="av-bg-custom" onclick="selectAvatarBg('custom',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:8px;padding:8px;text-align:center;cursor:pointer;">
+              <div style="font-size:18px;margin-bottom:3px;">🎨</div>
+              <div style="font-size:11px;color:var(--ts);font-weight:500;">Custom</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avatar Config Summary -->
+        <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;">
+          <div style="font-size:12px;color:var(--tm);margin-bottom:4px;">Selected Configuration</div>
+          <div style="font-size:13px;color:var(--tx);font-weight:500;" id="avatarConfigSummary">Professional · Female · Office background</div>
+          <div style="font-size:11px;color:var(--tm);margin-top:4px;">AI Avatar videos use HeyGen API · ~$1.50 per 30-second video from your plan</div>
         </div>
       </div>
     </div>
@@ -812,7 +897,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 <div class="toast" id="toast"></div>
 
 <script>
-var REPLIT = 'https://enerstudio-backend.onrender.com';
+var BACKEND = 'https://enerstudio-backend.onrender.com';
 var activeBrand = 'Solar Canada';
 var scriptText = '';
 var scenePrompts = [];
@@ -881,7 +966,7 @@ function copyScript(){
 // LOAD RUNWAY BALANCE
 async function loadBalance(){
   try{
-    var r=await fetch(REPLIT+'/api/runway/balance');
+    var r=await fetch(BACKEND+'/api/runway/balance');
     var d=await r.json();
     var credits=d.creditBalance||0;
     document.getElementById('statCred').textContent=credits.toLocaleString();
@@ -918,7 +1003,7 @@ async function generateScript(){
 
   try{
     setprog('scriptPbar','scriptPfill','scriptPtxt',60,'Generating script...');
-    var r=await fetch(REPLIT+'/api/claude/generate',{
+    var r=await fetch(BACKEND+'/api/claude/generate',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({prompt:userPrompt,system:sysPrompt})
@@ -1028,7 +1113,7 @@ async function generateSceneImages(){
 
 async function generateOneImage(prompt){
   // Generate image via Runway gen4_image
-  var r=await fetch(REPLIT+'/api/runway/generate-image',{
+  var r=await fetch(BACKEND+'/api/runway/generate-image',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({prompt:prompt})
@@ -1434,7 +1519,7 @@ async function generateVideoClips(imageUrls){
     document.getElementById('statusMsg').textContent='Queuing clip '+(i+1)+' of '+imageUrls.length+'...';
     document.getElementById('dot-'+i).className='clip-dot active';
     try{
-      var r=await fetch(REPLIT+'/api/runway/generate',{
+      var r=await fetch(BACKEND+'/api/runway/generate',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({prompt:scenePrompts[i]||solarPrompts[i%solarPrompts.length],imageUrl:imageUrls[i]})
@@ -1471,7 +1556,7 @@ async function checkAllClips(){
     if(clipUrls[i]){done++;continue;}
     if(!clipTaskIds[i]){continue;}
     try{
-      var r=await fetch(REPLIT+'/api/runway/status/'+clipTaskIds[i]);
+      var r=await fetch(BACKEND+'/api/runway/status/'+clipTaskIds[i]);
       var d=await r.json();
       if(d.status==='SUCCEEDED'&&d.output&&d.output[0]){
         clipUrls[i]=d.output[0];
@@ -1497,7 +1582,7 @@ async function stitchVideo(){
 
   var validUrls=clipUrls.filter(Boolean);
   try{
-    var r=await fetch(REPLIT+'/api/runway/stitch',{
+    var r=await fetch(BACKEND+'/api/runway/stitch',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
@@ -1552,7 +1637,7 @@ var allVoices = [];
 async function loadVoices(){
   document.getElementById('voiceSel').innerHTML='<option value="">Loading voices...</option>';
   try{
-    var r = await fetch(REPLIT+'/api/voice/list');
+    var r = await fetch(BACKEND+'/api/voice/list');
     var d = await r.json();
     allVoices = d.voices || d.results || [];
     var sel = document.getElementById('voiceSel');
@@ -1615,13 +1700,93 @@ function selectVtype(type, el){
       card.style.background = 'var(--p)';
       card.style.borderColor = 'var(--p)';
       card.style.opacity = '1';
-      card.querySelectorAll('div').forEach(function(d){ d.style.color = '#fff'; });
-    } else if(t === 'cinematic' || t === 'avatar'){
+    } else if(t !== 'whiteboard' && t !== 'cartoon' && t !== 'motion'){
       card.style.background = 'var(--card)';
       card.style.borderColor = 'var(--bdr)';
       card.style.opacity = '1';
     }
   });
+
+  // Show/hide type-specific sections
+  var avatarSection = document.getElementById('avatar-config-section');
+  var cinematicSection = document.getElementById('cinematic-config-section');
+
+  if(type === 'avatar'){
+    if(avatarSection) avatarSection.style.display = 'block';
+    if(cinematicSection) cinematicSection.style.display = 'none';
+    toast('AI Avatar selected — choose your presenter style below');
+  } else if(type === 'cinematic'){
+    if(avatarSection) avatarSection.style.display = 'none';
+    if(cinematicSection) cinematicSection.style.display = 'block';
+  } else {
+    if(avatarSection) avatarSection.style.display = 'none';
+    if(cinematicSection) cinematicSection.style.display = 'block';
+    comingSoon(type.charAt(0).toUpperCase()+type.slice(1));
+  }
+}
+
+// AVATAR CONFIGURATION
+var avatarConfig = { style: 'professional', gender: 'female', background: 'office' };
+
+function selectAvatarStyle(style, el){
+  avatarConfig.style = style;
+  ['professional','casual','educator','news'].forEach(function(s){
+    var card = document.getElementById('av-style-'+s);
+    if(!card) return;
+    if(s === style){
+      card.style.background = 'var(--p)';
+      card.style.borderColor = 'var(--p)';
+      card.querySelectorAll('div').forEach(function(d){ if(d.style) d.style.color='#fff'; });
+    } else {
+      card.style.background = 'var(--card)';
+      card.style.borderColor = 'var(--bdr)';
+    }
+  });
+  updateAvatarSummary();
+}
+
+function selectAvatarGender(gender, el){
+  avatarConfig.gender = gender;
+  ['female','male'].forEach(function(g){
+    var card = document.getElementById('av-gender-'+g);
+    if(!card) return;
+    if(g === gender){
+      card.style.background = 'var(--p)';
+      card.style.borderColor = 'var(--p)';
+      card.querySelectorAll('div').forEach(function(d){ if(d.style) d.style.color='#fff'; });
+    } else {
+      card.style.background = 'var(--card)';
+      card.style.borderColor = 'var(--bdr)';
+    }
+  });
+  updateAvatarSummary();
+}
+
+function selectAvatarBg(bg, el){
+  avatarConfig.background = bg;
+  ['office','studio','outdoor','custom'].forEach(function(b){
+    var card = document.getElementById('av-bg-'+b);
+    if(!card) return;
+    if(b === bg){
+      card.style.background = 'var(--p)';
+      card.style.borderColor = 'var(--p)';
+      card.querySelectorAll('div').forEach(function(d){ if(d.style) d.style.color='#fff'; });
+    } else {
+      card.style.background = 'var(--card)';
+      card.style.borderColor = 'var(--bdr)';
+    }
+  });
+  updateAvatarSummary();
+}
+
+function updateAvatarSummary(){
+  var el = document.getElementById('avatarConfigSummary');
+  if(el){
+    var style = avatarConfig.style.charAt(0).toUpperCase()+avatarConfig.style.slice(1);
+    var gender = avatarConfig.gender.charAt(0).toUpperCase()+avatarConfig.gender.slice(1);
+    var bg = avatarConfig.background.charAt(0).toUpperCase()+avatarConfig.background.slice(1);
+    el.textContent = style+' · '+gender+' · '+bg+' background';
+  }
 }
 
 function comingSoon(name){
@@ -2169,5 +2334,3 @@ updateCreditDisplay();
       <div id="serverStatusResult" style="margin-top:8px;font-size:12px;color:var(--ts);"></div>
     </div>
   </div>
-
-
