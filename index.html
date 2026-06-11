@@ -1884,34 +1884,54 @@ function handleCustomBg(input){
 var heygenAvatars = null; // cached after first load
 var heygenLoadError = null;
 
+var avatarRetries = 0;
 async function loadHeyGenAvatars(){
   var grid = document.getElementById('avatarGrid');
   var count = document.getElementById('avatarCount');
-  if(grid) grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--tm);padding:16px;text-align:center;">⏳ Loading avatars from EnerStudio Avatar Engine...</div>';
+  if(grid && avatarRetries === 0) grid.innerHTML = '<div style="grid-column:1/-1;font-size:13px;color:var(--ts);padding:18px;text-align:center;">⏳ <strong>Please Wait...</strong><br><span style="font-size:11px;color:var(--tm);">Loading live avatars from EnerStudio Avatar Engine</span></div>';
   try{
     var r = await fetch(BACKEND+'/api/heygen/avatars');
+    // Backend still on old version -> endpoint missing
+    if(r.status === 404){
+      heygenLoadError = 'BACKEND_OLD';
+      renderAvatarGridError('Avatar engine update pending. The platform backend needs the v7.4.0 update deployed.');
+      return;
+    }
     var d = await r.json();
+    if(d.configured === false){
+      heygenLoadError = 'NO_KEY';
+      renderAvatarGridError('Avatar engine is being connected. (Admin: add HEYGEN_API_KEY in Render and redeploy.)');
+      return;
+    }
     if(!r.ok || !d.avatars){
-      heygenLoadError = d.error || 'Avatar service unavailable';
-      heygenAvatars = null;
-      renderAvatarGridError();
+      heygenLoadError = d.error || 'Service error';
+      renderAvatarGridError('Avatar service returned an error. (Admin: '+(d.error||'unknown')+')');
       return;
     }
     heygenAvatars = d.avatars;
     heygenLoadError = null;
+    avatarRetries = 0;
     populateAvatarGrid();
   }catch(e){
-    heygenLoadError = e.message;
-    heygenAvatars = null;
-    renderAvatarGridError();
+    // Network failure — most likely the server is waking up (free tier sleeps)
+    avatarRetries++;
+    if(avatarRetries <= 5){
+      var grid2 = document.getElementById('avatarGrid');
+      if(grid2) grid2.innerHTML = '<div style="grid-column:1/-1;font-size:13px;color:var(--ts);padding:18px;text-align:center;">⏳ <strong>Please Wait...</strong><br><span style="font-size:11px;color:var(--tm);">Avatar engine is waking up — automatic retry '+avatarRetries+' of 5 in 10 seconds</span></div>';
+      setTimeout(loadHeyGenAvatars, 10000);
+    } else {
+      heygenLoadError = e.message;
+      avatarRetries = 0;
+      renderAvatarGridError('Could not reach the avatar engine after 5 attempts.');
+    }
   }
 }
 
-function renderAvatarGridError(){
+function renderAvatarGridError(msg){
   var grid = document.getElementById('avatarGrid');
   var count = document.getElementById('avatarCount');
   if(count) count.textContent = '';
-  if(grid) grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--tm);padding:16px;text-align:center;background:var(--sur);border-radius:10px;">Avatar library is connecting...<br><span style="font-size:11px;">The avatar service may be waking up. </span><br><button onclick="loadHeyGenAvatars()" style="margin-top:10px;background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:7px 16px;font-family:DM Sans,sans-serif;font-size:12px;font-weight:600;color:var(--ac);cursor:pointer;">🔄 Retry Loading Avatars</button></div>';
+  if(grid) grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--ts);padding:16px;text-align:center;background:var(--sur);border-radius:10px;line-height:1.7;">'+ (msg||'Avatar library is connecting — Please Wait...') +'<br><button onclick="avatarRetries=0;loadHeyGenAvatars()" style="margin-top:10px;background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:7px 16px;font-family:DM Sans,sans-serif;font-size:12px;font-weight:600;color:var(--ac);cursor:pointer;">🔄 Retry Now</button></div>';
 }
 
 function updateAvatarSummary(){
