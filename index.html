@@ -2014,14 +2014,47 @@ function updateAvatarSummary(){
   }
 }
 
+// Smart filtering: matches real HeyGen avatar names against your selections
+var STYLE_KEYWORDS = {
+  professional: ['suit','blazer','business','formal','office','biztalk','professional','executive'],
+  casual: ['casual','shirt','t-shirt','tshirt','sweater','hoodie','sofa','polo','jacket','relaxed'],
+  educator: ['teacher','professor','educat','doctor','nurse','lab','medical','board'],
+  news: ['news','anchor','desk','report','studio','presenter']
+};
+var BG_KEYWORDS = {
+  office: ['office','desk','business','meeting','boardroom'],
+  studio: ['front','side','standing','studio','expressive'],
+  outdoor: ['outdoor','garden','street','park','beach','outside','balcony','terrace','city'],
+  custom: [] // custom background = no filter, any avatar works
+};
+
+function nameMatches(name, keywords){
+  if(!keywords || keywords.length === 0) return true;
+  var n = (name||'').toLowerCase();
+  for(var i=0;i<keywords.length;i++){
+    if(n.indexOf(keywords[i]) !== -1) return true;
+  }
+  return false;
+}
+
 function getAvatarList(){
   if(!heygenAvatars) return [];
-  // Filter live HeyGen avatars by selected gender; show all if gender unknown
   var g = avatarConfig.gender;
-  var filtered = heygenAvatars.filter(function(a){
+  // 1. Gender filter (real HeyGen data — always applied)
+  var byGender = heygenAvatars.filter(function(a){
     return a.gender === g || a.gender === 'unknown';
   });
-  return filtered.length > 0 ? filtered : heygenAvatars;
+  if(byGender.length === 0) byGender = heygenAvatars;
+  // 2. Style filter (matched against avatar names)
+  var styleKw = STYLE_KEYWORDS[avatarConfig.style] || [];
+  var byStyle = byGender.filter(function(a){ return nameMatches(a.name, styleKw); });
+  // 3. Background filter (matched against avatar names)
+  var bgKw = BG_KEYWORDS[avatarConfig.background] || [];
+  var byBg = byStyle.filter(function(a){ return nameMatches(a.name, bgKw); });
+  // Smart fallback: never show an empty or tiny list
+  if(byBg.length >= 3) return byBg;
+  if(byStyle.length >= 3) return byStyle;
+  return byGender;
 }
 
 function populateAvatarGrid(){
@@ -2031,7 +2064,11 @@ function populateAvatarGrid(){
   if(!heygenAvatars){ renderAvatarGridError(); return; }
   var list = getAvatarList();
   grid.innerHTML = '';
-  if(count) count.textContent = list.length + ' live avatars available';
+  if(count){
+    var s = avatarConfig.style.charAt(0).toUpperCase()+avatarConfig.style.slice(1);
+    var b = avatarConfig.background.charAt(0).toUpperCase()+avatarConfig.background.slice(1);
+    count.textContent = list.length + ' avatars match: ' + s + ' · ' + b;
+  }
   if(list.length === 0){
     grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--tm);padding:12px;text-align:center;">No avatars match this selection</div>';
     return;
