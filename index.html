@@ -1144,6 +1144,7 @@ async function approveScript(){
 async function generateSceneImages(){
   var numClips=scenePrompts.length;
   sceneImageUrls=new Array(numClips).fill(null);
+  sceneSvgs=new Array(numClips).fill(null);
   sceneApproved=new Array(numClips).fill(false);
 
   setprog('imagePbar','imagePfill','imagePtxt',5,'Generating scene images — please wait...');
@@ -1153,7 +1154,7 @@ async function generateSceneImages(){
   for(var i=0;i<numClips;i++){
     setprog('imagePbar','imagePfill','imagePtxt',Math.round((i/numClips)*90)+5,'Generating image '+(i+1)+' of '+numClips+'...');
     try{
-      var imgUrl=await generateOneImage(scenePrompts[i]);
+      var imgUrl=await generateOneImage(scenePrompts[i], i);
       sceneImageUrls[i]=imgUrl;
       sceneApproved[i]=true;
       renderSceneCard(i);
@@ -1175,17 +1176,53 @@ async function generateSceneImages(){
   }
 }
 
-async function generateOneImage(prompt){
-  // Whiteboard type: force hand-drawn sketch style for every scene image
-  var finalPrompt = prompt;
+var sceneSvgs = []; // raw SVG code per whiteboard scene (sent to the draw-on animator)
+
+async function generateOneSvg(prompt, idx){
+  // Claude draws the scene as crisp vector line-art — animated stroke-by-stroke by the backend
+  var sys = "You are a whiteboard illustration artist. You output ONLY raw SVG code — no explanations, no markdown fences, nothing before <svg or after </svg>.";
+  var p = "Create a RICH, DETAILED, professional whiteboard illustration for this scene: " + prompt + "\n" +
+    "STRICT TECHNICAL RULES:\n" +
+    "- viewBox=\"0 0 1280 720\"\n" +
+    "- Use ONLY these elements: <path>, <line>, <circle>, <rect>, <ellipse>, <text>. NO groups, NO transforms, NO defs, NO style tags, NO comments.\n" +
+    "- Between 25 and 45 elements total — this must be a DETAILED illustration, not minimal icons.\n" +
+    "- Strokes: mostly stroke=\"#111111\", stroke-width varied between 4 and 8. Up to TWO accent colors from: #e67e22 #2980b9 #27ae60 #c0392b on important elements.\n" +
+    "- Light fills allowed on a few key shapes: fill=\"#fdebd0\" or \"#d6eaf8\" or \"#d5f5e3\" (always WITH a stroke outline). Everything else fill=\"none\".\n" +
+    "COMPOSITION RULES (like professional whiteboard explainer videos):\n" +
+    "- Include at least ONE PERSON: head circle, simple face (two eye dots, smile curve path), body, arms in a meaningful pose, legs.\n" +
+    "- Build a full scene around them: relevant objects (buildings, sun, solar panels, laptop, certificate, charts, money, tools), motion arrows, emphasis lines, small stars or sparks.\n" +
+    "- Use depth: a ground line, background elements smaller, foreground larger.\n" +
+    "- Up to TWO short text labels (max 4 words each): font-size 40-52, fill=\"#111111\", text-anchor=\"middle\". Main label at x=\"640\" y=\"640\". Optional small label near a key object.\n" +
+    "DRAWING ORDER (critical — elements animate in this exact order):\n" +
+    "1) Main character outline, 2) character face and details, 3) main objects, 4) secondary objects and background, 5) arrows and emphasis marks, 6) text labels LAST.\n" +
+    "- All coordinates within x: 80-1200, y: 60-660.";
+  var r = await fetch(BACKEND+'/api/claude/generate',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({prompt:p, system:sys})
+  });
+  if(!r.ok) throw new Error('Scene drawing failed ('+r.status+')');
+  var d = await r.json();
+  var svg = (d.text||'').trim();
+  // strip any markdown fences or stray text around the svg
+  var a = svg.indexOf('<svg'); var b = svg.lastIndexOf('</svg>');
+  if(a === -1 || b === -1) throw new Error('Invalid scene drawing returned');
+  svg = svg.substring(a, b+6);
+  sceneSvgs[idx] = svg;
+  // preview as data URI so the existing scene cards display it
+  return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+}
+
+async function generateOneImage(prompt, idx){
+  // Whiteboard: Claude draws vector scenes (no Runway credits, crisp line art)
   if(activeVtype === 'whiteboard'){
-    finalPrompt = 'Simple black ink hand-drawn doodle sketch illustration on a clean pure white background, whiteboard marker line-art style, minimalist line drawing, no shading, no color: ' + prompt;
+    return await generateOneSvg(prompt, idx);
   }
   // Generate image via Runway gen4_image
   var r=await fetch(BACKEND+'/api/runway/generate-image',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({prompt:finalPrompt})
+    body:JSON.stringify({prompt:prompt})
   });
   if(!r.ok){
     var e=await r.json();
@@ -1276,7 +1313,7 @@ async function replaceScene(i){
   renderSceneCard(i);
   document.getElementById('approveImagesBtn').disabled=true;
   try{
-    var imgUrl=await generateOneImage(newPrompt);
+    var imgUrl=await generateOneImage(newPrompt, i);
     sceneImageUrls[i]=imgUrl;
     sceneApproved[i]=true;
     renderSceneCard(i);
@@ -1571,17 +1608,17 @@ async function whiteboardStitch(imageUrls){
   document.getElementById('overallStatus').textContent='Animating...';
   document.getElementById('overallStatus').className='status-val pending';
   document.getElementById('clipsComplete').textContent=imageUrls.length+' scenes';
-  document.getElementById('statusMsg').textContent='✏️ Drawing your whiteboard animation and recording voiceover (1-2 minutes)...';
+  document.getElementById('statusMsg').textContent='✏️ A marker is drawing your scenes stroke by stroke and writing text live, then recording voiceover (2-3 minutes)...';
   try{
-    var r=await fetch(BACKEND+'/api/whiteboard/stitch',{
+    var svgs = sceneSvgs.filter(Boolean);
+    var endpoint = svgs.length > 0 ? '/api/whiteboard/animate' : '/api/whiteboard/stitch';
+    var payload = svgs.length > 0
+      ? {svgScenes:svgs, voiceoverText:scriptText, voiceId:selectedVoiceId, secondsPerScene:6}
+      : {imageUrls:imageUrls, voiceoverText:scriptText, voiceId:selectedVoiceId, secondsPerScene:5};
+    var r=await fetch(BACKEND+endpoint,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        imageUrls:imageUrls,
-        voiceoverText:scriptText,
-        voiceId:selectedVoiceId,
-        secondsPerScene:5
-      })
+      body:JSON.stringify(payload)
     });
     if(r.ok){
       var blob=await r.blob();
@@ -1591,7 +1628,7 @@ async function whiteboardStitch(imageUrls){
       vid.style.display='block';
       document.getElementById('overallStatus').textContent='Complete!';
       document.getElementById('overallStatus').className='status-val ok';
-      document.getElementById('statusMsg').textContent='Your '+(imageUrls.length*5)+'-second whiteboard animation with voiceover is ready!';
+      document.getElementById('statusMsg').textContent='Your whiteboard animation with live drawing and voiceover is ready!';
       var dlBtn=document.getElementById('dlBtn');
       dlBtn.disabled=false;
       dlBtn.onclick=function(){
@@ -1603,7 +1640,7 @@ async function whiteboardStitch(imageUrls){
       vidCount++;
       document.getElementById('statVids').textContent=vidCount;
       toast('✏️ Whiteboard video ready! Click Download to save.');
-      saveToLibrary(activeBrand, (imageUrls.length*5)+'s', 'Whiteboard Animation', url);
+      saveToLibrary(activeBrand, (imageUrls.length*6)+'s', 'Whiteboard Animation', url);
     }else{
       var e=await r.json();
       document.getElementById('overallStatus').textContent='Failed';
