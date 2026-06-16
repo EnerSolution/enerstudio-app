@@ -1691,6 +1691,56 @@ async function approveImages(){
   }
 }
 
+
+// ── FETCH AND DELIVER VIDEO BY ID (bypasses Render 30s timeout) ──────────
+async function fetchAndDeliverVideo(videoId, filename, duration, goal, photos, videoType) {
+  try {
+    document.getElementById('statusMsg').textContent='Downloading your video (' + Math.round(0) + '%)...';
+    var downloadUrl = BACKEND + '/api/video/' + videoId;
+    var resp = await fetch(downloadUrl);
+    if(!resp.ok) throw new Error('Download failed: ' + resp.status);
+    // Stream with progress
+    var reader = resp.body.getReader();
+    var total = parseInt(resp.headers.get('Content-Length') || '0');
+    var received = 0;
+    var chunks = [];
+    while(true) {
+      var result = await reader.read();
+      if(result.done) break;
+      chunks.push(result.value);
+      received += result.value.length;
+      if(total > 0) {
+        var pct = Math.round(received/total*100);
+        document.getElementById('statusMsg').textContent = 'Downloading your video (' + pct + '%)...';
+        setProgress(99, 'Downloading video (' + pct + '%)');
+      }
+    }
+    var blob = new Blob(chunks, {type:'video/mp4'});
+    var url = URL.createObjectURL(blob);
+    var vid = document.getElementById('finalVideo');
+    vid.src = url; vid.style.display = 'block';
+    completeProductionProgress();
+    document.getElementById('overallStatus').textContent = 'Complete!';
+    document.getElementById('overallStatus').className = 'status-val ok';
+    document.getElementById('statusMsg').textContent = 'Your video is ready!';
+    var dlBtn = document.getElementById('dlBtn');
+    dlBtn.disabled = false;
+    dlBtn.onclick = function(){
+      var a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+    };
+    vidCount++;
+    document.getElementById('statVids').textContent = vidCount;
+    toast('✅ Video ready! Click Download to save.');
+    saveToLibrary(activeBrand, duration, goal, url);
+  } catch(e) {
+    resetProductionProgress();
+    document.getElementById('overallStatus').textContent = 'Failed';
+    document.getElementById('overallStatus').className = 'status-val fail';
+    document.getElementById('statusMsg').textContent = 'Download error: ' + e.message;
+    document.getElementById('approveImagesBtn').disabled = false;
+  }
+}
+
 // WHITEBOARD RASTER REVEAL: sends Runway images to backend raster engine
 async function whiteboardStitch(imageUrls){
   document.getElementById('overallStatus').textContent='Animating...';
@@ -1710,28 +1760,13 @@ async function whiteboardStitch(imageUrls){
       })
     });
     if(r.ok){
-      var blob=await r.blob();
-      var url=URL.createObjectURL(blob);
-      var vid=document.getElementById('finalVideo');
-      vid.src=url;
-      vid.style.display='block';
-      completeProductionProgress();
-      document.getElementById('overallStatus').textContent='Complete!';
-      document.getElementById('overallStatus').className='status-val ok';
-      document.getElementById('statusMsg').textContent='Your professional whiteboard animation with voiceover is ready!';
-      var dlBtn=document.getElementById('dlBtn');
-      dlBtn.disabled=false;
-      dlBtn.onclick=function(){
-        var a=document.createElement('a');
-        a.href=url;
-        a.download='enerstudio-whiteboard-'+activeBrand.replace(/\s/g,'-')+'.mp4';
-        a.click();
-      };
-      vidCount++;
-      document.getElementById('statVids').textContent=vidCount;
-      toast('✏️ Whiteboard video ready! Click Download to save.');
-      saveToLibrary(activeBrand, (imageUrls.length*8)+'s', 'Whiteboard Animation', url);
-      savePhotosToLibrary(activeBrand, imageUrls, 'Whiteboard');
+      var d=await r.json();
+      if(d.videoId){
+        // New flow: video saved server-side, fetch by ID (bypasses 30s timeout)
+        document.getElementById('statusMsg').textContent='Video ready on server — downloading now...';
+        await fetchAndDeliverVideo(d.videoId, 'enerstudio-whiteboard-'+activeBrand.replace(/\s/g,'-')+'.mp4', imageUrls.length*8+'s', 'Whiteboard Animation', imageUrls, 'Whiteboard');
+        savePhotosToLibrary(activeBrand, imageUrls, 'Whiteboard');
+      }
     }else{
       var e=await r.json();
       resetProductionProgress();
@@ -1741,6 +1776,7 @@ async function whiteboardStitch(imageUrls){
       document.getElementById('approveImagesBtn').disabled=false;
     }
   }catch(err){
+    resetProductionProgress();
     document.getElementById('overallStatus').textContent='Failed';
     document.getElementById('statusMsg').textContent='Connection error: '+err.message+' — try again';
     document.getElementById('approveImagesBtn').disabled=false;
@@ -1850,32 +1886,15 @@ async function stitchVideo(){
     });
 
     if(r.ok){
-      var blob=await r.blob();
-      var url=URL.createObjectURL(blob);
-      var vid=document.getElementById('finalVideo');
-      vid.src=url;
-      vid.style.display='block';
-      document.getElementById('overallStatus').textContent='Complete!';
-      document.getElementById('overallStatus').className='status-val ok';
-      completeProductionProgress();
-      document.getElementById('statusMsg').textContent='Your cinematic video with professional voiceover is ready!';
-      var dlBtn=document.getElementById('dlBtn');
-      dlBtn.disabled=false;
-      dlBtn.onclick=function(){
-        var a=document.createElement('a');
-        a.href=url;
-        a.download='enerstudio-'+activeBrand.replace(/\s/g,'-')+'.mp4';
-        a.click();
-      };
-      vidCount++;
-      document.getElementById('statVids').textContent=vidCount;
-      loadBalance();
-      toast('Video ready! Click Download to save.');
-      // Auto-save to library + photo library
-      var dur = document.getElementById('dsel').value;
-      var goal = document.getElementById('gsel').value;
-      saveToLibrary(activeBrand, dur, goal, url);
-      savePhotosToLibrary(activeBrand, sceneImageUrls.filter(Boolean), activeVtype||'Cinematic');
+      var d=await r.json();
+      if(d.videoId){
+        document.getElementById('statusMsg').textContent='Video ready on server — downloading now...';
+        var dur = document.getElementById('dsel').value;
+        var goal = document.getElementById('gsel').value;
+        await fetchAndDeliverVideo(d.videoId, 'enerstudio-'+activeBrand.replace(/\s/g,'-')+'.mp4', dur, goal, sceneImageUrls.filter(Boolean), activeVtype||'Cinematic');
+        savePhotosToLibrary(activeBrand, sceneImageUrls.filter(Boolean), activeVtype||'Cinematic');
+        loadBalance();
+      }
     }else{
       var err=await r.json();
       throw new Error(err.error||'Stitch failed');
@@ -2542,11 +2561,15 @@ function startProductionProgress(sceneCount, videoType) {
   var stageIdx = 0;
   setProgress(0, 'Starting production...');
 
+  var elapsedSeconds = 0;
   prodProgressInterval = setInterval(function() {
+    elapsedSeconds++;
     if (stageIdx >= prodStages.length) return;
     var target = prodStages[stageIdx].pct;
     var label = prodStages[stageIdx].label;
-    // Advance stage pill styling
+    var isFinalStage = (stageIdx === prodStages.length - 1);
+
+    // Update stage pills
     for (var i = 0; i < prodStages.length; i++) {
       var pill = document.getElementById('prod-stage-' + i);
       if (!pill) continue;
@@ -2554,14 +2577,30 @@ function startProductionProgress(sceneCount, videoType) {
       else if (i === stageIdx) { pill.className = 'wb-stage active'; }
       else { pill.className = 'wb-stage'; }
     }
-    // Smoothly advance to target
+
+    // Add elapsed time to final stage label
+    if (isFinalStage) {
+      var mins = Math.floor(elapsedSeconds / 60);
+      var secs = elapsedSeconds % 60;
+      var timeStr = mins > 0 ? mins + 'm ' + secs + 's' : secs + 's';
+      setProgress(prodProgressValue, label + ' — working... ' + timeStr);
+      // Crawl very slowly after 90% — max 0.3% per tick
+      if (prodProgressValue < 99) {
+        prodProgressValue += 0.3;
+        document.getElementById('prodProgressFill').style.width = prodProgressValue + '%';
+        document.getElementById('prodProgressPct').textContent = Math.floor(prodProgressValue) + '%';
+      }
+      return; // Never auto-advance past final stage — only completeProductionProgress() does that
+    }
+
+    // Normal stages: advance at normal speed
     if (prodProgressValue < target - 1) {
       prodProgressValue += 1;
       setProgress(prodProgressValue, label);
     } else {
       stageIdx++;
     }
-  }, isWhiteboard ? 1800 : 1200); // whiteboard takes longer
+  }, isWhiteboard ? 1500 : 1000);
 }
 
 function setProgress(pct, label) {
