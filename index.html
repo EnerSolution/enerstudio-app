@@ -990,6 +990,22 @@ var solarPrompts = [
   'Cinematic end shot of laptop showing SolarCanadaPro.ca with solar panels visible through window behind, clear call to action'
 ];
 
+// Whiteboard-specific scene prompts — professional ink illustration style
+var whiteboardPrompts = [
+  'Professional ink illustration: person at career crossroads, one sign says Same Job other sign says Solar Industry High Demand, sunrise on the right, hand-drawn editorial style, pure white background',
+  'Professional ink illustration: confident solar technician on rooftop installing panels, safety hard hat, tools in hand, clear sky, bold linework, hand-drawn style, white background',
+  'Professional ink illustration: graduation ceremony scene, student receiving NABCEP certification diploma, handshake, maple leaf in corner, globe beside them, editorial ink style, white background',
+  'Professional ink illustration: laptop screen showing virtual classroom with students, certificate on wall, modern clean desk setup, digital learning environment, ink drawing style, white background',
+  'Professional ink illustration: solar professional reviewing energy data charts on screen, confident pose at desk, rising graph, dollar sign growth symbols, editorial ink style, white background',
+  'Professional ink illustration: bold call to action scene, person standing tall holding NABCEP certificate, bright sun behind them, crowd cheering, text area below for website, ink illustration style, white background',
+  'Professional ink illustration: Canadian map with solar industry growth icons across provinces, dollar signs, diploma icons, arrows pointing upward, career growth theme, editorial ink style, white background',
+  'Professional ink illustration: team of diverse solar professionals in safety gear shaking hands, group of certified experts, confidence and success, hand-drawn ink style, white background',
+  'Professional ink illustration: solar training classroom with instructor at whiteboard teaching students, NABCEP logo visible, engaged learners, clean editorial ink drawing, white background',
+  'Professional ink illustration: entrepreneur launching solar business, person standing in front of their solar company logo, growth chart behind them, success theme, ink illustration, white background',
+  'Professional ink illustration: family standing in front of solar-powered home, smiling, clean energy savings visible on a meter, house with panels, aspirational ink drawing style, white background',
+];
+
+
 // BRAND
 function setBrand(i, name, url) {
   for(var j=0;j<5;j++){var e=document.getElementById('bi'+j);if(e)e.classList.remove('on');}
@@ -1107,7 +1123,12 @@ async function generateScript(){
     toast('Script generated! Review and edit before approving.');
 
     // Set up scene prompts
-    scenePrompts=solarPrompts.slice(0,numClips);
+    // Use whiteboard ink prompts for whiteboard mode, cinematic for others
+    if(activeVtype === 'whiteboard'){
+      scenePrompts=whiteboardPrompts.slice(0,numClips);
+    } else {
+      scenePrompts=solarPrompts.slice(0,numClips);
+    }
 
   }catch(e){
     clearprog('scriptPbar');
