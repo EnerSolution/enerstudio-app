@@ -2318,6 +2318,8 @@ function showPage(pageId, navEl){
 
 // VIDEO LIBRARY
 var videoLibrary = JSON.parse(localStorage.getItem('enerstudio_library') || '[]');
+var photoLibrary = JSON.parse(localStorage.getItem('enerstudio_photos') || '[]');
+var _currentPhotoSessionId = Date.now();
 
 function saveToLibrary(brand, duration, goal, videoUrl){
   var entry = {
@@ -2397,9 +2399,8 @@ function renderLibrary(){
 // ── PHOTO LIBRARY: save one photo immediately when it generates ──────────
 function saveOnePhotoToLibrary(brand, imageUrl, sceneNumber, videoType) {
   if (!imageUrl) return;
-  // Find existing session entry for this brand+type (same generation run)
-  // Use a session key stored on the current generation batch
-  var sessionKey = 'session_' + (window._currentPhotoSessionId || Date.now());
+  try {
+  var sessionKey = 'session_' + (_currentPhotoSessionId || Date.now());
   var existing = photoLibrary.find(function(e) {
     return e.sessionId === sessionKey;
   });
@@ -2427,11 +2428,12 @@ function saveOnePhotoToLibrary(brand, imageUrl, sceneNumber, videoType) {
   if (photoPanel && photoPanel.style.display !== 'none') {
     renderPhotoLibrary(currentPhotoFilter);
   }
+  } catch(err) { console.log('Photo save error:', err.message); }
 }
 
 // Start a new photo session when image generation begins
 function startPhotoSession() {
-  window._currentPhotoSessionId = Date.now();
+  _currentPhotoSessionId = Date.now();
 }
 
 function savePhotosToLibrary(brand, imageUrls, videoType) {
