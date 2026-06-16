@@ -1173,6 +1173,8 @@ async function generateScript(){
     document.getElementById('scriptEdit').scrollIntoView({behavior:'smooth'});
     toast('Script generated! Review and edit before approving.');
 
+    // Start new photo session ID for this generation run
+    startPhotoSession();
     // Set up scene prompts
     // Use whiteboard ink prompts for whiteboard mode, cinematic for others
     if(activeVtype === 'whiteboard'){
@@ -1230,6 +1232,8 @@ async function generateSceneImages(){
       sceneImageUrls[i]=imgUrl;
       sceneApproved[i]=true;
       renderSceneCard(i);
+      // Save to Photo Library immediately — don't wait for video
+      saveOnePhotoToLibrary(activeBrand, imgUrl, i+1, activeVtype||'Video');
     }catch(e){
       console.log('Image '+i+' failed:',e.message);
       sceneApproved[i]=false;
@@ -1765,7 +1769,7 @@ async function whiteboardStitch(imageUrls){
         // New flow: video saved server-side, fetch by ID (bypasses 30s timeout)
         document.getElementById('statusMsg').textContent='Video ready on server — downloading now...';
         await fetchAndDeliverVideo(d.videoId, 'enerstudio-whiteboard-'+activeBrand.replace(/\s/g,'-')+'.mp4', imageUrls.length*8+'s', 'Whiteboard Animation', imageUrls, 'Whiteboard');
-        savePhotosToLibrary(activeBrand, imageUrls, 'Whiteboard');
+        // Photos already saved individually during generation
       }
     }else{
       var e=await r.json();
@@ -1892,7 +1896,7 @@ async function stitchVideo(){
         var dur = document.getElementById('dsel').value;
         var goal = document.getElementById('gsel').value;
         await fetchAndDeliverVideo(d.videoId, 'enerstudio-'+activeBrand.replace(/\s/g,'-')+'.mp4', dur, goal, sceneImageUrls.filter(Boolean), activeVtype||'Cinematic');
-        savePhotosToLibrary(activeBrand, sceneImageUrls.filter(Boolean), activeVtype||'Cinematic');
+        // Photos already saved individually during generation
         loadBalance();
       }
     }else{
@@ -2388,6 +2392,47 @@ function renderLibrary(){
 // ============================================================
 // PHOTO LIBRARY — save and render scene images by brand
 // ============================================================
+
+
+// ── PHOTO LIBRARY: save one photo immediately when it generates ──────────
+function saveOnePhotoToLibrary(brand, imageUrl, sceneNumber, videoType) {
+  if (!imageUrl) return;
+  // Find existing session entry for this brand+type (same generation run)
+  // Use a session key stored on the current generation batch
+  var sessionKey = 'session_' + (window._currentPhotoSessionId || Date.now());
+  var existing = photoLibrary.find(function(e) {
+    return e.sessionId === sessionKey;
+  });
+  if (existing) {
+    // Add to existing session entry
+    if (existing.images.indexOf(imageUrl) === -1) {
+      existing.images.push(imageUrl);
+    }
+  } else {
+    // Create new session entry
+    var entry = {
+      id: Date.now(),
+      sessionId: sessionKey,
+      brand: brand || 'Unknown Brand',
+      videoType: videoType || 'Video',
+      images: [imageUrl],
+      date: new Date().toLocaleDateString(),
+      time: new Date().toLocaleTimeString()
+    };
+    photoLibrary.unshift(entry);
+  }
+  try { localStorage.setItem('enerstudio_photos', JSON.stringify(photoLibrary.slice(0, 300))); } catch(e) {}
+  // Re-render photo library if it's visible
+  var photoPanel = document.getElementById('lib-panel-photo');
+  if (photoPanel && photoPanel.style.display !== 'none') {
+    renderPhotoLibrary(currentPhotoFilter);
+  }
+}
+
+// Start a new photo session when image generation begins
+function startPhotoSession() {
+  window._currentPhotoSessionId = Date.now();
+}
 
 function savePhotosToLibrary(brand, imageUrls, videoType) {
   if (!imageUrls || !imageUrls.length) return;
