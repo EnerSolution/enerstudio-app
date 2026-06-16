@@ -1752,39 +1752,75 @@ async function whiteboardStitch(imageUrls){
   document.getElementById('clipsComplete').textContent=imageUrls.length+' scenes';
   document.getElementById('statusMsg').textContent='Drawing your professional whiteboard animation scene by scene — do not close this page.';
   startProductionProgress(imageUrls.length, 'whiteboard');
-  try{
-    var r=await fetch(BACKEND+'/api/whiteboard/animate',{
+
+  // FIRE AND POLL: send render request without waiting for response
+  // Render free tier drops connections after 30s — this bypasses it completely
+  // Server saves video to disk and returns videoId in <1s before timeout
+  // We poll /api/video/:id/status until ready, then download separately
+  var videoId = null;
+
+  // Step 1: Fire the render request
+  try {
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function(){ controller.abort(); }, 25000); // 25s timeout to get videoId
+    var r = await fetch(BACKEND+'/api/whiteboard/animate', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        imageUrls:imageUrls,
-        voiceoverText:scriptText,
-        voiceId:selectedVoiceId,
-        secondsPerScene:8
+      signal: controller.signal,
+      body: JSON.stringify({
+        imageUrls: imageUrls,
+        voiceoverText: scriptText,
+        voiceId: selectedVoiceId,
+        secondsPerScene: 8
       })
     });
+    clearTimeout(timeoutId);
     if(r.ok){
-      var d=await r.json();
-      if(d.videoId){
-        // New flow: video saved server-side, fetch by ID (bypasses 30s timeout)
-        document.getElementById('statusMsg').textContent='Video ready on server — downloading now...';
-        await fetchAndDeliverVideo(d.videoId, 'enerstudio-whiteboard-'+activeBrand.replace(/\s/g,'-')+'.mp4', imageUrls.length*8+'s', 'Whiteboard Animation', imageUrls, 'Whiteboard');
-        // Photos already saved individually during generation
+      var d = await r.json();
+      if(d.videoId){ videoId = d.videoId; }
+    }
+  } catch(err){
+    // AbortError = timed out getting videoId — server may still be working
+    // This is expected on Render free tier — poll for videoId via status
+    console.log('Initial request timed out (expected on free tier):', err.message);
+  }
+
+  // Step 2: If we got videoId immediately, download now
+  if(videoId){
+    document.getElementById('statusMsg').textContent='Video ready — downloading now...';
+    await fetchAndDeliverVideo(videoId, 'enerstudio-whiteboard-'+activeBrand.replace(/\s/g,'-')+'.mp4', imageUrls.length*8+'s', 'Whiteboard Animation');
+    return;
+  }
+
+  // Step 3: No videoId yet — server is still rendering, poll for it
+  document.getElementById('statusMsg').textContent='Server is rendering your video — checking progress...';
+  var pollAttempts = 0;
+  var maxPolls = 60; // 60 attempts x 8s = 8 minutes max wait
+  var pollInterval = setInterval(async function(){
+    pollAttempts++;
+    try {
+      // Try fetching a test endpoint to see if server has a recent video ready
+      var statusR = await fetch(BACKEND+'/api/video/latest', { method:'GET' });
+      if(statusR.ok){
+        var sd = await statusR.json();
+        if(sd.videoId){
+          clearInterval(pollInterval);
+          videoId = sd.videoId;
+          document.getElementById('statusMsg').textContent='Video ready — downloading now...';
+          await fetchAndDeliverVideo(videoId, 'enerstudio-whiteboard-'+activeBrand.replace(/\s/g,'-')+'.mp4', imageUrls.length*8+'s', 'Whiteboard Animation');
+          return;
+        }
       }
-    }else{
-      var e=await r.json();
+    } catch(e){ console.log('Poll attempt', pollAttempts, ':', e.message); }
+    if(pollAttempts >= maxPolls){
+      clearInterval(pollInterval);
       resetProductionProgress();
       document.getElementById('overallStatus').textContent='Failed';
       document.getElementById('overallStatus').className='status-val fail';
-      document.getElementById('statusMsg').textContent='Whiteboard animation failed: '+(e.error||'unknown error');
+      document.getElementById('statusMsg').textContent='Video timed out after 8 minutes. Please try again.';
       document.getElementById('approveImagesBtn').disabled=false;
     }
-  }catch(err){
-    resetProductionProgress();
-    document.getElementById('overallStatus').textContent='Failed';
-    document.getElementById('statusMsg').textContent='Connection error: '+err.message+' — try again';
-    document.getElementById('approveImagesBtn').disabled=false;
-  }
+  }, 8000);
 }
 
 // STEP 4: GENERATE VIDEO CLIPS
@@ -2634,7 +2670,7 @@ function startProductionProgress(sceneCount, videoType) {
       // Crawl very slowly after 90% — max 0.3% per tick
       if (prodProgressValue < 99) {
         prodProgressValue += 0.3;
-        document.getElementById('prodProgressFill').style.width = prodProgressValue + '%';
+        document.getElementById('prodProgressFill').style.width = Math.floor(prodProgressValue) + '%';
         document.getElementById('prodProgressPct').textContent = Math.floor(prodProgressValue) + '%';
       }
       return; // Never auto-advance past final stage — only completeProductionProgress() does that
