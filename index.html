@@ -1181,20 +1181,27 @@ var sceneSvgs = []; // raw SVG code per whiteboard scene (sent to the draw-on an
 async function generateOneSvg(prompt, idx){
   // Claude draws the scene as crisp vector line-art — animated stroke-by-stroke by the backend
   var sys = "You are a whiteboard illustration artist. You output ONLY raw SVG code — no explanations, no markdown fences, nothing before <svg or after </svg>.";
-  var p = "Create a RICH, DETAILED, professional whiteboard illustration for this scene: " + prompt + "\n" +
+  var p = "Create a PROFESSIONAL whiteboard illustration for this scene: " + prompt + "\n" +
     "STRICT TECHNICAL RULES:\n" +
     "- viewBox=\"0 0 1280 720\"\n" +
-    "- Use ONLY these elements: <path>, <line>, <circle>, <rect>, <ellipse>, <text>. NO groups, NO transforms, NO defs, NO style tags, NO comments.\n" +
-    "- Between 25 and 45 elements total — this must be a DETAILED illustration, not minimal icons.\n" +
-    "- Strokes: mostly stroke=\"#111111\", stroke-width varied between 4 and 8. Up to TWO accent colors from: #e67e22 #2980b9 #27ae60 #c0392b on important elements.\n" +
-    "- Light fills allowed on a few key shapes: fill=\"#fdebd0\" or \"#d6eaf8\" or \"#d5f5e3\" (always WITH a stroke outline). Everything else fill=\"none\".\n" +
-    "COMPOSITION RULES (like professional whiteboard explainer videos):\n" +
-    "- Include at least ONE PERSON: head circle, simple face (two eye dots, smile curve path), body, arms in a meaningful pose, legs.\n" +
-    "- Build a full scene around them: relevant objects (buildings, sun, solar panels, laptop, certificate, charts, money, tools), motion arrows, emphasis lines, small stars or sparks.\n" +
-    "- Use depth: a ground line, background elements smaller, foreground larger.\n" +
-    "- Up to TWO short text labels (max 4 words each): font-size 40-52, fill=\"#111111\", text-anchor=\"middle\". Main label at x=\"640\" y=\"640\". Optional small label near a key object.\n" +
-    "DRAWING ORDER (critical — elements animate in this exact order):\n" +
-    "1) Main character outline, 2) character face and details, 3) main objects, 4) secondary objects and background, 5) arrows and emphasis marks, 6) text labels LAST.\n" +
+    "- ONLY these elements: <path>, <line>, <circle>, <rect>, <ellipse>, <text>. NO groups, NO transforms, NO defs, NO style, NO comments.\n" +
+    "- 60 to 100 elements. Multi-stroke detail is expected. Paths may contain multiple M sub-strokes (each animates as its own pen stroke).\n" +
+    "- ELEGANT THIN LINES: stroke-width 2 to 4 ONLY (3 for main outlines, 2-2.5 for details, never thicker than 4). Up to TWO accent colors: #e67e22 #2980b9 #27ae60 #c0392b. Light fills on key shapes only: #fdebd0 #d6eaf8 #d5f5e3 #fef9e7 (always with stroke).\n" +
+    "MASTER CHARACTER CONSTRUCTION (mandatory when a person appears — NEVER stick figures):\n" +
+    "- Head: face outline path C-curves (width ~56, height ~76), hair as a filled crescent hugging the top of the skull (fill #2c2c2c), small ear curve.\n" +
+    "- Face: brow ridge curves (sw2.2) PLUS upper eyelid curves (sw1.3) above ellipse eyes with filled pupils, nose with bridge curve and nostril wing, lips as TWO curves (upper sw1.8, lower sw1.3), subtle cheek lines (sw1.1), 2-3 hair strand curves over the filled hair.\n" +
+    "- Neck (two short lines), shirt collar (zigzag path), tailored suit: lapels with NOTCH (two-segment lines), side seam curves (sw1.3), chest pocket with pocket-square triangle, tie as filled knot quad + filled tie shape (#1f4e79), torso with TAPERED curved sides, buttons.\n" +
+    "- Arms with elbow bend (outer sw2.8 + inner seam sw1.5) plus 2 short elbow-fold curves (sw1.3), cuff line + thin shirt-cuff line, hands with 2 finger lines. Trousers with crease lines (sw1.3) and small break-fold curves above shoes; shoes with rounded toe + toe-cap curve.\n" +
+    "- Pose must match the scene action (pointing, holding, working, presenting).\n" +
+    "PROFESSIONAL SCENE CRAFT:\n" +
+    "- Props in perspective: desks/tables as parallelogram tops with front edge and legs; laptops as trapezoid screen + base; documents with text lines; framed wall charts with axes and arrow.\n" +
+    "- ENVIRONMENT (include 3-5 of these to make a complete professional scene): framed wall chart with inner mat, wall clock with hands, window with blinds lines and sun, potted plant with 4-5 leaf curves, bookshelf, coffee mug with steam curve, documents.\n" +
+    "- Shading: CROSSHATCH — 3 parallel lines (sw1.5) crossed by 2 lighter lines (sw1.1) at an angle — under desks, under figures, under plants.\n" +
+    "- Windows show a simple CITY SKYLINE (stepped building path sw1.5 with tiny window dashes sw1.1) and blinds lines in one pane.\n" +
+    "- Finish with a wide calligraphic underline flourish below the main text: single C-curve path sw3 spanning under the words.\n" +
+    "- A floor line with 1-2 short perspective lines.\n" +
+    "- Up to TWO short text labels (max 4 words): font-size 40-52, fill #111111, text-anchor=\"middle\", main label x=\"640\" y=\"640-655\".\n" +
+    "DRAWING ORDER (animates in this order): 1) character outline + hair, 2) face details, 3) clothing details, 4) main props, 5) background props, 6) hatching + emphasis, 7) text LAST.\n" +
     "- All coordinates within x: 80-1200, y: 60-660.";
   var r = await fetch(BACKEND+'/api/claude/generate',{
     method:'POST',
@@ -1216,7 +1223,16 @@ async function generateOneSvg(prompt, idx){
 async function generateOneImage(prompt, idx){
   // Whiteboard: Claude draws vector scenes (no Runway credits, crisp line art)
   if(activeVtype === 'whiteboard'){
-    return await generateOneSvg(prompt, idx);
+    // Raster mode: generate professional master-ink illustration via Runway
+    var wbPrompt = 'Master editorial ink illustrator style, professional whiteboard animation artwork, confident clean linework, detailed figures with proper anatomy, rich scene composition with environment details, selective flat color fills on clothing and key objects, pure white background, no gradients no photography: ' + prompt;
+    var wbR=await fetch(BACKEND+'/api/runway/generate-image',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({prompt:wbPrompt})
+    });
+    if(!wbR.ok){ var we=await wbR.json(); throw new Error(we.error||'Image generation failed'); }
+    var wbD=await wbR.json();
+    return wbD.imageUrl||wbD.url||wbD.imageUrls?.[0];
   }
   // Generate image via Runway gen4_image
   var r=await fetch(BACKEND+'/api/runway/generate-image',{
@@ -1603,22 +1619,22 @@ async function approveImages(){
   }
 }
 
-// WHITEBOARD: animate sketches directly via FFmpeg — no Runway video credits used
+// WHITEBOARD RASTER REVEAL: sends Runway images to backend raster engine
 async function whiteboardStitch(imageUrls){
   document.getElementById('overallStatus').textContent='Animating...';
   document.getElementById('overallStatus').className='status-val pending';
   document.getElementById('clipsComplete').textContent=imageUrls.length+' scenes';
-  document.getElementById('statusMsg').textContent='✏️ A marker is drawing your scenes stroke by stroke and writing text live, then recording voiceover (2-3 minutes)...';
+  document.getElementById('statusMsg').textContent='Drawing your professional whiteboard animation scene by scene and recording voiceover (3-4 minutes)...';
   try{
-    var svgs = sceneSvgs.filter(Boolean);
-    var endpoint = svgs.length > 0 ? '/api/whiteboard/animate' : '/api/whiteboard/stitch';
-    var payload = svgs.length > 0
-      ? {svgScenes:svgs, voiceoverText:scriptText, voiceId:selectedVoiceId, secondsPerScene:6}
-      : {imageUrls:imageUrls, voiceoverText:scriptText, voiceId:selectedVoiceId, secondsPerScene:5};
-    var r=await fetch(BACKEND+endpoint,{
+    var r=await fetch(BACKEND+'/api/whiteboard/animate',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
+      body:JSON.stringify({
+        imageUrls:imageUrls,
+        voiceoverText:scriptText,
+        voiceId:selectedVoiceId,
+        secondsPerScene:8
+      })
     });
     if(r.ok){
       var blob=await r.blob();
@@ -1628,7 +1644,7 @@ async function whiteboardStitch(imageUrls){
       vid.style.display='block';
       document.getElementById('overallStatus').textContent='Complete!';
       document.getElementById('overallStatus').className='status-val ok';
-      document.getElementById('statusMsg').textContent='Your whiteboard animation with live drawing and voiceover is ready!';
+      document.getElementById('statusMsg').textContent='Your professional whiteboard animation with voiceover is ready!';
       var dlBtn=document.getElementById('dlBtn');
       dlBtn.disabled=false;
       dlBtn.onclick=function(){
@@ -1640,7 +1656,7 @@ async function whiteboardStitch(imageUrls){
       vidCount++;
       document.getElementById('statVids').textContent=vidCount;
       toast('✏️ Whiteboard video ready! Click Download to save.');
-      saveToLibrary(activeBrand, (imageUrls.length*6)+'s', 'Whiteboard Animation', url);
+      saveToLibrary(activeBrand, (imageUrls.length*8)+'s', 'Whiteboard Animation', url);
     }else{
       var e=await r.json();
       document.getElementById('overallStatus').textContent='Failed';
