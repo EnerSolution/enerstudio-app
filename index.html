@@ -130,6 +130,17 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 .logo-remove-btn{padding:5px 10px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--re);cursor:pointer;display:none;}
 .logo-remove-btn.on{display:block;}
 .scene-btn.text{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.3);color:var(--ac);}
+
+/* VIDEO PRODUCTION PROGRESS BAR */
+.wb-progress-wrap{margin:14px 0 6px;background:var(--bdr2,rgba(255,255,255,0.07));border-radius:100px;height:10px;overflow:hidden;display:none;}
+.wb-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--p),var(--ac));border-radius:100px;transition:width 0.4s ease;}
+.wb-progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:12px;color:var(--ts);}
+.wb-progress-pct{font-weight:700;color:var(--ac);}
+.wb-stage-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.wb-stage{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--bdr);color:var(--ts);white-space:nowrap;}
+.wb-stage.done{background:rgba(45,216,138,0.12);color:#2dd88a;border-color:rgba(45,216,138,0.3);}
+.wb-stage.active{background:rgba(124,106,255,0.15);color:var(--ac);border-color:var(--p);animation:pulse-stage 1.5s infinite;}
+@keyframes pulse-stage{0%,100%{opacity:1;}50%{opacity:0.6;}}
 </style>
 </head>
 <body>
@@ -144,7 +155,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
   <div class="sidebar">
     <span class="slabel">Platform</span>
     <div class="nitem on" id="nav-create" onclick="showPage('create',this)">⚡ Create Video</div>
-    <div class="nitem" id="nav-library" onclick="showPage('library',this)">🎬 Video Library</div>
+    <div class="nitem" id="nav-library" onclick="showPage('library',this)">📁 Library</div>
     <div class="nitem" id="nav-analytics" onclick="showPage('analytics',this)">📊 Analytics</div>
     <div class="nitem" id="nav-membership" onclick="showPage('membership',this)">👥 Membership</div>
     <div class="ndiv"></div>
@@ -460,6 +471,19 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           </div>
           <div class="progress-ring" id="clipDots"></div>
           <div class="ptxt" style="margin-top:8px" id="statusMsg">Preparing video generation...</div>
+
+          <!-- PRODUCTION PROGRESS BAR -->
+          <div id="prodProgressWrap" class="wb-progress-wrap">
+            <div id="prodProgressFill" class="wb-progress-fill"></div>
+          </div>
+          <div id="prodProgressLabel" class="wb-progress-label" style="display:none;">
+            <span id="prodProgressStage">Initializing...</span>
+            <span class="wb-progress-pct" id="prodProgressPct">0%</span>
+          </div>
+          <div id="prodStageRow" class="wb-stage-row" style="display:none;"></div>
+          <div id="prodWarning" style="display:none;margin-top:10px;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);border-radius:10px;padding:10px 14px;font-size:12px;color:#f5a623;">
+            ⏳ <strong>Video production is running.</strong> Please do not close or refresh this page — your credits are being used and the video will be lost if you leave.
+          </div>
         </div>
         <video id="finalVideo" controls style="display:none"></video>
         <div class="action-row">
@@ -505,15 +529,41 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
   <!-- VIDEO LIBRARY PAGE -->
 <div id="page-library" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
-  <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">🎬 Video Library</div>
-  <div style="font-size:14px;color:var(--ts);margin-bottom:1.5rem;">All videos produced across your brands</div>
-  <div id="libraryEmpty" style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:3rem;text-align:center;">
-    <div style="font-size:48px;margin-bottom:1rem;">🎬</div>
-    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px;color:var(--tx);">No Videos Yet</div>
-    <div style="font-size:14px;color:var(--ts);margin-bottom:1.5rem;">Create your first video to see it here</div>
-    <button onclick="showPage('create',document.getElementById('nav-create'))" style="background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:10px;padding:11px 24px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#fff;cursor:pointer;">⚡ Create First Video</button>
+  <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">📁 Library</div>
+  <div style="font-size:14px;color:var(--ts);margin-bottom:1.5rem;">All videos and scene images produced across your brands</div>
+
+  <!-- LIBRARY TABS -->
+  <div style="display:flex;gap:8px;margin-bottom:1.5rem;border-bottom:1px solid var(--bdr);padding-bottom:0;">
+    <button id="lib-tab-video" onclick="switchLibTab('video')" style="background:var(--p);color:#fff;border:none;border-radius:8px 8px 0 0;padding:9px 22px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:-1px;">🎬 Video Library</button>
+    <button id="lib-tab-photo" onclick="switchLibTab('photo')" style="background:var(--card);color:var(--ts);border:1px solid var(--bdr);border-bottom:none;border-radius:8px 8px 0 0;padding:9px 22px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:-1px;">🖼️ Photo Library</button>
   </div>
-  <div id="libraryGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"></div>
+
+  <!-- VIDEO LIBRARY PANEL -->
+  <div id="lib-panel-video">
+    <div id="libraryEmpty" style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:3rem;text-align:center;">
+      <div style="font-size:48px;margin-bottom:1rem;">🎬</div>
+      <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px;color:var(--tx);">No Videos Yet</div>
+      <div style="font-size:14px;color:var(--ts);margin-bottom:1.5rem;">Create your first video to see it here</div>
+      <button onclick="showPage('create',document.getElementById('nav-create'))" style="background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:10px;padding:11px 24px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#fff;cursor:pointer;">⚡ Create First Video</button>
+    </div>
+    <div id="libraryGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"></div>
+  </div>
+
+  <!-- PHOTO LIBRARY PANEL -->
+  <div id="lib-panel-photo" style="display:none;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap;">
+      <span style="font-size:13px;font-weight:600;color:var(--ts);">Filter by Brand:</span>
+      <button onclick="filterPhotoLibrary('__all__')" id="photo-filter-all" style="background:var(--p);color:#fff;border:none;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer;">All Brands</button>
+      <div id="photoBrandFilters" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+    </div>
+    <div id="photoLibraryEmpty" style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:3rem;text-align:center;">
+      <div style="font-size:48px;margin-bottom:1rem;">🖼️</div>
+      <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px;color:var(--tx);">No Photos Yet</div>
+      <div style="font-size:14px;color:var(--ts);">Scene images are saved here automatically each time you generate a video</div>
+    </div>
+    <div id="photoLibraryGrid"></div>
+  </div>
+
 </div>
 
 <!-- MEMBERSHIP PAGE -->
@@ -990,20 +1040,21 @@ var solarPrompts = [
   'Cinematic end shot of laptop showing SolarCanadaPro.ca with solar panels visible through window behind, clear call to action'
 ];
 
-// Whiteboard-specific scene prompts — professional ink illustration style
+// Whiteboard-specific scene prompts — NO TEXT IN IMAGES (causes Runway hallucination)
 var whiteboardPrompts = [
-  'Professional ink illustration: person at career crossroads, one sign says Same Job other sign says Solar Industry High Demand, sunrise on the right, hand-drawn editorial style, pure white background',
-  'Professional ink illustration: confident solar technician on rooftop installing panels, safety hard hat, tools in hand, clear sky, bold linework, hand-drawn style, white background',
-  'Professional ink illustration: graduation ceremony scene, student receiving NABCEP certification diploma, handshake, maple leaf in corner, globe beside them, editorial ink style, white background',
-  'Professional ink illustration: laptop screen showing virtual classroom with students, certificate on wall, modern clean desk setup, digital learning environment, ink drawing style, white background',
-  'Professional ink illustration: solar professional reviewing energy data charts on screen, confident pose at desk, rising graph, dollar sign growth symbols, editorial ink style, white background',
-  'Professional ink illustration: bold call to action scene, person standing tall holding NABCEP certificate, bright sun behind them, crowd cheering, text area below for website, ink illustration style, white background',
-  'Professional ink illustration: Canadian map with solar industry growth icons across provinces, dollar signs, diploma icons, arrows pointing upward, career growth theme, editorial ink style, white background',
-  'Professional ink illustration: team of diverse solar professionals in safety gear shaking hands, group of certified experts, confidence and success, hand-drawn ink style, white background',
-  'Professional ink illustration: solar training classroom with instructor at whiteboard teaching students, NABCEP logo visible, engaged learners, clean editorial ink drawing, white background',
-  'Professional ink illustration: entrepreneur launching solar business, person standing in front of their solar company logo, growth chart behind them, success theme, ink illustration, white background',
-  'Professional ink illustration: family standing in front of solar-powered home, smiling, clean energy savings visible on a meter, house with panels, aspirational ink drawing style, white background',
+  'Professional editorial ink illustration, person standing at a road fork junction, one road sign with arrow pointing left, another road sign with arrow pointing right, sunrise on the horizon, clean black linework on white background, no text no words',
+  'Professional editorial ink illustration, solar technician in hard hat and safety vest installing solar panels on a rooftop, working confidently with tools, blue sky background, clean black linework on white background, no text no words',
+  'Professional editorial ink illustration, graduation ceremony scene, two figures shaking hands, one person receiving a diploma scroll, maple leaf visible, clean black linework on white background, no text no words',
+  'Professional editorial ink illustration, person at a desk with a laptop showing a video call with multiple participants, home office setting, motivated learning environment, clean black linework on white background, no text no words',
+  'Professional editorial ink illustration, professional sitting at desk reviewing bar charts and graphs on a computer screen, dollar coin symbols floating upward, arrow pointing up, clean black linework on white background, no text no words',
+  'Professional editorial ink illustration, confident person standing tall holding a certificate scroll above their head, crowd of people cheering behind them, bright sun radiating rays, clean black linework on white background, no text no words',
+  'Professional editorial ink illustration, Canadian map outline with small solar panel icons placed across different provinces, arrows showing growth and expansion, clean black linework on white background, no text no words',
+  'Professional editorial ink illustration, group of diverse professionals in hard hats and safety vests shaking hands and celebrating, solar panels visible in background, clean black linework on white background, no text no words',
+  'Professional editorial ink illustration, instructor standing at a board pointing to a diagram of a solar panel system, students seated watching attentively, classroom setting, clean black linework on white background, no text no words',
+  'Professional editorial ink illustration, entrepreneur standing proudly in front of their new company office building, solar panels on roof, briefcase in hand, growth chart in background, clean black linework on white background, no text no words',
+  'Professional editorial ink illustration, happy family standing in front of their house with solar panels on roof, sunshine overhead, piggy bank and coin symbols nearby, clean black linework on white background, no text no words',
 ];
+
 
 
 // BRAND
@@ -1645,7 +1696,8 @@ async function whiteboardStitch(imageUrls){
   document.getElementById('overallStatus').textContent='Animating...';
   document.getElementById('overallStatus').className='status-val pending';
   document.getElementById('clipsComplete').textContent=imageUrls.length+' scenes';
-  document.getElementById('statusMsg').textContent='Drawing your professional whiteboard animation scene by scene and recording voiceover (3-4 minutes)...';
+  document.getElementById('statusMsg').textContent='Drawing your professional whiteboard animation scene by scene — do not close this page.';
+  startProductionProgress(imageUrls.length, 'whiteboard');
   try{
     var r=await fetch(BACKEND+'/api/whiteboard/animate',{
       method:'POST',
@@ -1663,6 +1715,7 @@ async function whiteboardStitch(imageUrls){
       var vid=document.getElementById('finalVideo');
       vid.src=url;
       vid.style.display='block';
+      completeProductionProgress();
       document.getElementById('overallStatus').textContent='Complete!';
       document.getElementById('overallStatus').className='status-val ok';
       document.getElementById('statusMsg').textContent='Your professional whiteboard animation with voiceover is ready!';
@@ -1678,8 +1731,10 @@ async function whiteboardStitch(imageUrls){
       document.getElementById('statVids').textContent=vidCount;
       toast('✏️ Whiteboard video ready! Click Download to save.');
       saveToLibrary(activeBrand, (imageUrls.length*8)+'s', 'Whiteboard Animation', url);
+      savePhotosToLibrary(activeBrand, imageUrls, 'Whiteboard');
     }else{
       var e=await r.json();
+      resetProductionProgress();
       document.getElementById('overallStatus').textContent='Failed';
       document.getElementById('overallStatus').className='status-val fail';
       document.getElementById('statusMsg').textContent='Whiteboard animation failed: '+(e.error||'unknown error');
@@ -1696,6 +1751,7 @@ async function whiteboardStitch(imageUrls){
 async function generateVideoClips(imageUrls){
   clipTaskIds=[];
   clipUrls=new Array(imageUrls.length).fill(null);
+  startProductionProgress(imageUrls.length, activeVtype||'cinematic');
 
   // Build clip dots
   var dots=document.getElementById('clipDots');
@@ -1801,7 +1857,8 @@ async function stitchVideo(){
       vid.style.display='block';
       document.getElementById('overallStatus').textContent='Complete!';
       document.getElementById('overallStatus').className='status-val ok';
-      document.getElementById('statusMsg').textContent='Your '+validUrls.length*5+'-second cinematic video with professional voiceover is ready!';
+      completeProductionProgress();
+      document.getElementById('statusMsg').textContent='Your cinematic video with professional voiceover is ready!';
       var dlBtn=document.getElementById('dlBtn');
       dlBtn.disabled=false;
       dlBtn.onclick=function(){
@@ -1814,15 +1871,17 @@ async function stitchVideo(){
       document.getElementById('statVids').textContent=vidCount;
       loadBalance();
       toast('Video ready! Click Download to save.');
-      // Auto-save to library
+      // Auto-save to library + photo library
       var dur = document.getElementById('dsel').value;
       var goal = document.getElementById('gsel').value;
       saveToLibrary(activeBrand, dur, goal, url);
+      savePhotosToLibrary(activeBrand, sceneImageUrls.filter(Boolean), activeVtype||'Cinematic');
     }else{
       var err=await r.json();
       throw new Error(err.error||'Stitch failed');
     }
   }catch(e){
+    resetProductionProgress();
     document.getElementById('overallStatus').textContent='Error';
     document.getElementById('overallStatus').className='status-val err';
     document.getElementById('statusMsg').textContent='Stitch error: '+e.message;
@@ -2307,6 +2366,238 @@ function renderLibrary(){
     grid.appendChild(card);
   });
 }
+// ============================================================
+// PHOTO LIBRARY — save and render scene images by brand
+// ============================================================
+
+function savePhotosToLibrary(brand, imageUrls, videoType) {
+  if (!imageUrls || !imageUrls.length) return;
+  var entry = {
+    id: Date.now(),
+    brand: brand || 'Unknown Brand',
+    videoType: videoType || 'Video',
+    images: imageUrls.filter(Boolean),
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString()
+  };
+  photoLibrary.unshift(entry);
+  try { localStorage.setItem('enerstudio_photos', JSON.stringify(photoLibrary.slice(0, 200))); } catch(e) {}
+  renderPhotoLibrary('__all__');
+}
+
+var currentPhotoFilter = '__all__';
+
+function filterPhotoLibrary(brand) {
+  currentPhotoFilter = brand;
+  // Update filter button styles
+  document.querySelectorAll('#photoBrandFilters button, #photo-filter-all').forEach(function(b) {
+    var isSel = (b.getAttribute('data-brand') || '__all__') === brand;
+    b.style.background = isSel ? 'var(--p)' : 'var(--card)';
+    b.style.color = isSel ? '#fff' : 'var(--ts)';
+    b.style.border = isSel ? 'none' : '1px solid var(--bdr)';
+  });
+  renderPhotoLibrary(brand);
+}
+
+function renderPhotoLibrary(brandFilter) {
+  var grid = document.getElementById('photoLibraryGrid');
+  var empty = document.getElementById('photoLibraryEmpty');
+  var filterBar = document.getElementById('photoBrandFilters');
+  if (!grid) return;
+
+  // Build brand filter buttons
+  var brands = [];
+  photoLibrary.forEach(function(e) { if (brands.indexOf(e.brand) === -1) brands.push(e.brand); });
+  filterBar.innerHTML = '';
+  brands.forEach(function(b) {
+    var btn = document.createElement('button');
+    btn.textContent = b;
+    btn.setAttribute('data-brand', b);
+    var isSel = brandFilter === b;
+    btn.style.cssText = 'background:' + (isSel ? 'var(--p)' : 'var(--card)') + ';color:' + (isSel ? '#fff' : 'var(--ts)') + ';border:' + (isSel ? 'none' : '1px solid var(--bdr)') + ';border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer;';
+    btn.onclick = function() { filterPhotoLibrary(b); };
+    filterBar.appendChild(btn);
+  });
+
+  // Filter entries
+  var entries = brandFilter === '__all__' ? photoLibrary : photoLibrary.filter(function(e) { return e.brand === brandFilter; });
+
+  if (!entries.length || !photoLibrary.length) {
+    empty.style.display = 'block'; grid.innerHTML = ''; return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = '';
+
+  // Group remaining entries by brand
+  var grouped = {};
+  entries.forEach(function(e) {
+    if (!grouped[e.brand]) grouped[e.brand] = [];
+    grouped[e.brand].push(e);
+  });
+
+  Object.keys(grouped).forEach(function(brand) {
+    // Brand header
+    var header = document.createElement('div');
+    header.style.cssText = 'font-family:Syne,sans-serif;font-size:16px;font-weight:700;color:var(--tx);margin:1.25rem 0 10px;display:flex;align-items:center;gap:8px;';
+    header.innerHTML = '<span style="background:var(--p);color:#fff;border-radius:20px;padding:2px 12px;font-size:12px;">' + brand + '</span>' +
+      '<span style="font-size:12px;font-weight:400;color:var(--ts);">' + grouped[brand].reduce(function(a,e){return a+e.images.length;},0) + ' photos</span>';
+    grid.appendChild(header);
+
+    // Photo grid for this brand
+    var brandGrid = document.createElement('div');
+    brandGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem;';
+    grouped[brand].forEach(function(entry) {
+      entry.images.forEach(function(url, idx) {
+        var cell = document.createElement('div');
+        cell.style.cssText = 'background:var(--card);border:1px solid var(--bdr);border-radius:10px;overflow:hidden;position:relative;';
+        var img = document.createElement('img');
+        img.src = url;
+        img.style.cssText = 'width:100%;height:110px;object-fit:cover;display:block;';
+        img.onerror = function() { this.parentElement.style.display='none'; };
+        cell.appendChild(img);
+        var meta = document.createElement('div');
+        meta.style.cssText = 'padding:6px 8px;font-size:10px;color:var(--ts);';
+        meta.textContent = entry.videoType + ' · Scene ' + (idx+1) + ' · ' + entry.date;
+        cell.appendChild(meta);
+        // Download button
+        var dl = document.createElement('a');
+        dl.href = url; dl.download = brand.replace(/\s/g,'-') + '-scene' + (idx+1) + '.jpg';
+        dl.style.cssText = 'position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);color:#fff;border-radius:6px;padding:3px 7px;font-size:10px;text-decoration:none;';
+        dl.textContent = '⬇';
+        cell.appendChild(dl);
+        brandGrid.appendChild(cell);
+      });
+    });
+    grid.appendChild(brandGrid);
+  });
+}
+
+// ============================================================
+// LIBRARY TAB SWITCHER
+// ============================================================
+function switchLibTab(tab) {
+  var videoPanel = document.getElementById('lib-panel-video');
+  var photoPanel = document.getElementById('lib-panel-photo');
+  var videoBtn = document.getElementById('lib-tab-video');
+  var photoBtn = document.getElementById('lib-tab-photo');
+  if (tab === 'video') {
+    videoPanel.style.display = 'block'; photoPanel.style.display = 'none';
+    videoBtn.style.background = 'var(--p)'; videoBtn.style.color = '#fff'; videoBtn.style.border = 'none';
+    photoBtn.style.background = 'var(--card)'; photoBtn.style.color = 'var(--ts)'; photoBtn.style.border = '1px solid var(--bdr)'; photoBtn.style.borderBottom = 'none';
+  } else {
+    videoPanel.style.display = 'none'; photoPanel.style.display = 'block';
+    photoBtn.style.background = 'var(--p)'; photoBtn.style.color = '#fff'; photoBtn.style.border = 'none';
+    videoBtn.style.background = 'var(--card)'; videoBtn.style.color = 'var(--ts)'; videoBtn.style.border = '1px solid var(--bdr)'; videoBtn.style.borderBottom = 'none';
+    renderPhotoLibrary(currentPhotoFilter);
+  }
+}
+
+// ============================================================
+// PRODUCTION PROGRESS BAR
+// ============================================================
+var prodProgressInterval = null;
+var prodProgressValue = 0;
+var prodStages = [];
+
+function startProductionProgress(sceneCount, videoType) {
+  // Build stage list based on video type
+  var isWhiteboard = videoType === 'whiteboard';
+  prodStages = [];
+  if (isWhiteboard) {
+    prodStages.push({ label: 'Downloading scene images', pct: 5 });
+    for (var i = 0; i < sceneCount; i++) {
+      prodStages.push({ label: 'Drawing scene ' + (i+1) + ' of ' + sceneCount, pct: 5 + Math.round(70 * (i+1) / sceneCount) });
+    }
+    prodStages.push({ label: 'Recording voiceover', pct: 82 });
+    prodStages.push({ label: 'Stitching scenes together', pct: 92 });
+    prodStages.push({ label: 'Finalizing video', pct: 98 });
+  } else {
+    prodStages.push({ label: 'Sending scenes to Runway', pct: 5 });
+    for (var i = 0; i < sceneCount; i++) {
+      prodStages.push({ label: 'Rendering clip ' + (i+1) + ' of ' + sceneCount, pct: 5 + Math.round(65 * (i+1) / sceneCount) });
+    }
+    prodStages.push({ label: 'Recording voiceover', pct: 78 });
+    prodStages.push({ label: 'Stitching scenes together', pct: 90 });
+    prodStages.push({ label: 'Finalizing video', pct: 97 });
+  }
+
+  prodProgressValue = 0;
+  document.getElementById('prodProgressWrap').style.display = 'block';
+  document.getElementById('prodProgressLabel').style.display = 'flex';
+  document.getElementById('prodStageRow').style.display = 'flex';
+  document.getElementById('prodWarning').style.display = 'block';
+
+  // Build stage pills
+  var row = document.getElementById('prodStageRow');
+  row.innerHTML = '';
+  prodStages.forEach(function(st, i) {
+    var pill = document.createElement('div');
+    pill.className = 'wb-stage';
+    pill.id = 'prod-stage-' + i;
+    pill.textContent = st.label;
+    row.appendChild(pill);
+  });
+
+  // Animate progress
+  var stageIdx = 0;
+  setProgress(0, 'Starting production...');
+
+  prodProgressInterval = setInterval(function() {
+    if (stageIdx >= prodStages.length) return;
+    var target = prodStages[stageIdx].pct;
+    var label = prodStages[stageIdx].label;
+    // Advance stage pill styling
+    for (var i = 0; i < prodStages.length; i++) {
+      var pill = document.getElementById('prod-stage-' + i);
+      if (!pill) continue;
+      if (i < stageIdx) { pill.className = 'wb-stage done'; }
+      else if (i === stageIdx) { pill.className = 'wb-stage active'; }
+      else { pill.className = 'wb-stage'; }
+    }
+    // Smoothly advance to target
+    if (prodProgressValue < target - 1) {
+      prodProgressValue += 1;
+      setProgress(prodProgressValue, label);
+    } else {
+      stageIdx++;
+    }
+  }, isWhiteboard ? 1800 : 1200); // whiteboard takes longer
+}
+
+function setProgress(pct, label) {
+  var fill = document.getElementById('prodProgressFill');
+  var pctEl = document.getElementById('prodProgressPct');
+  var stageEl = document.getElementById('prodProgressStage');
+  if (fill) fill.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (stageEl && label) stageEl.textContent = label;
+}
+
+function completeProductionProgress() {
+  if (prodProgressInterval) { clearInterval(prodProgressInterval); prodProgressInterval = null; }
+  setProgress(100, 'Video complete!');
+  // Mark all stages done
+  prodStages.forEach(function(st, i) {
+    var pill = document.getElementById('prod-stage-' + i);
+    if (pill) pill.className = 'wb-stage done';
+  });
+  document.getElementById('prodWarning').style.display = 'none';
+}
+
+function resetProductionProgress() {
+  if (prodProgressInterval) { clearInterval(prodProgressInterval); prodProgressInterval = null; }
+  prodProgressValue = 0;
+  var wrap = document.getElementById('prodProgressWrap');
+  var label = document.getElementById('prodProgressLabel');
+  var row = document.getElementById('prodStageRow');
+  var warn = document.getElementById('prodWarning');
+  if (wrap) wrap.style.display = 'none';
+  if (label) label.style.display = 'none';
+  if (row) { row.style.display = 'none'; row.innerHTML = ''; }
+  if (warn) warn.style.display = 'none';
+}
+
+
 
 function downloadVideo(url, brand){
   var a = document.createElement('a');
