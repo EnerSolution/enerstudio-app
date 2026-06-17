@@ -770,7 +770,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
       <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
       <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-      <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.4.0 — Build June 16</div></div>
+      <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.4.2 — Build June 17</div></div>
     </div>
   </div>
   <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1042,17 +1042,17 @@ var solarPrompts = [
 
 // Whiteboard-specific scene prompts — NO TEXT IN IMAGES (causes Runway hallucination)
 var whiteboardPrompts = [
-  'Professional editorial ink illustration, person standing at a road fork junction, one road sign with arrow pointing left, another road sign with arrow pointing right, sunrise on the horizon, clean black linework on white background, no text no words',
-  'Professional editorial ink illustration, solar technician in hard hat and safety vest installing solar panels on a rooftop, working confidently with tools, blue sky background, clean black linework on white background, no text no words',
-  'Professional editorial ink illustration, graduation ceremony scene, two figures shaking hands, one person receiving a diploma scroll, maple leaf visible, clean black linework on white background, no text no words',
-  'Professional editorial ink illustration, person at a desk with a laptop showing a video call with multiple participants, home office setting, motivated learning environment, clean black linework on white background, no text no words',
-  'Professional editorial ink illustration, professional sitting at desk reviewing bar charts and graphs on a computer screen, dollar coin symbols floating upward, arrow pointing up, clean black linework on white background, no text no words',
-  'Professional editorial ink illustration, confident person standing tall holding a certificate scroll above their head, crowd of people cheering behind them, bright sun radiating rays, clean black linework on white background, no text no words',
-  'Professional editorial ink illustration, Canadian map outline with small solar panel icons placed across different provinces, arrows showing growth and expansion, clean black linework on white background, no text no words',
-  'Professional editorial ink illustration, group of diverse professionals in hard hats and safety vests shaking hands and celebrating, solar panels visible in background, clean black linework on white background, no text no words',
-  'Professional editorial ink illustration, instructor standing at a board pointing to a diagram of a solar panel system, students seated watching attentively, classroom setting, clean black linework on white background, no text no words',
-  'Professional editorial ink illustration, entrepreneur standing proudly in front of their new company office building, solar panels on roof, briefcase in hand, growth chart in background, clean black linework on white background, no text no words',
-  'Professional editorial ink illustration, happy family standing in front of their house with solar panels on roof, sunshine overhead, piggy bank and coin symbols nearby, clean black linework on white background, no text no words',
+  'Professional editorial ink illustration, person standing at a road fork junction, one road sign arrow left one road sign arrow right, sunrise on horizon, clean black linework on pure white background, absolutely no text no letters no words no signs with writing',
+  'Professional editorial ink illustration, solar technician in hard hat and safety vest installing solar panels on a rooftop, working confidently with tools, blue sky background, clean black linework on white background, absolutely no text no letters no words no writing',
+  'Professional editorial ink illustration, graduation ceremony scene, two figures shaking hands, one person receiving a diploma scroll, maple leaf visible, clean black linework on white background, absolutely no text no letters no words no writing',
+  'Professional editorial ink illustration, person at a desk with a laptop showing a video call with multiple participants, home office setting, motivated learning environment, clean black linework on white background, absolutely no text no letters no words no writing',
+  'Professional editorial ink illustration, professional sitting at desk reviewing bar charts and graphs on a computer screen, dollar coin symbols floating upward, arrow pointing up, clean black linework on white background, absolutely no text no letters no words no writing',
+  'Professional editorial ink illustration, confident person standing tall holding a certificate scroll above their head, crowd of people cheering behind them, bright sun radiating rays, clean black linework on white background, absolutely no text no letters no words no writing',
+  'Professional editorial ink illustration, Canadian map outline with small solar panel icons placed across different provinces, arrows showing growth and expansion, clean black linework on white background, absolutely no text no letters no words no writing',
+  'Professional editorial ink illustration, group of diverse professionals in hard hats and safety vests shaking hands and celebrating, solar panels visible in background, clean black linework on white background, absolutely no text no letters no words no writing',
+  'Professional editorial ink illustration, instructor standing at a board pointing to a diagram of a solar panel system, students seated watching attentively, classroom setting, clean black linework on white background, absolutely no text no letters no words no writing',
+  'Professional editorial ink illustration, entrepreneur standing proudly in front of their new company office building, solar panels on roof, briefcase in hand, growth chart in background, clean black linework on white background, absolutely no text no letters no words no writing',
+  'Professional editorial ink illustration, happy family standing in front of their house with solar panels on roof, sunshine overhead, piggy bank and coin symbols nearby, clean black linework on white background, absolutely no text no letters no words no writing',
 ];
 
 
@@ -1300,7 +1300,7 @@ async function generateOneImage(prompt, idx){
   // Whiteboard: Claude draws vector scenes (no Runway credits, crisp line art)
   if(activeVtype === 'whiteboard'){
     // Raster mode: generate professional master-ink illustration via Runway
-    var wbPrompt = 'Master editorial ink illustrator style, professional whiteboard animation artwork, confident clean linework, detailed figures with proper anatomy, rich scene composition with environment details, selective flat color fills on clothing and key objects, pure white background, no gradients no photography: ' + prompt;
+    var wbPrompt = 'Master editorial ink illustrator style, professional whiteboard animation artwork, confident clean linework, detailed figures with proper anatomy, rich scene with objects and environment, selective flat color fills on key elements only, pure white background, absolutely no text no words no letters no writing anywhere in the image, no gradients no photography: ' + prompt;
     var wbR=await fetch(BACKEND+'/api/runway/generate-image',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -1750,23 +1750,12 @@ async function whiteboardStitch(imageUrls){
   document.getElementById('overallStatus').textContent='Animating...';
   document.getElementById('overallStatus').className='status-val pending';
   document.getElementById('clipsComplete').textContent=imageUrls.length+' scenes';
-  document.getElementById('statusMsg').textContent='Drawing your professional whiteboard animation scene by scene — do not close this page.';
+  document.getElementById('statusMsg').textContent='Drawing your whiteboard animation — do not close this page.';
   startProductionProgress(imageUrls.length, 'whiteboard');
-
-  // FIRE AND POLL: send render request without waiting for response
-  // Render free tier drops connections after 30s — this bypasses it completely
-  // Server saves video to disk and returns videoId in <1s before timeout
-  // We poll /api/video/:id/status until ready, then download separately
-  var videoId = null;
-
-  // Step 1: Fire the render request
-  try {
-    var controller = new AbortController();
-    var timeoutId = setTimeout(function(){ controller.abort(); }, 25000); // 25s timeout to get videoId
+  try{
     var r = await fetch(BACKEND+'/api/whiteboard/animate', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      signal: controller.signal,
       body: JSON.stringify({
         imageUrls: imageUrls,
         voiceoverText: scriptText,
@@ -1774,53 +1763,27 @@ async function whiteboardStitch(imageUrls){
         secondsPerScene: 8
       })
     });
-    clearTimeout(timeoutId);
     if(r.ok){
       var d = await r.json();
-      if(d.videoId){ videoId = d.videoId; }
-    }
-  } catch(err){
-    // AbortError = timed out getting videoId — server may still be working
-    // This is expected on Render free tier — poll for videoId via status
-    console.log('Initial request timed out (expected on free tier):', err.message);
-  }
-
-  // Step 2: If we got videoId immediately, download now
-  if(videoId){
-    document.getElementById('statusMsg').textContent='Video ready — downloading now...';
-    await fetchAndDeliverVideo(videoId, 'enerstudio-whiteboard-'+activeBrand.replace(/\s/g,'-')+'.mp4', imageUrls.length*8+'s', 'Whiteboard Animation');
-    return;
-  }
-
-  // Step 3: No videoId yet — server is still rendering, poll for it
-  document.getElementById('statusMsg').textContent='Server is rendering your video — checking progress...';
-  var pollAttempts = 0;
-  var maxPolls = 60; // 60 attempts x 8s = 8 minutes max wait
-  var pollInterval = setInterval(async function(){
-    pollAttempts++;
-    try {
-      // Try fetching a test endpoint to see if server has a recent video ready
-      var statusR = await fetch(BACKEND+'/api/video/latest', { method:'GET' });
-      if(statusR.ok){
-        var sd = await statusR.json();
-        if(sd.videoId){
-          clearInterval(pollInterval);
-          videoId = sd.videoId;
-          document.getElementById('statusMsg').textContent='Video ready — downloading now...';
-          await fetchAndDeliverVideo(videoId, 'enerstudio-whiteboard-'+activeBrand.replace(/\s/g,'-')+'.mp4', imageUrls.length*8+'s', 'Whiteboard Animation');
-          return;
-        }
+      if(d.videoId){
+        document.getElementById('statusMsg').textContent='Video ready — downloading now...';
+        await fetchAndDeliverVideo(d.videoId, 'enerstudio-whiteboard-'+activeBrand.replace(/\s/g,'-')+'.mp4', imageUrls.length*8+'s', 'Whiteboard Animation');
       }
-    } catch(e){ console.log('Poll attempt', pollAttempts, ':', e.message); }
-    if(pollAttempts >= maxPolls){
-      clearInterval(pollInterval);
+    } else {
+      var e = await r.json();
       resetProductionProgress();
       document.getElementById('overallStatus').textContent='Failed';
       document.getElementById('overallStatus').className='status-val fail';
-      document.getElementById('statusMsg').textContent='Video timed out after 8 minutes. Please try again.';
+      document.getElementById('statusMsg').textContent='Whiteboard failed: '+(e.error||'unknown error');
       document.getElementById('approveImagesBtn').disabled=false;
     }
-  }, 8000);
+  } catch(err){
+    resetProductionProgress();
+    document.getElementById('overallStatus').textContent='Failed';
+    document.getElementById('overallStatus').className='status-val fail';
+    document.getElementById('statusMsg').textContent='Connection error: '+err.message;
+    document.getElementById('approveImagesBtn').disabled=false;
+  }
 }
 
 // STEP 4: GENERATE VIDEO CLIPS
@@ -2562,10 +2525,23 @@ function renderPhotoLibrary(brandFilter) {
         meta.textContent = entry.videoType + ' · Scene ' + (idx+1) + ' · ' + entry.date;
         cell.appendChild(meta);
         // Download button
-        var dl = document.createElement('a');
-        dl.href = url; dl.download = brand.replace(/\s/g,'-') + '-scene' + (idx+1) + '.jpg';
-        dl.style.cssText = 'position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);color:#fff;border-radius:6px;padding:3px 7px;font-size:10px;text-decoration:none;';
+        var dl = document.createElement('button');
+        dl.style.cssText = 'position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);color:#fff;border-radius:6px;padding:3px 7px;font-size:10px;border:none;cursor:pointer;';
         dl.textContent = '⬇';
+        dl.title = 'Download photo';
+        dl.onclick = function(e){
+          e.stopPropagation();
+          dl.textContent = '...';
+          fetch(url).then(function(r){ return r.blob(); }).then(function(blob){
+            var blobUrl = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = brand.replace(/\s/g,'-') + '-scene' + (idx+1) + '.jpg';
+            a.click();
+            setTimeout(function(){ URL.revokeObjectURL(blobUrl); }, 3000);
+            dl.textContent = '⬇';
+          }).catch(function(){ dl.textContent = '⬇'; });
+        };
         cell.appendChild(dl);
         brandGrid.appendChild(cell);
       });
@@ -2690,8 +2666,9 @@ function setProgress(pct, label) {
   var fill = document.getElementById('prodProgressFill');
   var pctEl = document.getElementById('prodProgressPct');
   var stageEl = document.getElementById('prodProgressStage');
-  if (fill) fill.style.width = pct + '%';
-  if (pctEl) pctEl.textContent = pct + '%';
+  var displayPct = Math.floor(pct);
+  if (fill) fill.style.width = displayPct + '%';
+  if (pctEl) pctEl.textContent = displayPct + '%';
   if (stageEl && label) stageEl.textContent = label;
 }
 
@@ -3232,7 +3209,7 @@ updatePlanButtons();
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.4.0 — Build June 16</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.4.2 — Build June 17</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -3258,7 +3235,7 @@ updatePlanButtons();
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.4.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.4.2</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
