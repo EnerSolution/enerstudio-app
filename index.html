@@ -1304,7 +1304,7 @@ async function generateOneImage(prompt, idx){
     var wbR=await fetch(BACKEND+'/api/runway/generate-image',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({prompt:wbPrompt})
+      body:JSON.stringify({prompt:wbPrompt, styleMode:'whiteboard'})
     });
     if(!wbR.ok){ var we=await wbR.json(); throw new Error(we.error||'Image generation failed'); }
     var wbD=await wbR.json();
