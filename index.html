@@ -1760,7 +1760,7 @@ async function whiteboardStitch(imageUrls){
         imageUrls: imageUrls,
         voiceoverText: scriptText,
         voiceId: selectedVoiceId,
-        secondsPerScene: 8
+        secondsPerScene: Math.max(5, Math.round(parseInt(document.getElementById('dsel').value||'30') / imageUrls.length))
       })
     });
     if(r.ok){
