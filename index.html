@@ -770,7 +770,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
       <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
       <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-      <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.4.2 — Build June 17</div></div>
+      <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.6.0 — Build June 18</div></div>
     </div>
   </div>
   <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1300,7 +1300,7 @@ async function generateOneImage(prompt, idx){
   // Whiteboard: Claude draws vector scenes (no Runway credits, crisp line art)
   if(activeVtype === 'whiteboard'){
     // Raster mode: generate professional master-ink illustration via Runway
-    var wbPrompt = 'Master editorial ink illustrator style, professional whiteboard animation artwork, confident clean linework, detailed figures with proper anatomy, rich scene with objects and environment, selective flat color fills on key elements only, pure white background, absolutely no text no words no letters no writing anywhere in the image, no gradients no photography: ' + prompt;
+    var wbPrompt = 'ZERO TEXT ZERO WORDS ZERO LETTERS ZERO NUMBERS. Pure white background. Professional hand-drawn ink illustration, confident clean linework, detailed figures, selective flat color fills on key objects only, no photography, no gradients, no realistic rendering, no shading. High quality editorial illustration style. ' + prompt + '. IMPORTANT: absolutely no text no words no letters anywhere';
     var wbR=await fetch(BACKEND+'/api/runway/generate-image',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -3243,7 +3243,7 @@ updatePlanButtons();
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.4.2 — Build June 17</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.6.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -3269,7 +3269,7 @@ updatePlanButtons();
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.4.2</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.6.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
