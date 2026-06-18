@@ -321,6 +321,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
             <span id="slidesMusicName" style="font-size:11px;color:var(--tm);"></span>
             <input type="file" id="slidesMusicFile" accept="audio/*" style="display:none" onchange="handleSlidesMusicUpload(this)">
           </div>
+          <audio id="slidesMusicPreview" controls style="display:none;width:100%;margin-top:8px;height:34px;"></audio>
         </div>
 
         <!-- VOICE OPTIONS -->
@@ -1099,7 +1100,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.10.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.11.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1125,7 +1126,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.10.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.11.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2244,7 +2245,9 @@ function handleSlidesMusicUpload(input){
     slidesMusicUpload = e.target.result;
     document.getElementById('slidesMusicName').textContent = '✓ '+f.name;
     document.getElementById('slidesMusicSel').value = '';
-    toast('Music uploaded: '+f.name);
+    var prev = document.getElementById('slidesMusicPreview');
+    if(prev){ prev.src = e.target.result; prev.style.display='block'; }
+    toast('Music ready — tap play to listen');
   };
   reader.readAsDataURL(f);
 }
@@ -3312,6 +3315,14 @@ var brandLogos = {
   'EnerBuild': null,
   'EneRis HVAC': null
 };
+// Restore saved logos so they persist across page loads/sessions
+try {
+  var _savedLogos = JSON.parse(localStorage.getItem('enerstudio_brandLogos') || '{}');
+  Object.keys(_savedLogos).forEach(function(k){ brandLogos[k] = _savedLogos[k]; });
+} catch(e) {}
+function persistBrandLogos(){
+  try { localStorage.setItem('enerstudio_brandLogos', JSON.stringify(brandLogos)); } catch(e) {}
+}
 
 var brandNames = ['Solar Canada','EnerSolution','Energlow Solar','EnerBuild','EneRis HVAC'];
 
@@ -3393,8 +3404,9 @@ function handleLogoUpload(brand, input){
   var reader = new FileReader();
   reader.onload = function(e){
     brandLogos[brand] = e.target.result;
+    persistBrandLogos();
     renderLogoGrid();
-    toast(brand+' logo uploaded!');
+    toast(brand+' logo saved!');
     // Re-render all scene cards if images are already loaded
     if(sceneImageUrls.length > 0) applyLogosToAllScenes();
   };
@@ -3403,6 +3415,7 @@ function handleLogoUpload(brand, input){
 
 function removeLogo(brand){
   brandLogos[brand] = null;
+  persistBrandLogos();
   renderLogoGrid();
   toast(brand+' logo removed.');
 }
