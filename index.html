@@ -201,7 +201,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <!-- VIDEO TYPE SELECTOR -->
     <div class="card">
       <div class="ch"><div class="ct">🎯 Video Type</div><div class="csub">Choose your production style</div></div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px;">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
         <div id="vt-cinematic" onclick="selectVtype('cinematic',this)" style="background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
           <div style="font-size:22px;margin-bottom:4px;">🎬</div>
           <div style="font-size:11px;font-weight:600;color:#fff;">Cinematic AI</div>
@@ -254,6 +254,12 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div style="font-size:22px;margin-bottom:4px;">🖼️</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Slideshow</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Photo montage</div>
+          <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
+        </div>
+        <div id="vt-quote" onclick="comingSoon('Quote / Social')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
+          <div style="font-size:22px;margin-bottom:4px;">💬</div>
+          <div style="font-size:11px;font-weight:600;color:var(--ts);">Quote / Social</div>
+          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Quote cards</div>
           <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
         </div>
         <div id="vt-cartoon" onclick="comingSoon('Cartoon')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
@@ -2077,7 +2083,7 @@ function toggleBrandDropdown(){
 
 // VIDEO TYPE
 var activeVtype = 'cinematic';
-var SOON_TYPES = ['talkingphoto','productad','faceless','explainer','slideshow','cartoon','motion'];
+var SOON_TYPES = ['talkingphoto','productad','faceless','explainer','slideshow','quote','cartoon','motion'];
 function selectVtype(type, el){
   activeVtype = type;
   ['cinematic','avatar','whiteboard','slides'].forEach(function(t){
