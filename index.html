@@ -1053,6 +1053,84 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
   </div>
 
+  <div id="page-settings" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
+    <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">⚙️ Settings</div>
+    <div style="font-size:14px;color:var(--ts);margin-bottom:2rem;">Platform preferences, brand logos, and configuration</div>
+    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">👤 Account Information</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.10.0 — Build June 18</div></div>
+      </div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px;">🏷️ Brand Logos</div>
+      <div style="font-size:13px;color:var(--ts);margin-bottom:1rem;">Upload a logo for each brand. It appears as a watermark on all videos for that brand.</div>
+      <div class="logo-grid" id="logoGrid"></div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">🔌 API Connections</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;"><div><div style="font-size:13px;font-weight:500;">Claude AI</div><div style="font-size:11px;color:var(--tm);">AI Script Writing</div></div><span style="font-size:12px;background:rgba(52,211,153,0.1);color:var(--gr);border:1px solid rgba(52,211,153,0.3);padding:3px 10px;border-radius:20px;">✅ Connected</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;"><div><div style="font-size:13px;font-weight:500;">ElevenLabs</div><div style="font-size:11px;color:var(--tm);">Professional voiceover · ✓ Active credits</div></div><span style="font-size:12px;background:rgba(52,211,153,0.1);color:var(--gr);border:1px solid rgba(52,211,153,0.3);padding:3px 10px;border-radius:20px;">✅ Connected</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;"><div><div style="font-size:13px;font-weight:500;">Runway ML</div><div style="font-size:11px;color:var(--tm);">Cinematic video generation</div></div><span style="font-size:12px;background:rgba(52,211,153,0.1);color:var(--gr);border:1px solid rgba(52,211,153,0.3);padding:3px 10px;border-radius:20px;">✅ Connected</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;"><div><div style="font-size:13px;font-weight:500;">Stripe</div><div style="font-size:11px;color:var(--tm);">Membership payments</div></div><span style="font-size:12px;background:rgba(251,191,36,0.1);color:var(--go);border:1px solid rgba(251,191,36,0.3);padding:3px 10px;border-radius:20px;">⏳ Coming Soon</span></div>
+      </div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">🖥️ Backend Server</div>
+      <div style="font-size:13px;color:var(--ts);margin-bottom:12px;">URL: <span style="color:var(--ac);">https://enerstudio-backend.onrender.com</span></div>
+      <button onclick="checkServerStatus()" style="background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--ac);cursor:pointer;">🔄 Check Server Status</button>
+      <div id="serverStatusResult" style="margin-top:8px;font-size:12px;color:var(--ts);"></div>
+    </div>
+
+    <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
+    <div style="text-align:center;margin-top:8px;">
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.10.0</span>
+    </div>
+
+    <!-- ADMIN SECTION - hidden until passcode entered -->
+    <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px;">🔐 Admin — API Credits</div>
+      <div style="font-size:12px;color:var(--re);margin-bottom:1rem;font-weight:500;">⚠️ Internal use only — not visible to members</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--sur);border-radius:8px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;">Runway ML Credits</div>
+            <div style="font-size:11px;color:var(--tm);">Used for Cinematic AI + Avatar video generation</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--go);" id="adminRunwayCredits">...</div>
+            <div style="font-size:11px;color:var(--tm);" id="adminRunwaySub">Loading...</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--sur);border-radius:8px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;">ElevenLabs Voice Credits</div>
+            <div style="font-size:11px;color:var(--tm);">Used for professional voiceover generation</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--gr);">131k</div>
+            <div style="font-size:11px;color:var(--tm);">Creator Plan — Active</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--sur);border-radius:8px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;">Claude API</div>
+            <div style="font-size:11px;color:var(--tm);">Script generation — pay per use</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--gr);">Active</div>
+            <div style="font-size:11px;color:var(--tm);">~$0.003 per script</div>
+          </div>
+        </div>
+        <button onclick="loadAdminCredits()" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--re);cursor:pointer;margin-top:4px;">🔄 Refresh API Credits</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -3470,81 +3548,4 @@ memIsAnnual = false; toggleMemBilling(); // flips to true and updates all prices
 updatePlanButtons();
 </script>
 </body>
-</html>  <!-- SETTINGS PAGE -->
-  <div id="page-settings" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
-    <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">⚙️ Settings</div>
-    <div style="font-size:14px;color:var(--ts);margin-bottom:2rem;">Platform preferences, brand logos, and configuration</div>
-    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
-      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">👤 Account Information</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.10.0 — Build June 18</div></div>
-      </div>
-    </div>
-    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
-      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px;">🏷️ Brand Logos</div>
-      <div style="font-size:13px;color:var(--ts);margin-bottom:1rem;">Upload a logo for each brand. It appears as a watermark on all videos for that brand.</div>
-      <div class="logo-grid" id="logoGrid"></div>
-    </div>
-    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
-      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">🔌 API Connections</div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;"><div><div style="font-size:13px;font-weight:500;">Claude AI</div><div style="font-size:11px;color:var(--tm);">AI Script Writing</div></div><span style="font-size:12px;background:rgba(52,211,153,0.1);color:var(--gr);border:1px solid rgba(52,211,153,0.3);padding:3px 10px;border-radius:20px;">✅ Connected</span></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;"><div><div style="font-size:13px;font-weight:500;">ElevenLabs</div><div style="font-size:11px;color:var(--tm);">Professional voiceover · ✓ Active credits</div></div><span style="font-size:12px;background:rgba(52,211,153,0.1);color:var(--gr);border:1px solid rgba(52,211,153,0.3);padding:3px 10px;border-radius:20px;">✅ Connected</span></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;"><div><div style="font-size:13px;font-weight:500;">Runway ML</div><div style="font-size:11px;color:var(--tm);">Cinematic video generation</div></div><span style="font-size:12px;background:rgba(52,211,153,0.1);color:var(--gr);border:1px solid rgba(52,211,153,0.3);padding:3px 10px;border-radius:20px;">✅ Connected</span></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;"><div><div style="font-size:13px;font-weight:500;">Stripe</div><div style="font-size:11px;color:var(--tm);">Membership payments</div></div><span style="font-size:12px;background:rgba(251,191,36,0.1);color:var(--go);border:1px solid rgba(251,191,36,0.3);padding:3px 10px;border-radius:20px;">⏳ Coming Soon</span></div>
-      </div>
-    </div>
-    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
-      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">🖥️ Backend Server</div>
-      <div style="font-size:13px;color:var(--ts);margin-bottom:12px;">URL: <span style="color:var(--ac);">https://enerstudio-backend.onrender.com</span></div>
-      <button onclick="checkServerStatus()" style="background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--ac);cursor:pointer;">🔄 Check Server Status</button>
-      <div id="serverStatusResult" style="margin-top:8px;font-size:12px;color:var(--ts);"></div>
-    </div>
-
-    <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
-    <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.10.0</span>
-    </div>
-
-    <!-- ADMIN SECTION - hidden until passcode entered -->
-    <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
-      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px;">🔐 Admin — API Credits</div>
-      <div style="font-size:12px;color:var(--re);margin-bottom:1rem;font-weight:500;">⚠️ Internal use only — not visible to members</div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--sur);border-radius:8px;">
-          <div>
-            <div style="font-size:13px;font-weight:600;">Runway ML Credits</div>
-            <div style="font-size:11px;color:var(--tm);">Used for Cinematic AI + Avatar video generation</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--go);" id="adminRunwayCredits">...</div>
-            <div style="font-size:11px;color:var(--tm);" id="adminRunwaySub">Loading...</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--sur);border-radius:8px;">
-          <div>
-            <div style="font-size:13px;font-weight:600;">ElevenLabs Voice Credits</div>
-            <div style="font-size:11px;color:var(--tm);">Used for professional voiceover generation</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--gr);">131k</div>
-            <div style="font-size:11px;color:var(--tm);">Creator Plan — Active</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--sur);border-radius:8px;">
-          <div>
-            <div style="font-size:13px;font-weight:600;">Claude API</div>
-            <div style="font-size:11px;color:var(--tm);">Script generation — pay per use</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--gr);">Active</div>
-            <div style="font-size:11px;color:var(--tm);">~$0.003 per script</div>
-          </div>
-        </div>
-        <button onclick="loadAdminCredits()" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--re);cursor:pointer;margin-top:4px;">🔄 Refresh API Credits</button>
-      </div>
-    </div>
-  </div>
+</html>
