@@ -327,9 +327,13 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <!-- VOICE OPTIONS -->
         <div id="slidesVoiceOptions" style="display:none;">
           <div style="font-size:11px;color:var(--tm);margin-bottom:6px;">AI reads your script; each slide's text appears exactly when it's spoken.</div>
-          <select id="slidesVoiceSel" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;">
-            <option value="">Loading voices...</option>
-          </select>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <select id="slidesVoiceSel" style="flex:1;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;">
+              <option value="">Loading voices...</option>
+            </select>
+            <button onclick="previewSlidesVoice()" style="background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:8px 14px;font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;color:var(--ac);cursor:pointer;white-space:nowrap;">▶ Hear</button>
+          </div>
+          <audio id="slidesVoicePreview" style="display:none"></audio>
         </div>
       </div>
     </div>
@@ -1101,7 +1105,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.12.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.13.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1127,7 +1131,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.12.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.13.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2235,6 +2239,20 @@ function populateSlidesVoices(){
   if(src && dst && src.options.length>1){
     dst.innerHTML = src.innerHTML;
     dst.value = src.value;
+  }
+}
+
+function previewSlidesVoice(){
+  var sel = document.getElementById('slidesVoiceSel');
+  if(!sel || sel.options.length<=1){ populateSlidesVoices(); toast('Loading voices — try again in a moment'); return; }
+  var opt = sel.options[sel.selectedIndex];
+  var previewUrl = opt ? opt.getAttribute('data-preview') : '';
+  var audio = document.getElementById('slidesVoicePreview');
+  if(previewUrl && audio){
+    audio.src = previewUrl; audio.style.display='block';
+    audio.play().then(function(){ toast('▶ Playing voice preview'); }).catch(function(){ toast('Tap ▶ Hear again to play'); });
+  } else {
+    toast('No preview clip for this voice — it will still work in your video');
   }
 }
 
