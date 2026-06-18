@@ -190,13 +190,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
 
     <!-- BRAND LOGO MANAGER -->
-    <div class="card" id="logoManagerCard" style="display:none">
-      <div class="ch">
-        <div class="ct">🏷️ Brand Logos</div>
-        <div class="csub">Upload logos to watermark your videos</div>
-      </div>
-      <div class="logo-grid" id="logoGrid"></div>
-    </div>
 
     <!-- VIDEO TYPE SELECTOR -->
     <div class="card">
@@ -853,46 +846,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </div>
 
 <!-- SETTINGS PAGE -->
-<div id="page-settings" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
-  <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">⚙️ Settings</div>
-  <div style="font-size:14px;color:var(--ts);margin-bottom:2rem;">Platform preferences and configuration</div>
-  <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
-    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">Account Information</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-      <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
-      <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
-      <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-      <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.10.0 — Build June 18</div></div>
-    </div>
-  </div>
-  <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
-    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">API Status</div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;">
-        <span style="font-size:13px;">EnerStudio AI Engine</span>
-        <span style="font-size:12px;background:rgba(52,211,153,0.1);color:var(--gr);border:1px solid rgba(52,211,153,0.3);padding:3px 10px;border-radius:20px;">✅ Connected</span>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;">
-        <span style="font-size:13px;">EnerStudio Voice Studio</span>
-        <span style="font-size:12px;background:rgba(52,211,153,0.1);color:var(--gr);border:1px solid rgba(52,211,153,0.3);padding:3px 10px;border-radius:20px;">✅ Connected</span>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;">
-        <span style="font-size:13px;">EnerStudio Cinema Engine</span>
-        <span style="font-size:12px;background:rgba(52,211,153,0.1);color:var(--gr);border:1px solid rgba(52,211,153,0.3);padding:3px 10px;border-radius:20px;">✅ Connected</span>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur);border-radius:8px;">
-        <span style="font-size:13px;">Stripe (Payments)</span>
-        <span style="font-size:12px;background:rgba(251,191,36,0.1);color:var(--go);border:1px solid rgba(251,191,36,0.3);padding:3px 10px;border-radius:20px;">⏳ Coming Soon</span>
-      </div>
-    </div>
-  </div>
-  <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;">
-    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">Backend Server</div>
-    <div style="font-size:13px;color:var(--ts);margin-bottom:8px;">URL: https://enerstudio-backend.onrender.com</div>
-    <button onclick="checkServerStatus()" style="background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--ac);cursor:pointer;">🔄 Check Server Status</button>
-    <div id="serverStatusResult" style="margin-top:8px;font-size:12px;color:var(--ts);"></div>
-  </div>
-</div>
   <!-- SUPPORT PAGE -->
   <div id="page-support" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
     <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">💬 Support & Help</div>
@@ -3093,6 +3046,7 @@ var brandNames = ['Solar Canada','EnerSolution','Energlow Solar','EnerBuild','En
 
 function toggleLogoManager(){
   var card = document.getElementById('logoManagerCard');
+  if(!card){ showPage('settings'); return; }
   var isVisible = card.style.display !== 'none';
   card.style.display = isVisible ? 'none' : 'block';
   if(!isVisible) renderLogoGrid();
@@ -3101,6 +3055,7 @@ function toggleLogoManager(){
 
 function renderLogoGrid(){
   var grid = document.getElementById('logoGrid');
+  if(!grid) return;
   grid.innerHTML = '';
   brandNames.forEach(function(brand){
     var row = document.createElement('div');
