@@ -293,6 +293,43 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div style="margin-top:10px;padding:8px 10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;font-size:11px;color:var(--tm);">
           🎨 Slide colors are pulled from your brand logo automatically. Add or change your logo in <strong style="color:var(--ac);">Settings → Brand Logos</strong>.
         </div>
+
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:16px 0 8px;">Audio</div>
+        <div style="display:flex;gap:10px;margin-bottom:10px;">
+          <div id="aud-music" onclick="selectSlidesAudio('music',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">🎵</div>
+            <div style="font-size:12px;font-weight:600;color:#fff;margin-top:3px;">Background Music</div>
+          </div>
+          <div id="aud-voice" onclick="selectSlidesAudio('voice',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">🎙️</div>
+            <div style="font-size:12px;font-weight:600;color:var(--ts);margin-top:3px;">Voiceover (synced text)</div>
+          </div>
+        </div>
+
+        <!-- MUSIC OPTIONS -->
+        <div id="slidesMusicOptions">
+          <div style="font-size:11px;color:var(--tm);margin-bottom:6px;">Choose a track or upload your own (text appears slide-by-slide):</div>
+          <select id="slidesMusicSel" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;">
+            <option value="">No music (silent)</option>
+            <option value="uplift">Uplifting Corporate</option>
+            <option value="calm">Calm Ambient</option>
+            <option value="energetic">Energetic Upbeat</option>
+            <option value="cinematic">Cinematic Inspire</option>
+          </select>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+            <button onclick="document.getElementById('slidesMusicFile').click()" style="background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:7px 12px;font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;color:var(--ac);cursor:pointer;white-space:nowrap;">⬆ Upload Music</button>
+            <span id="slidesMusicName" style="font-size:11px;color:var(--tm);"></span>
+            <input type="file" id="slidesMusicFile" accept="audio/*" style="display:none" onchange="handleSlidesMusicUpload(this)">
+          </div>
+        </div>
+
+        <!-- VOICE OPTIONS -->
+        <div id="slidesVoiceOptions" style="display:none;">
+          <div style="font-size:11px;color:var(--tm);margin-bottom:6px;">AI reads your script; each slide's text appears exactly when it's spoken.</div>
+          <select id="slidesVoiceSel" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;">
+            <option value="">Loading voices...</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -462,7 +499,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <select id="gsel"><option>Lead Generation</option><option>Enrollment</option><option>Brand Awareness</option><option>Training</option></select>
       </div>
       <!-- VOICE SELECTOR -->
-      <div style="margin-bottom:12px;">
+      <div style="margin-bottom:12px;" id="voiceSelectorWrap">
         <div style="font-size:12px;color:var(--tm);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;">Select Voiceover</div>
         <div style="display:flex;gap:8px;align-items:center;">
           <select id="voiceSel" style="flex:1;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;">
@@ -1861,7 +1898,7 @@ async function fetchAndDeliverVideo(videoId, filename, duration, goal, photos, v
     toast('✅ Video ready! Click Download to save.');
     // Save permanent backend URL (not blob) so library persists across sessions
     var permanentUrl = BACKEND + '/api/video/' + videoId;
-    saveToLibrary(activeBrand, duration, goal, permanentUrl, videoId);
+    saveToLibrary(activeBrand, duration, goal, permanentUrl, videoId, videoType || 'Cinematic AI');
   } catch(e) {
     resetProductionProgress();
     document.getElementById('overallStatus').textContent = 'Failed';
@@ -2137,6 +2174,11 @@ function selectVtype(type, el){
   var avatarSection = document.getElementById('avatar-config-section');
   var cinematicSection = document.getElementById('cinematic-config-section');
 
+  // Reset shared controls to default (non-slides) state
+  var _vw = document.getElementById('voiceSelectorWrap'); if(_vw) _vw.style.display = (type==='slides') ? 'none' : 'block';
+  var _slc = document.getElementById('slides-config-section'); if(_slc && type!=='slides') _slc.style.display='none';
+  var _sb = document.getElementById('scriptBtn'); if(_sb) _sb.textContent = (type==='slides') ? '⚡ Design My Slides' : '⚡ Generate Script';
+
   if(type === 'avatar'){
     if(avatarSection) avatarSection.style.display = 'block';
     if(cinematicSection) cinematicSection.style.display = 'none';
@@ -2153,6 +2195,8 @@ function selectVtype(type, el){
     if(avatarSection) avatarSection.style.display = 'none';
     if(cinematicSection) cinematicSection.style.display = 'block';
     var sl = document.getElementById('slides-config-section'); if(sl) sl.style.display='block';
+    var vw = document.getElementById('voiceSelectorWrap'); if(vw) vw.style.display='none';
+    var sb = document.getElementById('scriptBtn'); if(sb) sb.textContent='⚡ Design My Slides';
     toast('📊 Animated Slides selected — pick an aspect ratio and describe your video');
   } else {
     if(avatarSection) avatarSection.style.display = 'none';
@@ -2166,6 +2210,44 @@ function selectVtype(type, el){
 var slidesAspect = 'landscape';
 var slidesData = [];      // AI-designed slide specs
 var slidesPalette = null; // extracted brand palette
+var slidesAudioMode = 'music';   // 'music' | 'voice'
+var slidesMusicUpload = null;    // base64 of uploaded track
+var slidesVoiceId = '';
+
+function selectSlidesAudio(mode, el){
+  slidesAudioMode = mode;
+  var m = document.getElementById('aud-music'), v = document.getElementById('aud-voice');
+  var mo = document.getElementById('slidesMusicOptions'), vo = document.getElementById('slidesVoiceOptions');
+  var on = mode==='music';
+  if(m){ m.style.background=on?'var(--p)':'var(--card)'; m.style.borderColor=on?'var(--p)':'var(--bdr)'; m.querySelectorAll('div').forEach(function(d,i){ if(d.style&&i===1) d.style.color=on?'#fff':'var(--ts)'; }); }
+  if(v){ v.style.background=!on?'var(--p)':'var(--card)'; v.style.borderColor=!on?'var(--p)':'var(--bdr)'; v.querySelectorAll('div').forEach(function(d,i){ if(d.style&&i===1) d.style.color=!on?'#fff':'var(--ts)'; }); }
+  if(mo) mo.style.display = on?'block':'none';
+  if(vo) vo.style.display = on?'none':'block';
+  // populate voice dropdown from the same list used elsewhere
+  if(!on){ populateSlidesVoices(); }
+}
+
+function populateSlidesVoices(){
+  var src = document.getElementById('voiceSel');
+  var dst = document.getElementById('slidesVoiceSel');
+  if(src && dst && src.options.length>1){
+    dst.innerHTML = src.innerHTML;
+    dst.value = src.value;
+  }
+}
+
+function handleSlidesMusicUpload(input){
+  if(!input.files || !input.files[0]) return;
+  var f = input.files[0];
+  var reader = new FileReader();
+  reader.onload = function(e){
+    slidesMusicUpload = e.target.result;
+    document.getElementById('slidesMusicName').textContent = '✓ '+f.name;
+    document.getElementById('slidesMusicSel').value = '';
+    toast('Music uploaded: '+f.name);
+  };
+  reader.readAsDataURL(f);
+}
 
 function selectAspect(a, el){
   slidesAspect = a;
@@ -2220,14 +2302,16 @@ async function generateSlides(isRegen){
   var palHint=PALETTE_SLOTS.join(', ');
   var user='Design '+numSlides+' animated slides for a '+dur+'-second '+goal+' video for the brand "'+brand+'". Brief: '+prompt+'.\n\n'
     +'Return a JSON object: {"slides":[ ... ]}. Each slide object has:\n'
-    +'- "bg": {"type":"gradient"|"solid","from":SLOT,"to":SLOT,"color":SLOT,"shapes":[{"kind":"circle"|"bar","x":0-1,"y":0-1,"r":0-0.3,"color":SLOT}]}\n'
+    +'- "bg": {"type":"gradient"|"solid","from":SLOT,"to":SLOT,"color":SLOT,"shapes":[{"kind":"circle"|"bar","x":0-1,"y":0-1,"r":0-0.3,"w":0-1,"h":0-0.1,"color":SLOT,"anim":"fade"|"grow"|"drift"}]}\n'
     +'- "lines": optional [{"x1":0-1,"y1":0-1,"x2":0-1,"y2":0-1,"color":SLOT,"w":0.004-0.012}]\n'
-    +'- "blocks": [{"text":"...","size":0.04-0.14,"weight":"bold"|"regular"|"serif","color":SLOT,"x":0-1,"y":0-1,"align":"left"|"center"|"right","anim":"fade"|"rise"|"slide"|"pop"|"type","delay":0-0.7}]\n\n'
+    +'- "blocks": [{"text":"...","size":0.04-0.14,"weight":"bold"|"regular"|"serif","color":SLOT,"x":0-1,"y":0-1,"align":"left"|"center"|"right","anim":"fade"|"rise"|"slide"|"pop"|"type"|"zoom"|"dropin","delay":0-0.7}]\n'
+    +'- "voiceText": a short natural sentence (5-14 words) a narrator would say for THIS slide, matching its on-screen text.\n\n'
     +'RULES: Colors must ONLY be one of these palette slot names (never raw hex): '+palHint+'. '
     +'x/y are fractions of width/height (0=left/top, 1=right/bottom). Keep 1-3 text blocks per slide. '
     +'Use large bold text for headlines (size 0.10-0.14), smaller for subtext (0.04-0.06). '
-    +'First slide = title/hook, last slide = call to action with the website. Vary backgrounds and animations across slides. '
-    +'Stagger blocks with delay. NO text longer than 6 words per block. Output ONLY the JSON.';
+    +'IMPORTANT for visual interest: give EACH text block and EACH shape a DIFFERENT animation than its neighbors — vary anim and delay so elements enter one after another with distinct movement (e.g. headline pops, subtext rises, a shape drifts in). '
+    +'Add 1-2 decorative shapes to most slides. First slide = title/hook, last slide = call to action with the website. Vary backgrounds across slides. '
+    +'NO text longer than 6 words per block. Output ONLY the JSON.';
 
   try{
     var r=await fetch(BACKEND+'/api/claude/generate',{
@@ -2264,6 +2348,8 @@ function renderSlidePreviews(){
   grid.style.gridTemplateColumns = isVert?'repeat(auto-fill,minmax(180px,1fr))':'repeat(auto-fill,minmax(300px,1fr))';
   grid.innerHTML='';
   slidesData.forEach(function(s,idx){
+    var wrap=document.createElement('div');
+    wrap.style.cssText='display:flex;flex-direction:column;gap:6px;';
     var bg=s.bg||{};
     var bgCss;
     if(bg.type==='gradient'){ bgCss='linear-gradient(160deg,'+c(bg.from,'bg_mid')+','+c(bg.to,'bg_dark')+')'; }
@@ -2303,9 +2389,86 @@ function renderSlidePreviews(){
     label.style.cssText='position:absolute;bottom:6px;right:8px;font-size:10px;color:rgba(255,255,255,0.55);';
     label.textContent='Slide '+(idx+1);
     box.appendChild(label);
-    grid.appendChild(box);
+    wrap.appendChild(box);
+    // action toolbar
+    var bar=document.createElement('div');
+    bar.style.cssText='display:flex;gap:4px;flex-wrap:wrap;';
+    var btns=[
+      ['✏️ Text','editSlideText('+idx+')'],
+      ['🎨 Colors','editSlideColors('+idx+')'],
+      ['🔄 Redesign','regenerateOneSlide('+idx+')'],
+      ['🗑️','deleteSlide('+idx+')']
+    ];
+    btns.forEach(function(bd){
+      var btn=document.createElement('button');
+      btn.innerHTML=bd[0];
+      btn.style.cssText='flex:1;min-width:auto;background:var(--sur);border:1px solid var(--bdr);border-radius:6px;padding:5px 4px;font-family:DM Sans,sans-serif;font-size:10px;color:var(--ts);cursor:pointer;';
+      btn.setAttribute('onclick',bd[1]);
+      bar.appendChild(btn);
+    });
+    wrap.appendChild(bar);
+    grid.appendChild(wrap);
   });
 }
+
+// ---- Per-slide editing (#3) ----
+function editSlideText(idx){
+  var s=slidesData[idx]; if(!s||!s.blocks) return;
+  var current=s.blocks.map(function(b){return b.text;}).join('\n');
+  var edited=prompt('Edit slide text (one line per text block):',current);
+  if(edited===null) return;
+  var lines=edited.split('\n');
+  s.blocks.forEach(function(b,i){ if(lines[i]!==undefined) b.text=lines[i]; });
+  renderSlidePreviews();
+  toast('Slide '+(idx+1)+' text updated');
+}
+
+function editSlideColors(idx){
+  var s=slidesData[idx]; if(!s) return;
+  // cycle the background between palette options for quick recolor
+  var opts=['bg_dark','bg_mid','accent','accent2'];
+  s.bg=s.bg||{};
+  if(s.bg.type==='gradient'){
+    var ci=opts.indexOf(s.bg.from); s.bg.from=opts[(ci+1)%opts.length];
+    var di=opts.indexOf(s.bg.to); s.bg.to=opts[(di+1)%opts.length];
+  } else {
+    var bi=opts.indexOf(s.bg.color||'bg_dark'); s.bg.color=opts[(bi+1)%opts.length];
+  }
+  // flip text color for contrast
+  (s.blocks||[]).forEach(function(b){ b.color = (b.color==='text')?'accent':(b.color==='accent'?'ink':'text'); });
+  renderSlidePreviews();
+  toast('Slide '+(idx+1)+' colors changed (tap again to cycle)');
+}
+
+function deleteSlide(idx){
+  if(slidesData.length<=1){ toast('You need at least one slide'); return; }
+  slidesData.splice(idx,1);
+  renderSlidePreviews();
+  toast('Slide removed');
+}
+
+async function regenerateOneSlide(idx){
+  var s=slidesData[idx]; if(!s) return;
+  toast('Redesigning slide '+(idx+1)+'...');
+  var palHint=PALETTE_SLOTS.join(', ');
+  var theme=(s.blocks&&s.blocks[0]?s.blocks[0].text:'')+' '+(s.voiceText||'');
+  var sys='You output ONLY one valid JSON slide object, no markdown, no commentary.';
+  var user='Redesign ONE animated slide about: "'+theme.trim()+'". '
+    +'Return a single JSON object with keys bg, lines (optional), blocks, voiceText. '
+    +'bg:{type:"gradient"|"solid",from/to/color:SLOT,shapes:[{kind:"circle"|"bar",x,y,r,w,h,color:SLOT,anim:"fade"|"grow"|"drift"}]}. '
+    +'blocks:[{text,size:0.04-0.14,weight:"bold"|"regular"|"serif",color:SLOT,x,y,align,anim:"fade"|"rise"|"slide"|"pop"|"type"|"zoom"|"dropin",delay:0-0.7}]. '
+    +'Colors ONLY from: '+palHint+'. Give each element a different animation. Keep the same wording/meaning. Output ONLY the JSON object.';
+  try{
+    var r=await fetch(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})});
+    var d=await r.json();
+    var raw=(d.text||'').trim().replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
+    var ns=JSON.parse(raw);
+    slidesData[idx]=ns.slides?ns.slides[0]:ns;
+    renderSlidePreviews();
+    toast('Slide '+(idx+1)+' redesigned');
+  }catch(e){ showerr('Could not redesign slide: '+e.message); }
+}
+
 
 // STEP 2 (slides): render the actual animated MP4
 async function renderSlides(){
@@ -2315,11 +2478,21 @@ async function renderSlides(){
   document.getElementById('slidesVideo').style.display='none';
   document.getElementById('slidesDlBtn').disabled=true;
   var dur=parseInt(document.getElementById('dsel').value||'20');
+  // collect audio choice
+  var audioPayload={};
+  if(slidesAudioMode==='music'){
+    if(slidesMusicUpload) audioPayload.musicBase64=slidesMusicUpload;
+    else audioPayload.musicTrack=document.getElementById('slidesMusicSel').value||'';
+  } else {
+    audioPayload.voiceId=(document.getElementById('slidesVoiceSel')||{}).value||'';
+    audioPayload.voiceSync=true;
+  }
   setprog('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt',30,'Rendering your slides...');
   try{
+    var body=Object.assign({slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:slidesAspect,audioMode:slidesAudioMode},audioPayload);
     var r=await fetch(BACKEND+'/api/slides/animate',{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:slidesAspect})
+      body:JSON.stringify(body)
     });
     if(!r.ok)throw new Error('Render failed ('+r.status+')');
     var d=await r.json();
@@ -2330,14 +2503,32 @@ async function renderSlides(){
     vid.src=url; vid.style.display='block';
     clearprog('slidesRenderPbar');
     var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
-    dl.onclick=function(){ fetchAndDeliverVideo(d.videoId,'enerstudio-slides-'+(activeBrand||'video').replace(/\s/g,'-')+'.mp4',dur,'Animated Slides',[], 'Animated Slides'); };
+    dl.onclick=function(){ downloadSlidesVideo(d.videoId); };
+    // Save to Library tagged as Animated Slides + brand
+    saveToLibrary(activeBrand, dur+'s', 'Animated Slides', url, d.videoId, 'Animated Slides', slidesAspect);
     document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
-    toast('Animated Slides video ready!');
+    toast('Animated Slides video ready! Saved to Library.');
   }catch(e){
     clearprog('slidesRenderPbar');
     document.getElementById('renderSlidesBtn').disabled=false;
     showerr('Render failed: '+e.message);
   }
+}
+
+// Dedicated, self-contained download for slides (does NOT touch cinematic DOM)
+async function downloadSlidesVideo(videoId){
+  try{
+    toast('Preparing download...');
+    var resp=await fetch(BACKEND+'/api/video/'+videoId);
+    if(!resp.ok) throw new Error('HTTP '+resp.status);
+    var blob=await resp.blob();
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url; a.download='enerstudio-slides-'+(activeBrand||'video').replace(/\s/g,'-')+'.mp4';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+    toast('Download started!');
+  }catch(e){ showerr('Download failed: '+e.message); }
 }
 
 
@@ -2635,12 +2826,14 @@ var videoLibrary = JSON.parse(localStorage.getItem('enerstudio_library') || '[]'
 var photoLibrary = JSON.parse(localStorage.getItem('enerstudio_photos') || '[]');
 var _currentPhotoSessionId = Date.now();
 
-function saveToLibrary(brand, duration, goal, videoUrl, videoId){
+function saveToLibrary(brand, duration, goal, videoUrl, videoId, videoType, aspect){
   var entry = {
     id: Date.now(),
     brand: brand,
     duration: duration,
     goal: goal,
+    videoType: videoType || 'Cinematic AI',
+    aspect: aspect || 'landscape',
     videoUrl: videoUrl,
     videoId: videoId || null,
     isPermanent: videoUrl && videoUrl.indexOf('blob:') === -1,
@@ -2691,13 +2884,13 @@ function renderLibrary(){
     info.style.padding = '12px';
 
     var title = document.createElement('div');
-    title.style.cssText = 'font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px;';
-    title.textContent = v.brand;
+    title.style.cssText = 'font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px;display:flex;align-items:center;gap:6px;';
+    title.innerHTML = v.brand + '<span style="font-size:9px;font-weight:600;background:var(--pg);color:var(--ac);border:1px solid var(--ba);padding:1px 6px;border-radius:10px;">'+(v.videoType||'Video')+'</span>';
     info.appendChild(title);
 
     var meta = document.createElement('div');
     meta.style.cssText = 'font-size:11px;color:var(--tm);';
-    meta.textContent = v.duration + 's · ' + v.goal + ' · ' + v.date;
+    meta.textContent = (v.duration||'') + ' · ' + (v.goal||'') + ' · ' + v.date;
     info.appendChild(meta);
 
     var btns = document.createElement('div');
