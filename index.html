@@ -612,6 +612,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <video id="slidesVideo" controls style="display:none;width:100%;border-radius:10px;"></video>
         <div class="action-row" style="margin-top:10px;">
           <button class="abtn pri" id="slidesDlBtn" disabled>⬇️ Download Video</button>
+          <a id="slidesOpenLink" href="#" target="_blank" rel="noopener" style="display:none;flex:1;text-align:center;padding:7px;background:var(--pg);border:1px solid var(--ba);border-radius:6px;font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;color:var(--ac);cursor:pointer;text-decoration:none;">🔗 Open in New Tab</a>
         </div>
       </div>
     </div>
@@ -1100,7 +1101,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.11.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.12.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1126,7 +1127,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.11.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.12.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2507,6 +2508,7 @@ async function renderSlides(){
     clearprog('slidesRenderPbar');
     var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
     dl.onclick=function(){ downloadSlidesVideo(d.videoId); };
+    var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
     // Save to Library tagged as Animated Slides + brand
     saveToLibrary(activeBrand, dur+'s', 'Animated Slides', url, d.videoId, 'Animated Slides', slidesAspect);
     document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
@@ -2520,18 +2522,36 @@ async function renderSlides(){
 
 // Dedicated, self-contained download for slides (does NOT touch cinematic DOM)
 async function downloadSlidesVideo(videoId){
+  var directUrl = BACKEND+'/api/video/'+videoId;
+  var fname = 'enerstudio-slides-'+(activeBrand||'video').replace(/\s/g,'-')+'.mp4';
+  toast('Preparing download...');
   try{
-    toast('Preparing download...');
-    var resp=await fetch(BACKEND+'/api/video/'+videoId);
+    // Race the fetch against a timeout so it can never hang forever
+    var ctrl = new AbortController();
+    var to = setTimeout(function(){ ctrl.abort(); }, 20000);
+    var resp = await fetch(directUrl, { signal: ctrl.signal });
+    clearTimeout(to);
     if(!resp.ok) throw new Error('HTTP '+resp.status);
-    var blob=await resp.blob();
-    var url=URL.createObjectURL(blob);
-    var a=document.createElement('a');
-    a.href=url; a.download='enerstudio-slides-'+(activeBrand||'video').replace(/\s/g,'-')+'.mp4';
+    var blob = await resp.blob();
+    if(!blob || blob.size < 1000) throw new Error('empty file');
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = fname;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
     toast('Download started!');
-  }catch(e){ showerr('Download failed: '+e.message); }
+  }catch(e){
+    // Fallback: open the video directly so the user can save it manually
+    console.warn('Blob download failed, opening direct link:', e.message);
+    toast('Opening video in a new tab — right-click → Save Video As');
+    try{
+      var a2 = document.createElement('a');
+      a2.href = directUrl; a2.target = '_blank'; a2.rel = 'noopener';
+      document.body.appendChild(a2); a2.click(); a2.remove();
+    }catch(e2){
+      window.open(directUrl, '_blank');
+    }
+  }
 }
 
 
