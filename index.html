@@ -144,7 +144,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </style>
 </head>
 <body>
-<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.37.0 IS LIVE — Faceless stock footage review + replace</div>
+<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.38.0 IS LIVE — Smarter footage matching</div>
 <div class="topbar">
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -1214,7 +1214,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.37.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.38.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1240,7 +1240,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.37.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.38.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2951,7 +2951,7 @@ async function generateFaceless(){
     +'Final scene = call to action with the website "'+(activeBrandSite||'')+'".\n'
     +'Each scene object:\n'
     +'- "bg": {"type":"gradient","from":SLOT,"to":SLOT,"dir":"vertical"|"horizontal"} OR {"type":"solid","color":SLOT} OR {"type":"diagonal","color":SLOT,"block":SLOT}. Optional corner "shapes":[{"kind":"circle"|"ring","x":0-1,"y":0-1,"r":0.08-0.18,"color":SLOT,"anim":"float"|"grow"}].\n'
-    +'- "stockQuery": 2-4 word search phrase for background video footage matching this scene (e.g. "solar panels rooftop", "technician installing solar", "canadian home exterior").\n'
+    +'- "stockQuery": a 2-4 word phrase describing CONCRETE, FILMABLE footage — real people, places, or objects a camera can film, NEVER abstract ideas. Translate the point into a visible real-world scene. Good: "solar panel installation", "technician on rooftop", "person counting money", "online video class", "happy family home". Bad (too abstract, returns wrong clips): "strong income", "growth potential", "experience", "climate change".\n'
     +'- "blocks": 1-2 bold caption blocks (size 0.05-0.10), centered, anim "pop"|"rise"|"zoom". '+(isListicle?'For numbered points put the number in the headline text naturally (e.g. "1. High Demand").':'')+'\n'
     +'- "voiceText": one natural narrator sentence (6-16 words) for this scene that matches the caption.\n'
     +'RULES: colors ONLY from palette slots: '+palHint+'. Keep captions punchy (max 8 words/line). Use the EXACT website "'+(activeBrandSite||'')+'" — never invent it. Keep text in center safe zone. Vary the wording and angle each time you generate. Output ONLY the JSON.'
