@@ -144,7 +144,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </style>
 </head>
 <body>
-<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.53.0 IS LIVE — Product Ads scene styles + dramatic motion</div>
+
 <div class="topbar">
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -1223,7 +1223,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div onclick="toggleFaq(6)" style="cursor:pointer;background:var(--sur);border-radius:8px;overflow:hidden;">
           <div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:13px;font-weight:500;">The platform says Failed to fetch — what does that mean?</span><span style="color:var(--ac);">+</span></div>
-          <div id="faq-6" style="display:none;padding:0 14px 14px;font-size:13px;color:var(--ts);line-height:1.7;">This usually means the backend server is sleeping. The server runs on Render free tier which sleeps after 15 minutes of inactivity. The first request after inactivity takes up to 50 seconds to wake up. Wait 60 seconds and try again. To check server status go to Settings and click Check Server Status.</div>
+          <div id="faq-6" style="display:none;padding:0 14px 14px;font-size:13px;color:var(--ts);line-height:1.7;">The platform keeps its servers warm automatically, so generation should start right away. Very occasionally, after a long idle period, the first request may take a few extra seconds to spin up — if a generation seems slow to start, just give it a moment and it will proceed normally.</div>
         </div>
       </div>
     </div>
@@ -1261,7 +1261,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.53.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.54.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1287,7 +1287,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.53.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.54.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1336,6 +1336,15 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
 <script>
 var BACKEND = 'https://enerstudio-backend.onrender.com';
+
+// ── KEEP-ALIVE: warm the backend the moment the app opens, and keep it warm ──
+// Render free tier sleeps after 15 min idle (≈50s cold start). We warm it on load
+// so by the time the user generates, it's already awake — and ping every 10 min.
+function warmBackend(){ try{ fetch(BACKEND+'/api/ping',{cache:'no-store'}).catch(function(){}); }catch(e){} }
+warmBackend();
+setInterval(warmBackend, 10*60*1000);
+document.addEventListener('visibilitychange', function(){ if(!document.hidden) warmBackend(); });
+
 var activeBrand = 'Solar Canada';
 var activeBrandSite = 'SolarCanadaPro.ca';
 var scriptText = '';
@@ -2611,15 +2620,6 @@ function renderSlidePreviews(){
   var grid=document.getElementById('slidesPreview');
   grid.style.gridTemplateColumns = isVert?'repeat(auto-fill,minmax(180px,1fr))':(isSquare?'repeat(auto-fill,minmax(220px,1fr))':'repeat(auto-fill,minmax(300px,1fr))');
   grid.innerHTML='';
-  // Debug badge: proves a fresh generation ran (scene count, first scene text, time)
-  try{
-    var firstTxt='';
-    if(slidesData[0] && slidesData[0].blocks && slidesData[0].blocks[0]) firstTxt=slidesData[0].blocks[0].text||'';
-    var dbg=document.createElement('div');
-    dbg.style.cssText='grid-column:1/-1;font-size:11px;color:var(--tm);padding:6px 10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;margin-bottom:6px;';
-    dbg.textContent='✓ Generated '+slidesData.length+' scenes · '+new Date().toLocaleTimeString()+' · first: "'+firstTxt.slice(0,40)+'"';
-    grid.appendChild(dbg);
-  }catch(e){}
   slidesData.forEach(function(s,idx){
     var wrap=document.createElement('div');
     wrap.style.cssText='display:flex;flex-direction:column;gap:6px;';
