@@ -144,7 +144,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </style>
 </head>
 <body>
-<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.47.0 IS LIVE — Avatar result always shows</div>
+<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.48.0 IS LIVE — Avatar clear progress + done message</div>
 <div class="topbar">
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -1214,7 +1214,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.47.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.48.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1240,7 +1240,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.47.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.48.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -3494,7 +3494,10 @@ async function _generateAvatarVideoInner(){
         dbg('Still working… (checking again) '+(tries*4)+'s');
         continue; // a slow/aborted poll shouldn't kill the whole flow; try again
       }
-      dbg('Rendering… status: '+(pd.status||'?')+' ('+(tries*4)+'s)');
+      var elapsed=tries*4;
+      var mm=Math.floor(elapsed/60), ss=elapsed%60;
+      var timeStr=(mm>0?mm+'m ':'')+ss+'s';
+      dbg('🎬 Your presenter is rendering — please keep this page open. Working… '+timeStr+' (this usually takes 3–8 minutes)');
       if(pd.status==='completed'){
         done=true;
         finishClimb('slidesRenderPfill','slidesRenderPtxt','Ready!');
@@ -3515,17 +3518,17 @@ async function _generateAvatarVideoInner(){
           else if(pd.heygenUrl){ window.open(pd.heygenUrl,'_blank'); }
         };
         var ol=document.getElementById('slidesOpenLink'); if(ol && url){ ol.href=url; ol.style.display='block'; }
-        var rSub2=document.getElementById('slidesResultSub'); if(rSub2 && rSub2.textContent.indexOf('ready')===-1) rSub2.textContent='Your avatar video is ready below.';
-        var eb2=document.getElementById('errbox'); if(eb2){ eb2.classList.remove('on'); }
+        var rSub2=document.getElementById('slidesResultSub'); if(rSub2 && rSub2.textContent.indexOf('ready')===-1) rSub2.textContent='✅ Done! Your avatar video is ready below — and saved to your Library.';
+        var eb2=document.getElementById('errbox'); if(eb2){ eb2.textContent='✅ Avatar video ready! It is shown below and saved to your Library.'; eb2.classList.add('on'); eb2.style.background='rgba(52,211,153,0.1)'; eb2.style.borderColor='rgba(52,211,153,0.3)'; eb2.style.color='var(--gr)'; }
         try{ saveToLibrary(activeBrand, dur+'s', 'AI Avatar', url, pd.videoId, 'AI Avatar', 'landscape'); }catch(_e){}
         document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
-        toast('Avatar video ready!');
+        toast('✅ Avatar video ready!');
       } else if(pd.status==='failed'){
         throw new Error(pd.error||'Generation failed on HeyGen');
       }
       // else keep polling (processing/pending/waiting)
     }
-    if(!done) throw new Error('Timed out waiting for the avatar video. It may still finish — check your Library shortly.');
+    if(!done) throw new Error('Your presenter is taking longer than usual to render. It will keep finishing on its own — check your Library in a few minutes and it should appear there.');
   }catch(e){
     stopClimb(); clearprog('slidesRenderPbar');
     showerr('Avatar video failed: '+e.message);
