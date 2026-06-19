@@ -249,11 +249,11 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Photo montage</div>
           <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
         </div>
-        <div id="vt-quote" onclick="comingSoon('Quote / Social')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
+        <div id="vt-quote" onclick="selectVtype('quote',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
           <div style="font-size:22px;margin-bottom:4px;">💬</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Quote / Social</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Quote cards</div>
-          <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
+          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-cartoon" onclick="comingSoon('Cartoon')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">🎨</div>
@@ -334,6 +334,60 @@ video{width:100%;border-radius:10px;margin-top:10px;}
             <button onclick="previewSlidesVoice()" style="background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:8px 14px;font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;color:var(--ac);cursor:pointer;white-space:nowrap;">▶ Hear</button>
           </div>
           <audio id="slidesVoicePreview" style="display:none"></audio>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUOTE / SOCIAL CONFIG (shown when Quote / Social is selected) -->
+    <div id="quote-config-section" style="display:none;">
+      <div class="card">
+        <div class="ch"><div class="ct">💬 Quote / Social Setup</div><div class="csub">Punchy, scroll-stopping cards in your brand colors</div></div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Format</div>
+        <div style="display:flex;gap:10px;margin-bottom:14px;">
+          <div id="qf-series" onclick="selectQuoteFormat('series',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">🗂️</div>
+            <div style="font-size:12px;font-weight:600;color:#fff;margin-top:3px;">Tip Series</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.7);">Multiple cards</div>
+          </div>
+          <div id="qf-single" onclick="selectQuoteFormat('single',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">💬</div>
+            <div style="font-size:12px;font-weight:600;color:var(--ts);margin-top:3px;">Single Quote</div>
+            <div style="font-size:9px;color:var(--tm);">One bold card</div>
+          </div>
+        </div>
+        <div id="quoteCountWrap" style="margin-bottom:14px;">
+          <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Number of Cards</div>
+          <select id="quoteCount" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;">
+            <option value="3">3 cards</option>
+            <option value="5" selected>5 cards</option>
+            <option value="6">6 cards</option>
+          </select>
+        </div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Aspect Ratio</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <div id="qar-vertical" onclick="selectQuoteAspect('vertical',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">📱</div><div style="font-size:11px;font-weight:600;color:#fff;margin-top:3px;">Vertical</div><div style="font-size:8px;color:rgba(255,255,255,0.7);">9:16 Reels</div>
+          </div>
+          <div id="qar-square" onclick="selectQuoteAspect('square',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">⬛</div><div style="font-size:11px;font-weight:600;color:var(--ts);margin-top:3px;">Square</div><div style="font-size:8px;color:var(--tm);">1:1 Feed</div>
+          </div>
+          <div id="qar-landscape" onclick="selectQuoteAspect('landscape',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">🖥️</div><div style="font-size:11px;font-weight:600;color:var(--ts);margin-top:3px;">Landscape</div><div style="font-size:8px;color:var(--tm);">16:9 Web</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Background Music (optional)</div>
+        <select id="quoteMusicSel" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:8px;">
+          <option value="">No music (silent)</option>
+          <option value="uplift">Uplifting</option><option value="calm">Calm</option><option value="energetic">Energetic</option>
+        </select>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button onclick="document.getElementById('quoteMusicFile').click()" style="background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:7px 12px;font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;color:var(--ac);cursor:pointer;white-space:nowrap;">⬆ Upload Music</button>
+          <span id="quoteMusicName" style="font-size:11px;color:var(--tm);"></span>
+          <input type="file" id="quoteMusicFile" accept="audio/*" style="display:none" onchange="handleQuoteMusicUpload(this)">
+        </div>
+        <audio id="quoteMusicPreview" controls style="display:none;width:100%;margin-top:8px;height:34px;"></audio>
+        <div style="margin-top:12px;padding:8px 10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;font-size:11px;color:var(--tm);">
+          💡 Describe a topic (e.g. "reasons to start a solar career") and AI writes punchy quote/tip cards in your brand colors. Free — no voice cost.
         </div>
       </div>
     </div>
@@ -1105,7 +1159,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.19.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.20.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1131,7 +1185,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.19.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.20.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1278,6 +1332,7 @@ async function loadBalance(){
 // STEP 1: GENERATE SCRIPT
 async function generateScript(){
   if(activeVtype === 'slides'){ return generateSlides(false); }
+  if(activeVtype === 'quote'){ return generateQuotes(false); }
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){showerr('Please describe your video first.');return;}
   clearerr();
@@ -2157,10 +2212,10 @@ function toggleBrandDropdown(){
 
 // VIDEO TYPE
 var activeVtype = 'cinematic';
-var SOON_TYPES = ['talkingphoto','productad','faceless','explainer','slideshow','quote','cartoon','motion'];
+var SOON_TYPES = ['talkingphoto','productad','faceless','explainer','slideshow','cartoon','motion'];
 function selectVtype(type, el){
   activeVtype = type;
-  ['cinematic','avatar','whiteboard','slides'].forEach(function(t){
+  ['cinematic','avatar','whiteboard','slides','quote'].forEach(function(t){
     var card = document.getElementById('vt-'+t);
     if(!card) return;
     if(t === type){
@@ -2180,10 +2235,13 @@ function selectVtype(type, el){
   var avatarSection = document.getElementById('avatar-config-section');
   var cinematicSection = document.getElementById('cinematic-config-section');
 
-  // Reset shared controls to default (non-slides) state
-  var _vw = document.getElementById('voiceSelectorWrap'); if(_vw) _vw.style.display = (type==='slides') ? 'none' : 'block';
+  // Reset shared controls to default state
+  var isSlidesLike = (type==='slides' || type==='quote');
+  var _vw = document.getElementById('voiceSelectorWrap'); if(_vw) _vw.style.display = isSlidesLike ? 'none' : 'block';
   var _slc = document.getElementById('slides-config-section'); if(_slc && type!=='slides') _slc.style.display='none';
-  var _sb = document.getElementById('scriptBtn'); if(_sb) _sb.textContent = (type==='slides') ? '⚡ Design My Slides' : '⚡ Generate Script';
+  var _qc = document.getElementById('quote-config-section'); if(_qc && type!=='quote') _qc.style.display='none';
+  var _sb = document.getElementById('scriptBtn');
+  if(_sb) _sb.textContent = (type==='slides') ? '⚡ Design My Slides' : (type==='quote' ? '⚡ Create My Quote Cards' : '⚡ Generate Script');
 
   if(type === 'avatar'){
     if(avatarSection) avatarSection.style.display = 'block';
@@ -2204,6 +2262,12 @@ function selectVtype(type, el){
     var vw = document.getElementById('voiceSelectorWrap'); if(vw) vw.style.display='none';
     var sb = document.getElementById('scriptBtn'); if(sb) sb.textContent='⚡ Design My Slides';
     toast('📊 Animated Slides selected — pick an aspect ratio and describe your video');
+  } else if(type === 'quote'){
+    if(avatarSection) avatarSection.style.display = 'none';
+    if(cinematicSection) cinematicSection.style.display = 'block';
+    var qc = document.getElementById('quote-config-section'); if(qc) qc.style.display='block';
+    var vw2 = document.getElementById('voiceSelectorWrap'); if(vw2) vw2.style.display='none';
+    toast('💬 Quote / Social selected — pick a format and describe your topic');
   } else {
     if(avatarSection) avatarSection.style.display = 'none';
     if(cinematicSection) cinematicSection.style.display = 'block';
@@ -2357,6 +2421,7 @@ async function generateSlides(isRegen){
     renderSlidePreviews();
     clearprog('slidesPbar');
     document.getElementById('renderSlidesBtn').disabled=false;
+    document.getElementById('renderSlidesBtn').onclick=renderSlides;
     document.getElementById('scriptBtn').disabled=false;
     document.getElementById('slidesStep').scrollIntoView({behavior:'smooth'});
     toast(slidesData.length+' slides designed! Review and approve to render.');
@@ -2372,9 +2437,11 @@ function renderSlidePreviews(){
   var pal=slidesPalette||DEFAULT_PALETTE;
   function c(slot,def){ return pal[slot]||pal[def]||def; }
   var isVert = slidesAspect==='vertical';
-  var pw = isVert?168:300, ph = isVert?300:169; // preview box keeps aspect
+  var isSquare = slidesAspect==='square';
+  var aspectCss = isVert ? '9/16' : (isSquare ? '1/1' : '16/9');
+  var pw = isVert?168:(isSquare?240:300), ph = isVert?300:(isSquare?240:169); // preview box keeps aspect
   var grid=document.getElementById('slidesPreview');
-  grid.style.gridTemplateColumns = isVert?'repeat(auto-fill,minmax(180px,1fr))':'repeat(auto-fill,minmax(300px,1fr))';
+  grid.style.gridTemplateColumns = isVert?'repeat(auto-fill,minmax(180px,1fr))':(isSquare?'repeat(auto-fill,minmax(220px,1fr))':'repeat(auto-fill,minmax(300px,1fr))');
   grid.innerHTML='';
   slidesData.forEach(function(s,idx){
     var wrap=document.createElement('div');
@@ -2398,7 +2465,7 @@ function renderSlidePreviews(){
       overlay='position:absolute;inset:0;background:'+c(bg.block,'bg_mid')+';clip-path:polygon(100% 0,100% 100%,0 100%);';
     } else { bgCss=c(bg.color,'bg_dark'); }
     var box=document.createElement('div');
-    box.style.cssText='position:relative;width:100%;aspect-ratio:'+(isVert?'9/16':'16/9')+';border-radius:10px;overflow:hidden;background:'+bgCss+';border:1px solid var(--bdr);';
+    box.style.cssText='position:relative;width:100%;aspect-ratio:'+aspectCss+';border-radius:10px;overflow:hidden;background:'+bgCss+';border:1px solid var(--bdr);';
     if(overlay){ var ov=document.createElement('div'); ov.style.cssText=overlay; box.appendChild(ov); }
     // shapes
     (bg.shapes||[]).forEach(function(sh){
@@ -2595,6 +2662,140 @@ async function downloadSlidesVideo(videoId, inlineData){
     toast('Download started!');
   }catch(e){
     toast('This video expired on the server. Please re-render to download it.');
+  }
+}
+
+// ===== QUOTE / SOCIAL (reuses the Slides rendering engine) =====
+var quoteFormat = 'series';
+var quoteAspect = 'vertical';
+var quoteMusicUpload = null;
+
+function selectQuoteFormat(f, el){
+  quoteFormat = f;
+  var s=document.getElementById('qf-series'), g=document.getElementById('qf-single');
+  var on=(f==='series');
+  s.style.background=on?'var(--p)':'var(--card)'; s.style.borderColor=on?'var(--p)':'var(--bdr)';
+  s.querySelectorAll('div').forEach(function(d,i){ if(d.style&&i===1) d.style.color=on?'#fff':'var(--ts)'; });
+  g.style.background=!on?'var(--p)':'var(--card)'; g.style.borderColor=!on?'var(--p)':'var(--bdr)';
+  g.querySelectorAll('div').forEach(function(d,i){ if(d.style&&i===1) d.style.color=!on?'#fff':'var(--ts)'; });
+  document.getElementById('quoteCountWrap').style.display = on?'block':'none';
+}
+function selectQuoteAspect(a, el){
+  quoteAspect = a;
+  ['vertical','square','landscape'].forEach(function(x){
+    var c=document.getElementById('qar-'+x); if(!c)return;
+    var on=(x===a);
+    c.style.background=on?'var(--p)':'var(--card)'; c.style.borderColor=on?'var(--p)':'var(--bdr)';
+    c.querySelectorAll('div').forEach(function(d,i){ if(d.style&&i===1) d.style.color=on?'#fff':'var(--ts)'; });
+  });
+}
+function handleQuoteMusicUpload(input){
+  if(!input.files||!input.files[0])return;
+  var f=input.files[0], reader=new FileReader();
+  reader.onload=function(e){
+    quoteMusicUpload=e.target.result;
+    document.getElementById('quoteMusicName').textContent='✓ '+f.name;
+    document.getElementById('quoteMusicSel').value='';
+    var prev=document.getElementById('quoteMusicPreview'); if(prev){ prev.src=e.target.result; prev.style.display='block'; }
+    toast('Music ready — tap play to listen');
+  };
+  reader.readAsDataURL(f);
+}
+
+async function generateQuotes(){
+  var prompt=document.getElementById('prompt').value.trim();
+  if(!prompt){showerr('Please describe your topic first.');return;}
+  clearerr();
+  document.getElementById('scriptBtn').disabled=true;
+  document.getElementById('slidesStep').classList.add('on');
+  document.getElementById('slidesResultCard').style.display='none';
+  document.getElementById('renderSlidesBtn').disabled=true;
+  document.getElementById('slidesPreview').innerHTML='';
+  // route the shared render path to use quote settings
+  slidesAspect = quoteAspect;
+  slidesAudioMode = 'music';
+  slidesMusicUpload = quoteMusicUpload;
+
+  var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
+  var n = (quoteFormat==='single') ? 1 : parseInt(document.getElementById('quoteCount').value||'5');
+
+  setprog('slidesPbar','slidesPfill','slidesPtxt',20,'Extracting your brand colors...');
+  slidesPalette = DEFAULT_PALETTE;
+  try{
+    var logo=(typeof brandLogos!=='undefined')?brandLogos[brand]:null;
+    if(logo){
+      var pr=await fetch(BACKEND+'/api/brand/extract-colors',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({logoBase64:logo})});
+      if(pr.ok){ var pd=await pr.json(); if(pd.palette) slidesPalette=pd.palette; }
+    }
+  }catch(e){}
+
+  setprog('slidesPbar','slidesPfill','slidesPtxt',55,'Writing your '+(n>1?n+' quote cards':'quote card')+'...');
+  var palHint=PALETTE_SLOTS.join(', ');
+  var sys='You are a viral social-media copywriter and designer. Output ONLY valid JSON, no markdown.';
+  var user='Create '+n+' punchy, scroll-stopping '+(n>1?'quote/tip cards (a series)':'single quote card')+' for the brand "'+brand+'" about: '+prompt+'.\n'
+    +'Return {"slides":[...]}. Each card = one slide object:\n'
+    +'- "bg": vary style per card — {"type":"gradient","from":SLOT,"to":SLOT,"dir":"vertical"|"horizontal"} OR {"type":"solid","color":SLOT} OR {"type":"diagonal","color":SLOT,"block":SLOT}. Optional "shapes":[{"kind":"circle"|"ring","x":0-1,"y":0-1,"r":0.08-0.2,"color":SLOT,"anim":"float"|"grow"}] placed in CORNERS only.\n'
+    +'- "blocks": ONE big bold quote/tip (size 0.07-0.11) centered, plus optional small label or number. Use anim "pop"|"rise"|"zoom".\n'
+    +'- "voiceText": empty string "" (these cards use music, not voice).\n'
+    +'RULES: colors ONLY from palette slots: '+palHint+'. Each card ONE powerful sentence (max 12 words) that motivates the reader. '
+    +(n>1?'Make it a numbered series (card 1, 2, 3...) building a theme; last card = call to action with the brand or website. ':'One unforgettable line. ')
+    +'Keep text in the center safe zone (x 0.5, y around 0.45). Vary backgrounds across cards. Output ONLY the JSON.';
+  try{
+    var r=await fetch(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})});
+    if(!r.ok)throw new Error('AI writing failed ('+r.status+')');
+    var d=await r.json();
+    var raw=(d.text||'').trim().replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
+    var parsed=JSON.parse(raw);
+    slidesData = parsed.slides||parsed;
+    if(!Array.isArray(slidesData)||!slidesData.length) throw new Error('No cards returned');
+    setprog('slidesPbar','slidesPfill','slidesPtxt',90,'Building preview...');
+    renderSlidePreviews();
+    clearprog('slidesPbar');
+    document.getElementById('renderSlidesBtn').disabled=false;
+    document.getElementById('renderSlidesBtn').onclick=renderQuotes; // route render to quote handler
+    document.getElementById('scriptBtn').disabled=false;
+    document.getElementById('slidesStep').scrollIntoView({behavior:'smooth'});
+    toast(slidesData.length+' quote card'+(slidesData.length>1?'s':'')+' ready! Review and render.');
+  }catch(e){
+    clearprog('slidesPbar');
+    document.getElementById('scriptBtn').disabled=false;
+    showerr('Quote creation failed: '+e.message+'. Try again.');
+  }
+}
+
+async function renderQuotes(){
+  if(!slidesData.length){ showerr('No cards to render.'); return; }
+  document.getElementById('renderSlidesBtn').disabled=true;
+  document.getElementById('slidesResultCard').style.display='block';
+  document.getElementById('slidesVideo').style.display='none';
+  document.getElementById('slidesDlBtn').disabled=true;
+  // each card ~3.5s for a punchy social pace
+  var perCard=3.5; var dur=Math.round(slidesData.length*perCard);
+  setprog('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt',30,'Rendering your cards...');
+  try{
+    var body={slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:quoteAspect,audioMode:'music'};
+    var msel=document.getElementById('quoteMusicSel');
+    if(quoteMusicUpload) body.musicBase64=quoteMusicUpload;
+    else if(msel && msel.value) body.musicTrack=msel.value;
+    var r=await fetch(BACKEND+'/api/slides/animate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok)throw new Error('Render failed ('+r.status+')');
+    var d=await r.json();
+    if(!d.videoId)throw new Error('No video returned');
+    setprog('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt',80,'Finalizing...');
+    var inlineData=d.videoData||null;
+    var url=inlineData||(BACKEND+'/api/video/'+d.videoId);
+    var vid=document.getElementById('slidesVideo'); vid.src=url; vid.style.display='block';
+    clearprog('slidesRenderPbar');
+    var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
+    dl.onclick=function(){ downloadSlidesVideo(d.videoId, inlineData); };
+    var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
+    saveToLibrary(activeBrand, dur+'s', 'Quote / Social', url, d.videoId, 'Quote / Social', quoteAspect);
+    document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
+    toast('Quote video ready! Saved to Library.');
+  }catch(e){
+    clearprog('slidesRenderPbar');
+    document.getElementById('renderSlidesBtn').disabled=false;
+    showerr('Render failed: '+e.message);
   }
 }
 
