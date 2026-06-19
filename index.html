@@ -1105,7 +1105,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.18.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.19.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1131,7 +1131,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.18.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.19.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2338,8 +2338,9 @@ async function generateSlides(isRegen){
     +'CRITICAL — READABILITY: keep all text inside the central safe zone (x between 0.18 and 0.82). Place large shapes (circle/ring r>0.12) only near the EDGES or CORNERS (x<0.25 or x>0.75, or y<0.25 or y>0.75) so they NEVER sit behind or cover the headline text. Small accent bars may sit near text. '
     +'MOTION: give each text block and each shape a different anim and stagger delays so elements enter one after another. Shapes also drift gently the whole slide automatically. '
     +'Use large bold headlines (size 0.10-0.14) and smaller subtext (0.04-0.06). Add 1-2 shapes per slide. First slide = title/hook, last = call to action with the website. '
-    +'NEVER place two text blocks at the same or nearly the same y position — they must be vertically separated by at least 0.12 so they never overlap. If a slide lists several audiences/items, put them in ONE block separated by spaces or bullets, OR spread them across well-separated y positions — never stacked. '
-    +'NO text longer than 6 words per block. Output ONLY the JSON.';
+    +'NEVER place two text blocks at the same or nearly the same y position — they must be vertically separated by at least 0.12 so they never overlap. '
+    +'CRITICAL — COMPLETE LISTS: if the brief names a list of audiences or items (e.g. beginners, electricians, HVAC technicians, energy advisors, entrepreneurs), you MUST include EVERY item — never drop or shorten the list. Put the full list as ONE text block with items separated by "  •  " (so it stays on one readable line and fits), and the voiceText for that slide must read out every item too. Do not summarize the list. '
+    +'NO text longer than 6 words per block (lists joined with bullets are exempt). Output ONLY the JSON.';
 
   try{
     var r=await fetch(BACKEND+'/api/claude/generate',{
