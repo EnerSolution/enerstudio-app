@@ -195,11 +195,23 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <div class="card">
       <div class="ch"><div class="ct">🎯 Video Type</div><div class="csub">Choose your production style</div></div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
-        <div id="vt-cinematic" onclick="selectVtype('cinematic',this)" style="background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
-          <div style="font-size:22px;margin-bottom:4px;">🎬</div>
-          <div style="font-size:11px;font-weight:600;color:#fff;">Cinematic AI</div>
-          <div style="font-size:9px;color:rgba(255,255,255,0.7);margin-top:2px;">Real scenes</div>
+        <div id="vt-faceless" onclick="selectVtype('faceless',this)" style="background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
+          <div style="font-size:22px;margin-bottom:4px;">🎞️</div>
+          <div style="font-size:11px;font-weight:600;color:#fff;">Faceless</div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.7);margin-top:2px;">Listicle / Shorts</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.3);color:#fff;padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
+        </div>
+        <div id="vt-quote" onclick="selectVtype('quote',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
+          <div style="font-size:22px;margin-bottom:4px;">💬</div>
+          <div style="font-size:11px;font-weight:600;color:var(--ts);">Quote / Social</div>
+          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Quote cards</div>
+          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
+        </div>
+        <div id="vt-slides" onclick="selectVtype('slides',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
+          <div style="font-size:22px;margin-bottom:4px;">📊</div>
+          <div style="font-size:11px;font-weight:600;color:var(--ts);">Animated Slides</div>
+          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Kinetic text</div>
+          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-avatar" onclick="selectVtype('avatar',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
           <div style="font-size:22px;margin-bottom:4px;">🎤</div>
@@ -207,16 +219,16 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Presenter</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
+        <div id="vt-cinematic" onclick="selectVtype('cinematic',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
+          <div style="font-size:22px;margin-bottom:4px;">🎬</div>
+          <div style="font-size:11px;font-weight:600;color:var(--ts);">Cinematic AI</div>
+          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Real scenes</div>
+          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
+        </div>
         <div id="vt-whiteboard" onclick="selectVtype('whiteboard',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
           <div style="font-size:22px;margin-bottom:4px;">✏️</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Whiteboard</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Animation</div>
-          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
-        </div>
-        <div id="vt-slides" onclick="selectVtype('slides',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
-          <div style="font-size:22px;margin-bottom:4px;">📊</div>
-          <div style="font-size:11px;font-weight:600;color:var(--ts);">Animated Slides</div>
-          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Kinetic text</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-talkingphoto" onclick="comingSoon('Talking Photo')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
@@ -231,12 +243,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Image to ad</div>
           <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
         </div>
-        <div id="vt-faceless" onclick="comingSoon('Faceless Video')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
-          <div style="font-size:22px;margin-bottom:4px;">🎞️</div>
-          <div style="font-size:11px;font-weight:600;color:var(--ts);">Faceless</div>
-          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Listicle / Shorts</div>
-          <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
-        </div>
         <div id="vt-explainer" onclick="comingSoon('Explainer')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">📈</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Explainer</div>
@@ -248,12 +254,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Slideshow</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Photo montage</div>
           <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
-        </div>
-        <div id="vt-quote" onclick="selectVtype('quote',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
-          <div style="font-size:22px;margin-bottom:4px;">💬</div>
-          <div style="font-size:11px;font-weight:600;color:var(--ts);">Quote / Social</div>
-          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Quote cards</div>
-          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-cartoon" onclick="comingSoon('Cartoon')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">🎨</div>
@@ -388,6 +388,59 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <audio id="quoteMusicPreview" controls style="display:none;width:100%;margin-top:8px;height:34px;"></audio>
         <div style="margin-top:12px;padding:8px 10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;font-size:11px;color:var(--tm);">
           💡 Describe a topic (e.g. "reasons to start a solar career") and AI writes punchy quote/tip cards in your brand colors. Free — no voice cost.
+        </div>
+      </div>
+    </div>
+
+    <!-- FACELESS / LISTICLE CONFIG -->
+    <div id="faceless-config-section" style="display:none;">
+      <div class="card">
+        <div class="ch"><div class="ct">🎞️ Faceless / Listicle Setup</div><div class="csub">Stock footage + bold captions — the format that dominates Reels & TikTok</div></div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Structure</div>
+        <div style="display:flex;gap:10px;margin-bottom:14px;">
+          <div id="ff-listicle" onclick="selectFacelessFormat('listicle',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">🔢</div><div style="font-size:12px;font-weight:600;color:#fff;margin-top:3px;">Listicle</div><div style="font-size:9px;color:rgba(255,255,255,0.7);">Top 5 tips/reasons</div>
+          </div>
+          <div id="ff-story" onclick="selectFacelessFormat('story',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">📖</div><div style="font-size:12px;font-weight:600;color:var(--ts);margin-top:3px;">Story</div><div style="font-size:9px;color:var(--tm);">Hook → points → CTA</div>
+          </div>
+        </div>
+        <div id="facelessCountWrap" style="margin-bottom:14px;">
+          <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Number of Points</div>
+          <select id="facelessCount" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;">
+            <option value="3">3 points</option><option value="5" selected>5 points</option><option value="7">7 points</option>
+          </select>
+        </div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Aspect Ratio</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <div id="far-vertical" onclick="selectFacelessAspect('vertical',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">📱</div><div style="font-size:11px;font-weight:600;color:#fff;margin-top:3px;">Vertical</div><div style="font-size:8px;color:rgba(255,255,255,0.7);">9:16 Reels</div>
+          </div>
+          <div id="far-square" onclick="selectFacelessAspect('square',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">⬛</div><div style="font-size:11px;font-weight:600;color:var(--ts);margin-top:3px;">Square</div><div style="font-size:8px;color:var(--tm);">1:1 Feed</div>
+          </div>
+          <div id="far-landscape" onclick="selectFacelessAspect('landscape',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">🖥️</div><div style="font-size:11px;font-weight:600;color:var(--ts);margin-top:3px;">Landscape</div><div style="font-size:8px;color:var(--tm);">16:9 Web</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Background</div>
+        <select id="facelessBgMode" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:14px;">
+          <option value="auto" selected>Stock footage (falls back to backgrounds)</option>
+          <option value="bg">Animated backgrounds only (100% free)</option>
+        </select>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Audio</div>
+        <select id="facelessAudio" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:8px;">
+          <option value="">No audio (silent)</option>
+          <option value="music_uplift" selected>Music — Uplifting</option>
+          <option value="music_calm">Music — Calm</option>
+          <option value="music_energetic">Music — Energetic</option>
+          <option value="voice">AI Voiceover (narration)</option>
+        </select>
+        <div id="facelessVoiceWrap" style="display:none;margin-bottom:8px;">
+          <select id="facelessVoiceId" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;"></select>
+        </div>
+        <div style="margin-top:12px;padding:8px 10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;font-size:11px;color:var(--tm);">
+          💡 Describe a topic and AI writes a punchy listicle or story. Real stock clips play behind bold captions. Music keeps it free; voiceover adds a small cost.
         </div>
       </div>
     </div>
@@ -1159,7 +1212,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.27.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.28.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1185,7 +1238,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.27.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.28.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1335,6 +1388,7 @@ async function loadBalance(){
 async function generateScript(){
   if(activeVtype === 'slides'){ return generateSlides(false); }
   if(activeVtype === 'quote'){ return generateQuotes(false); }
+  if(activeVtype === 'faceless'){ return generateFaceless(false); }
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){showerr('Please describe your video first.');return;}
   clearerr();
@@ -2214,10 +2268,10 @@ function toggleBrandDropdown(){
 
 // VIDEO TYPE
 var activeVtype = 'cinematic';
-var SOON_TYPES = ['talkingphoto','productad','faceless','explainer','slideshow','cartoon','motion'];
+var SOON_TYPES = ['talkingphoto','productad','explainer','slideshow','cartoon','motion'];
 function selectVtype(type, el){
   activeVtype = type;
-  ['cinematic','avatar','whiteboard','slides','quote'].forEach(function(t){
+  ['cinematic','avatar','whiteboard','slides','quote','faceless'].forEach(function(t){
     var card = document.getElementById('vt-'+t);
     if(!card) return;
     if(t === type){
@@ -2238,12 +2292,13 @@ function selectVtype(type, el){
   var cinematicSection = document.getElementById('cinematic-config-section');
 
   // Reset shared controls to default state
-  var isSlidesLike = (type==='slides' || type==='quote');
+  var isSlidesLike = (type==='slides' || type==='quote' || type==='faceless');
   var _vw = document.getElementById('voiceSelectorWrap'); if(_vw) _vw.style.display = isSlidesLike ? 'none' : 'block';
   var _slc = document.getElementById('slides-config-section'); if(_slc && type!=='slides') _slc.style.display='none';
   var _qc = document.getElementById('quote-config-section'); if(_qc && type!=='quote') _qc.style.display='none';
+  var _fc = document.getElementById('faceless-config-section'); if(_fc && type!=='faceless') _fc.style.display='none';
   var _sb = document.getElementById('scriptBtn');
-  if(_sb) _sb.textContent = (type==='slides') ? '⚡ Design My Slides' : (type==='quote' ? '⚡ Create My Quote Cards' : '⚡ Generate Script');
+  if(_sb) _sb.textContent = (type==='slides') ? '⚡ Design My Slides' : (type==='quote' ? '⚡ Create My Quote Cards' : (type==='faceless' ? '⚡ Create My Video' : '⚡ Generate Script'));
 
   if(type === 'avatar'){
     if(avatarSection) avatarSection.style.display = 'block';
@@ -2270,6 +2325,12 @@ function selectVtype(type, el){
     var qc = document.getElementById('quote-config-section'); if(qc) qc.style.display='block';
     var vw2 = document.getElementById('voiceSelectorWrap'); if(vw2) vw2.style.display='none';
     toast('💬 Quote / Social selected — pick a format and describe your topic');
+  } else if(type === 'faceless'){
+    if(avatarSection) avatarSection.style.display = 'none';
+    if(cinematicSection) cinematicSection.style.display = 'block';
+    var fc = document.getElementById('faceless-config-section'); if(fc) fc.style.display='block';
+    var vw3 = document.getElementById('voiceSelectorWrap'); if(vw3) vw3.style.display='none';
+    toast('🎞️ Faceless / Listicle selected — pick a format and describe your topic');
   } else {
     if(avatarSection) avatarSection.style.display = 'none';
     if(cinematicSection) cinematicSection.style.display = 'block';
@@ -2795,6 +2856,134 @@ async function renderQuotes(){
     saveToLibrary(activeBrand, dur+'s', 'Quote / Social', url, d.videoId, 'Quote / Social', quoteAspect);
     document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
     toast('Quote video ready! Saved to Library.');
+  }catch(e){
+    clearprog('slidesRenderPbar');
+    document.getElementById('renderSlidesBtn').disabled=false;
+    showerr('Render failed: '+e.message);
+  }
+}
+
+// ===== FACELESS / LISTICLE (reuses the Slides rendering engine + optional stock footage) =====
+var facelessFormat='listicle';
+var facelessAspect='vertical';
+
+function selectFacelessFormat(f, el){
+  facelessFormat=f;
+  var l=document.getElementById('ff-listicle'), s=document.getElementById('ff-story');
+  var on=(f==='listicle');
+  l.style.background=on?'var(--p)':'var(--card)'; l.style.borderColor=on?'var(--p)':'var(--bdr)';
+  l.querySelectorAll('div').forEach(function(d,i){ if(d.style&&i===1) d.style.color=on?'#fff':'var(--ts)'; });
+  s.style.background=!on?'var(--p)':'var(--card)'; s.style.borderColor=!on?'var(--p)':'var(--bdr)';
+  s.querySelectorAll('div').forEach(function(d,i){ if(d.style&&i===1) d.style.color=!on?'#fff':'var(--ts)'; });
+  document.getElementById('facelessCountWrap').style.display = on?'block':'none';
+}
+function selectFacelessAspect(a, el){
+  facelessAspect=a;
+  ['vertical','square','landscape'].forEach(function(x){
+    var c=document.getElementById('far-'+x); if(!c)return;
+    var on=(x===a);
+    c.style.background=on?'var(--p)':'var(--card)'; c.style.borderColor=on?'var(--p)':'var(--bdr)';
+    c.querySelectorAll('div').forEach(function(d,i){ if(d.style&&i===1) d.style.color=on?'#fff':'var(--ts)'; });
+  });
+}
+// show voice dropdown when voiceover chosen
+document.addEventListener('change', function(e){
+  if(e.target && e.target.id==='facelessAudio'){
+    var w=document.getElementById('facelessVoiceWrap');
+    if(w) w.style.display = (e.target.value==='voice') ? 'block' : 'none';
+    if(e.target.value==='voice'){ var sel=document.getElementById('facelessVoiceId'); if(sel && !sel.options.length && typeof VOICES!=='undefined'){ VOICES.forEach(function(v){ var o=document.createElement('option'); o.value=v.id; o.textContent=v.name; sel.appendChild(o); }); } }
+  }
+});
+
+async function generateFaceless(){
+  var prompt=document.getElementById('prompt').value.trim();
+  if(!prompt){showerr('Please describe your topic first.');return;}
+  clearerr();
+  document.getElementById('scriptBtn').disabled=true;
+  document.getElementById('slidesStep').classList.add('on');
+  document.getElementById('slidesResultCard').style.display='none';
+  document.getElementById('renderSlidesBtn').disabled=true;
+  document.getElementById('slidesPreview').innerHTML='';
+  slidesAspect=facelessAspect;
+
+  var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
+  var n=parseInt(document.getElementById('facelessCount').value||'5');
+  var isListicle=(facelessFormat==='listicle');
+
+  setprog('slidesPbar','slidesPfill','slidesPtxt',20,'Extracting your brand colors...');
+  slidesPalette=DEFAULT_PALETTE;
+  try{
+    var logo=(typeof brandLogos!=='undefined')?brandLogos[brand]:null;
+    if(logo){ var pr=await fetch(BACKEND+'/api/brand/extract-colors',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({logoBase64:logo})}); if(pr.ok){ var pd=await pr.json(); if(pd.palette) slidesPalette=pd.palette; } }
+  }catch(e){}
+
+  setprog('slidesPbar','slidesPfill','slidesPtxt',55,'Writing your '+(isListicle?'listicle':'story')+'...');
+  var palHint=PALETTE_SLOTS.join(', ');
+  var sys='You are a viral short-form video scriptwriter and designer. Output ONLY valid JSON, no markdown.';
+  var totalScenes = isListicle ? (n+2) : (n+2); // intro + points + CTA
+  var user='Create a faceless '+(isListicle?('"Top '+n+'" listicle'):'story-style')+' short video for brand "'+brand+'" about: '+prompt+'.\n'
+    +'Return {"slides":[...]} with '+totalScenes+' scenes. Scene 1 = bold hook/title. '
+    +(isListicle?('Then '+n+' scenes, each one numbered point (1..'+n+') with a short punchy headline + one supporting line. '):('Then '+n+' story beats that build momentum. '))
+    +'Final scene = call to action with the website "'+(activeBrandSite||'')+'".\n'
+    +'Each scene object:\n'
+    +'- "bg": {"type":"gradient","from":SLOT,"to":SLOT,"dir":"vertical"|"horizontal"} OR {"type":"solid","color":SLOT} OR {"type":"diagonal","color":SLOT,"block":SLOT}. Optional corner "shapes":[{"kind":"circle"|"ring","x":0-1,"y":0-1,"r":0.08-0.18,"color":SLOT,"anim":"float"|"grow"}].\n'
+    +'- "stockQuery": 2-4 word search phrase for background video footage matching this scene (e.g. "solar panels rooftop", "technician installing solar", "canadian home exterior").\n'
+    +'- "blocks": 1-2 bold caption blocks (size 0.05-0.10), centered, anim "pop"|"rise"|"zoom". '+(isListicle?'For numbered points put the number in the headline text naturally (e.g. "1. High Demand").':'')+'\n'
+    +'- "voiceText": one natural narrator sentence (6-16 words) for this scene that matches the caption.\n'
+    +'RULES: colors ONLY from palette slots: '+palHint+'. Keep captions punchy (max 8 words/line). Use the EXACT website "'+(activeBrandSite||'')+'" — never invent it. Keep text in center safe zone. Output ONLY the JSON.';
+  try{
+    var r=await fetch(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})});
+    if(!r.ok)throw new Error('AI writing failed ('+r.status+')');
+    var d=await r.json();
+    var raw=(d.text||'').trim().replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
+    var parsed=JSON.parse(raw);
+    slidesData=parsed.slides||parsed;
+    if(!Array.isArray(slidesData)||!slidesData.length) throw new Error('No scenes returned');
+    setprog('slidesPbar','slidesPfill','slidesPtxt',90,'Building preview...');
+    renderSlidePreviews();
+    clearprog('slidesPbar');
+    document.getElementById('renderSlidesBtn').disabled=false;
+    document.getElementById('renderSlidesBtn').onclick=renderFaceless;
+    document.getElementById('scriptBtn').disabled=false;
+    document.getElementById('slidesStep').scrollIntoView({behavior:'smooth'});
+    toast(slidesData.length+' scenes ready! Review and create your video.');
+  }catch(e){
+    clearprog('slidesPbar');
+    document.getElementById('scriptBtn').disabled=false;
+    showerr('Faceless creation failed: '+e.message+'. Try again.');
+  }
+}
+
+async function renderFaceless(){
+  if(!slidesData.length){ showerr('No scenes to render.'); return; }
+  document.getElementById('renderSlidesBtn').disabled=true;
+  document.getElementById('slidesResultCard').style.display='block';
+  document.getElementById('slidesVideo').style.display='none';
+  document.getElementById('slidesDlBtn').disabled=true;
+  var perScene=3.5; var dur=Math.round(slidesData.length*perScene);
+  var audioSel=document.getElementById('facelessAudio').value;
+  var bgMode=document.getElementById('facelessBgMode').value;
+  setprog('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt',30,'Rendering your video (this can take up to a minute)...');
+  try{
+    var body={slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:facelessAspect,videoType:'faceless',stockMode:bgMode};
+    if(audioSel==='voice'){ body.audioMode='voice'; body.voiceId=document.getElementById('facelessVoiceId').value||(typeof VOICES!=='undefined'&&VOICES[0]?VOICES[0].id:''); }
+    else if(audioSel.indexOf('music_')===0){ body.audioMode='music'; body.musicTrack=audioSel.replace('music_',''); }
+    else { body.audioMode='music'; }
+    var r=await fetch(BACKEND+'/api/slides/animate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok)throw new Error('Render failed ('+r.status+')');
+    var d=await r.json();
+    if(!d.videoId)throw new Error('No video returned');
+    setprog('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt',80,'Finalizing...');
+    var inlineData=d.videoData||null;
+    var url=inlineData||(BACKEND+'/api/video/'+d.videoId);
+    var vid=document.getElementById('slidesVideo'); vid.src=url; vid.style.display='block';
+    clearprog('slidesRenderPbar');
+    var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
+    dl.onclick=function(){ downloadSlidesVideo(d.videoId, inlineData); };
+    var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
+    saveToLibrary(activeBrand, dur+'s', 'Faceless / Listicle', url, d.videoId, 'Faceless / Listicle', facelessAspect);
+    document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
+    toast('Faceless video ready! Saved to Library.');
   }catch(e){
     clearprog('slidesRenderPbar');
     document.getElementById('renderSlidesBtn').disabled=false;
