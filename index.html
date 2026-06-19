@@ -144,7 +144,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </style>
 </head>
 <body>
-<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.51.0 IS LIVE — Product Ad render button fix</div>
+<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.52.0 IS LIVE — Product Ads now real AI video (Runway)</div>
 <div class="topbar">
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -448,7 +448,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <!-- PRODUCT ADS CONFIG SECTION -->
     <div id="productad-config-section" style="display:none;">
       <div class="card">
-        <div class="ch"><div class="ct">🛍️ Product Ad Setup</div><div class="csub">Upload your product photo — AI turns it into a polished ad with motion, captions & price</div></div>
+        <div class="ch"><div class="ct">🛍️ Product Ad Setup</div><div class="csub">Upload your product photo — Runway AI animates it into a cinematic ad with motion, captions & price</div></div>
         <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Product Photo(s)</div>
         <input type="file" id="productImgInput" accept="image/*" multiple onchange="handleProductImages(event)" style="display:none;">
         <div onclick="document.getElementById('productImgInput').click()" style="border:1.5px dashed var(--bdr);border-radius:10px;padding:18px;text-align:center;cursor:pointer;margin-bottom:8px;background:var(--sur);">
@@ -479,7 +479,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <option value="calm">Music — Calm</option>
         </select>
         <div style="margin-top:12px;padding:8px 10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;font-size:11px;color:var(--tm);">
-          💡 Describe your product below and AI writes the ad copy — headline, benefits, and call-to-action. Your photo animates with smooth motion behind bold captions. 100% free to generate.
+          💡 Describe your product and AI writes the ad copy. Your photo is animated by Runway AI into real cinematic motion (5-second clip), then captions, price & music are added. Premium type — uses your AI video credits (~$0.25–0.50 per ad).
         </div>
       </div>
     </div>
@@ -1252,7 +1252,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.51.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.52.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1278,7 +1278,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.51.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.52.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -3507,14 +3507,15 @@ async function generateProductAd(){
   try { await _generateProductAdInner(); }
   catch(e){ stopClimb(); clearprog('slidesRenderPbar'); document.getElementById('scriptBtn').disabled=false; showerr('Product ad error: '+(e&&e.message?e.message:e)); }
 }
+
+// Product ad now uses Runway Gen-4 Turbo image-to-video (real AI motion) + caption overlay
+var productAdData = null; // { headline, sub, price, motionPrompt }
 async function _generateProductAdInner(){
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){ showerr('Please describe your product (what it is and its main benefit).'); return; }
   if(!productImages.length){ showerr('Please upload at least one product photo first.'); return; }
   clearerr();
   document.getElementById('scriptBtn').disabled=true;
-  var dur=parseInt(document.getElementById('dsel').value||'20');
-  var nScenes = dur<=15 ? 3 : (dur<=30 ? 4 : 5);
   var price=(document.getElementById('productPrice').value||'').trim();
   var lang=document.getElementById('lsel')?document.getElementById('lsel').value:'English';
   var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
@@ -3522,43 +3523,40 @@ async function _generateProductAdInner(){
   document.getElementById('slidesStep').classList.add('on');
   document.getElementById('slidesPreview').innerHTML='';
   document.getElementById('slidesResultCard').style.display='none';
-  var rt=document.getElementById('reviewTitle'); if(rt) rt.textContent='Your Product Ad Scenes';
-  var rs=document.getElementById('reviewSub'); if(rs) rs.textContent='AI is writing your ad copy…';
-  startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Writing your ad…',8,40);
+  var rt=document.getElementById('reviewTitle'); if(rt) rt.textContent='Your Product Ad';
+  var rs=document.getElementById('reviewSub'); if(rs) rs.textContent='AI is writing your ad…';
+  startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Writing your ad…',8,45);
 
   try{
-    // 1) AI writes ad copy as scene blocks
-    var sys='You are an expert direct-response ad copywriter. Output ONLY valid JSON, no markdown, no preamble.';
-    var user='Create punchy ad copy for a '+dur+'-second product video ad with exactly '+nScenes+' scenes for the brand "'+brand+'" in '+lang+'. Product: '+prompt+'.\\n'
-      +'Scene 1 = attention-grabbing hook headline. Middle scenes = one key benefit each (short). Final scene = strong call to action.\\n'
-      +'Return JSON: {"scenes":[{"headline":"...","sub":"..."}]} with '+nScenes+' scenes. Headlines max 6 words, subs max 8 words. Punchy, benefit-driven, no fluff.';
+    // AI writes: a punchy headline, a short benefit sub, and a CINEMATIC MOTION PROMPT for Runway
+    var sys='You are an expert product-ad creative director. Output ONLY valid JSON, no markdown.';
+    var user='For a premium product video ad for brand "'+brand+'" in '+lang+', product: '+prompt+'.\n'
+      +'Return JSON: {"headline":"max 6 words punchy hook","sub":"max 8 words benefit","motionPrompt":"a vivid cinematic camera/motion description for an AI video generator animating this product photo — describe camera moves (slow push-in, orbit, dolly), lighting, and tasteful dynamic effects (e.g. soft studio light sweep, gentle rotation, subtle particles or water if relevant). Keep the product as the hero, photorealistic, premium commercial look. One sentence."}';
     var r=await fetch(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})});
-    if(!r.ok) throw new Error('Ad copy generation failed ('+r.status+')');
+    if(!r.ok) throw new Error('Ad copy failed ('+r.status+')');
     var d=await r.json();
     var raw=(d.text||'').replace(/```json|```/g,'').trim();
     var parsed; try{ parsed=JSON.parse(raw); }catch(pe){ var m=raw.match(/\{[\s\S]*\}/); parsed=m?JSON.parse(m[0]):null; }
-    if(!parsed || !parsed.scenes || !parsed.scenes.length) throw new Error('Could not parse ad copy');
-
-    // 2) build slide specs (captions at bottom; price pill on last scene if provided)
-    slidesData = parsed.scenes.map(function(sc, i){
-      var blocks=[{text:sc.headline||'', size:0.075, weight:'bold', color:'text'}];
-      if(sc.sub) blocks.push({text:sc.sub, size:0.042, weight:'regular', color:'text_soft'});
-      if(price && i===parsed.scenes.length-1) blocks.push({text:price, size:0.07, weight:'bold', price:true});
-      return { blocks:blocks };
-    });
-    slidesAspect = productAspect;
+    if(!parsed) throw new Error('Could not parse ad copy');
+    productAdData = { headline:parsed.headline||'', sub:parsed.sub||'', price:price, motionPrompt:parsed.motionPrompt||'slow cinematic push-in, premium studio lighting' };
     if(!slidesPalette){ slidesPalette = {bg_dark:'#0B1F3A',bg_mid:'#16305A',accent:'#F4B400',accent2:'#3B82F6',text:'#FFFFFF',text_soft:'#FCD9A8',ink:'#0B1F3A'}; }
 
-    // 3) preview scenes (simple captions list)
-    finishClimb('slidesRenderPfill','slidesRenderPtxt','Copy ready!');
+    // show a simple preview card of the ad copy + first product image
+    finishClimb('slidesRenderPfill','slidesRenderPtxt','Ad ready!');
     setTimeout(function(){ clearprog('slidesRenderPbar'); }, 600);
-    if(rs) rs.textContent=slidesData.length+' scenes ready — review, then create your ad';
-    renderSlidePreviews();
-    document.getElementById('renderSlidesBtn').style.display='';
-    document.getElementById('renderSlidesBtn').disabled=false;
-    document.getElementById('renderSlidesBtn').onclick=renderProductAd;
+    var grid=document.getElementById('slidesPreview');
+    grid.style.gridTemplateColumns='1fr';
+    grid.innerHTML='<div style="background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:14px;display:flex;gap:14px;align-items:center;">'
+      +'<img src="'+productImages[0]+'" style="width:90px;height:90px;object-fit:cover;border-radius:8px;border:1px solid var(--bdr);">'
+      +'<div style="flex:1;"><div style="font-size:16px;font-weight:700;color:var(--ts);">'+(productAdData.headline||'')+'</div>'
+      +'<div style="font-size:13px;color:var(--tm);margin-top:3px;">'+(productAdData.sub||'')+'</div>'
+      +(price?'<div style="display:inline-block;margin-top:6px;background:var(--ac);color:#0B1F3A;font-weight:700;font-size:13px;padding:2px 10px;border-radius:6px;">'+price+'</div>':'')
+      +'<div style="font-size:11px;color:var(--tm);margin-top:8px;font-style:italic;">🎬 AI motion: '+(productAdData.motionPrompt||'').slice(0,90)+'…</div></div></div>';
+    if(rs) rs.textContent='Ad ready — review, then create your AI video';
+    var rsb=document.getElementById('renderSlidesBtn');
+    rsb.style.display=''; rsb.disabled=false; rsb.textContent='✅ Create My AI Product Ad →'; rsb.onclick=renderProductAd;
     document.getElementById('slidesStep').scrollIntoView({behavior:'smooth'});
-    toast('Ad copy ready! Review and create your ad.');
+    toast('Ad copy ready! Review and create your AI video.');
   }catch(e){
     stopClimb(); clearprog('slidesRenderPbar');
     showerr('Product ad copy failed: '+e.message);
@@ -3568,32 +3566,60 @@ async function _generateProductAdInner(){
 }
 
 async function renderProductAd(){
+  if(!productAdData){ showerr('Please generate the ad copy first.'); return; }
   document.getElementById('renderSlidesBtn').disabled=true;
   document.getElementById('slidesResultCard').style.display='block';
   document.getElementById('slidesVideo').style.display='none';
   document.getElementById('slidesDlBtn').disabled=true;
-  var dur=parseInt(document.getElementById('dsel').value||'20');
-  startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Creating your product ad…',8,95);
+  function pdbg(msg){ var s=document.getElementById('slidesResultSub'); if(s) s.textContent='⏳ '+msg; var eb=document.getElementById('errbox'); if(eb){ eb.textContent='⏳ '+msg; eb.classList.add('on'); eb.style.background='rgba(99,102,241,0.1)'; eb.style.borderColor='var(--ba)'; eb.style.color='var(--ac)'; } }
+  var ratioMap={vertical:'720:1280',square:'960:960',landscape:'1280:720'};
+  var ratio=ratioMap[productAspect]||'1280:720';
+  startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Generating AI video…',6,92);
+  function ftimeout(url,opts,ms){ return new Promise(function(resolve,reject){ var c=new AbortController(); var t=setTimeout(function(){c.abort();reject(new Error('Timed out (server waking up — try again)'));},ms); fetch(url,Object.assign({},opts,{signal:c.signal})).then(function(r){clearTimeout(t);resolve(r);}).catch(function(e){clearTimeout(t);reject(e);}); }); }
   try{
+    // 1) kick off Runway image-to-video from the product photo
+    pdbg('Sending your product photo to the AI video engine…');
+    var fullPrompt=(productAdData.motionPrompt||'')+', premium commercial product ad, photorealistic, the product is the hero';
+    var gr=await ftimeout(BACKEND+'/api/runway/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:fullPrompt,imageUrl:productImages[0],ratio:ratio,duration:5})},90000);
+    var gd=await gr.json();
+    if(!gr.ok || !gd.id) throw new Error((gd&&gd.error)?(''+gd.error).slice(0,200):'AI video failed to start');
+    pdbg('AI is animating your product — this takes 1–3 minutes…');
+
+    // 2) poll Runway status
+    var taskId=gd.id, vurl=null, tries=0;
+    while(!vurl && tries<90){
+      await new Promise(function(r){ setTimeout(r,4000); });
+      tries++;
+      var pd; try{ var pr=await ftimeout(BACKEND+'/api/runway/status/'+encodeURIComponent(taskId),{},40000); pd=await pr.json(); }
+      catch(pe){ pdbg('Still animating… '+(tries*4)+'s'); continue; }
+      var st=(pd.status||'').toUpperCase();
+      pdbg('Animating your product… '+(tries*4)+'s ('+st.toLowerCase()+')');
+      if(st==='SUCCEEDED' && pd.output && pd.output[0]){ vurl=pd.output[0]; break; }
+      if(st==='FAILED') throw new Error('AI video generation failed — try a different photo or description');
+    }
+    if(!vurl) throw new Error('AI video took too long. Your Runway credits were used; try again in a moment.');
+
+    // 3) finalize: overlay captions + price + music
+    pdbg('Adding your captions, price and music…');
     var music=document.getElementById('productMusic').value;
-    var body={slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:productAspect,videoType:'productad',productImages:productImages};
-    if(music) body.musicTrack=music;
-    var r=await fetch(BACKEND+'/api/slides/animate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!r.ok) throw new Error('Render failed ('+r.status+')');
-    var d=await r.json();
-    if(!d.videoId) throw new Error('No video returned');
+    var fr=await ftimeout(BACKEND+'/api/productad/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({videoUrl:vurl,headline:productAdData.headline,sub:productAdData.sub,price:productAdData.price,palette:slidesPalette,aspect:productAspect,musicTrack:music})},120000);
+    var fd=await fr.json();
+    if(!fr.ok || !fd.videoId) throw new Error((fd&&fd.error)?(''+fd.error).slice(0,200):'Finalizing failed');
+
     finishClimb('slidesRenderPfill','slidesRenderPtxt','Ready!');
-    var inlineData=d.videoData||null;
-    var url=inlineData||(BACKEND+'/api/video/'+d.videoId);
+    var inlineData=fd.videoData||null;
+    var url=inlineData||(BACKEND+'/api/video/'+fd.videoId);
     var vid=document.getElementById('slidesVideo'); vid.src=url; vid.style.display='block';
     setTimeout(function(){ clearprog('slidesRenderPbar'); }, 800);
     var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
-    dl.onclick=function(){ downloadSlidesVideo(d.videoId, inlineData); };
-    try{ downloadSlidesVideo(d.videoId, inlineData); }catch(_ad){}
+    dl.onclick=function(){ downloadSlidesVideo(fd.videoId, inlineData); };
+    try{ downloadSlidesVideo(fd.videoId, inlineData); }catch(_ad){}
     var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
-    saveToLibrary(activeBrand, dur+'s', 'Product Ad', url, d.videoId, 'Product Ad', productAspect);
+    var rSub2=document.getElementById('slidesResultSub'); if(rSub2) rSub2.textContent='✅ Done! Your AI product ad is ready below — downloading and saved to Library.';
+    var eb2=document.getElementById('errbox'); if(eb2){ eb2.textContent='✅ Product ad ready! Downloading now and saved to your Library.'; eb2.classList.add('on'); eb2.style.background='rgba(52,211,153,0.1)'; eb2.style.borderColor='rgba(52,211,153,0.3)'; eb2.style.color='var(--gr)'; }
+    saveToLibrary(activeBrand, '5s', 'Product Ad', url, fd.videoId, 'Product Ad', productAspect);
     document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
-    toast('✅ Product ad ready — downloading!');
+    toast('✅ AI product ad ready — downloading!');
   }catch(e){
     stopClimb(); clearprog('slidesRenderPbar');
     document.getElementById('renderSlidesBtn').disabled=false;
