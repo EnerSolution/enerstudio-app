@@ -144,7 +144,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </style>
 </head>
 <body>
-<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.49.0 IS LIVE — Auto-download on finish (all types)</div>
+<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.50.0 IS LIVE — Product Ads type live</div>
 <div class="topbar">
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -238,11 +238,10 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Animate a face</div>
           <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
         </div>
-        <div id="vt-productad" onclick="comingSoon('Product Ads')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
+        <div id="vt-productad" onclick="selectVtype('productad',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
           <div style="font-size:22px;margin-bottom:4px;">🛍️</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Product Ads</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Image to ad</div>
-          <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
         </div>
         <div id="vt-explainer" onclick="comingSoon('Explainer')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">📈</div>
@@ -442,6 +441,45 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
         <div style="margin-top:12px;padding:8px 10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;font-size:11px;color:var(--tm);">
           💡 Describe a topic and AI writes a punchy listicle or story. Real stock clips play behind bold captions. Music keeps it free; voiceover adds a small cost.
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCT ADS CONFIG SECTION -->
+    <div id="productad-config-section" style="display:none;">
+      <div class="card">
+        <div class="ch"><div class="ct">🛍️ Product Ad Setup</div><div class="csub">Upload your product photo — AI turns it into a polished ad with motion, captions & price</div></div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Product Photo(s)</div>
+        <input type="file" id="productImgInput" accept="image/*" multiple onchange="handleProductImages(event)" style="display:none;">
+        <div onclick="document.getElementById('productImgInput').click()" style="border:1.5px dashed var(--bdr);border-radius:10px;padding:18px;text-align:center;cursor:pointer;margin-bottom:8px;background:var(--sur);">
+          <div style="font-size:22px;">📷</div>
+          <div style="font-size:12px;font-weight:600;color:var(--ts);margin-top:4px;">Tap to upload product photo(s)</div>
+          <div style="font-size:10px;color:var(--tm);margin-top:2px;">One photo animates across scenes · several photos = multi-angle ad</div>
+        </div>
+        <div id="productImgThumbs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;"></div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Aspect Ratio</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <div id="par-vertical" onclick="selectProductAspect('vertical',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">📱</div><div style="font-size:11px;font-weight:600;color:#fff;margin-top:3px;">Vertical</div><div style="font-size:8px;color:rgba(255,255,255,0.7);">9:16 Reels</div>
+          </div>
+          <div id="par-square" onclick="selectProductAspect('square',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">⬛</div><div style="font-size:11px;font-weight:600;color:var(--ts);margin-top:3px;">Square</div><div style="font-size:8px;color:var(--tm);">1:1 Feed</div>
+          </div>
+          <div id="par-landscape" onclick="selectProductAspect('landscape',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">🖥️</div><div style="font-size:11px;font-weight:600;color:var(--ts);margin-top:3px;">Landscape</div><div style="font-size:8px;color:var(--tm);">16:9 Web</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Price / Offer (optional)</div>
+        <input type="text" id="productPrice" placeholder="e.g. $24.99  or  20% OFF  (leave blank for none)" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:14px;box-sizing:border-box;">
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Music</div>
+        <select id="productMusic" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:8px;">
+          <option value="">No music (silent)</option>
+          <option value="energetic" selected>Music — Energetic</option>
+          <option value="uplift">Music — Uplifting</option>
+          <option value="calm">Music — Calm</option>
+        </select>
+        <div style="margin-top:12px;padding:8px 10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;font-size:11px;color:var(--tm);">
+          💡 Describe your product below and AI writes the ad copy — headline, benefits, and call-to-action. Your photo animates with smooth motion behind bold captions. 100% free to generate.
         </div>
       </div>
     </div>
@@ -1214,7 +1252,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.49.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.50.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1240,7 +1278,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.49.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.50.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1420,6 +1458,7 @@ async function generateScript(){
   if(activeVtype === 'slides'){ return generateSlides(false); }
   if(activeVtype === 'quote'){ return generateQuotes(false); }
   if(activeVtype === 'faceless'){ return generateFaceless(false); }
+  if(activeVtype === 'productad'){ return generateProductAd(); }
   if(activeVtype === 'avatar'){ return generateAvatarVideo(); }
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){showerr('Please describe your video first.');return;}
@@ -2300,7 +2339,7 @@ function toggleBrandDropdown(){
 
 // VIDEO TYPE
 var activeVtype = 'cinematic';
-var SOON_TYPES = ['talkingphoto','productad','explainer','slideshow','cartoon','motion'];
+var SOON_TYPES = ['talkingphoto','explainer','slideshow','cartoon','motion'];
 function selectVtype(type, el){
   activeVtype = type;
   // Clear any stale preview/scenes from a previous type so nothing looks left over
@@ -2340,9 +2379,10 @@ function selectVtype(type, el){
   var _slc = document.getElementById('slides-config-section'); if(_slc && type!=='slides') _slc.style.display='none';
   var _qc = document.getElementById('quote-config-section'); if(_qc && type!=='quote') _qc.style.display='none';
   var _fc = document.getElementById('faceless-config-section'); if(_fc && type!=='faceless') _fc.style.display='none';
+  var _pc = document.getElementById('productad-config-section'); if(_pc && type!=='productad') _pc.style.display='none';
   var _sb = document.getElementById('scriptBtn');
   if(_sb){ _sb.disabled=false; }
-  if(_sb) _sb.textContent = (type==='slides') ? '⚡ Design My Slides' : (type==='quote' ? '⚡ Create My Quote Cards' : (type==='faceless' ? '⚡ Create My Video' : '⚡ Generate Script'));
+  if(_sb) _sb.textContent = (type==='slides') ? '⚡ Design My Slides' : (type==='quote' ? '⚡ Create My Quote Cards' : (type==='faceless' ? '⚡ Create My Video' : (type==='productad' ? '⚡ Create My Product Ad' : '⚡ Generate Script')));
 
   if(type === 'avatar'){
     if(avatarSection) avatarSection.style.display = 'block';
@@ -2377,6 +2417,13 @@ function selectVtype(type, el){
     var fc = document.getElementById('faceless-config-section'); if(fc) fc.style.display='block';
     var vw3 = document.getElementById('voiceSelectorWrap'); if(vw3) vw3.style.display='none';
     toast('🎞️ Faceless / Listicle selected — pick a format and describe your topic');
+  } else if(type === 'productad'){
+    if(avatarSection) avatarSection.style.display = 'none';
+    if(cinematicSection) cinematicSection.style.display = 'block';
+    var pc = document.getElementById('productad-config-section'); if(pc) pc.style.display='block';
+    var vw4 = document.getElementById('voiceSelectorWrap'); if(vw4) vw4.style.display='none';
+    var pb = document.getElementById('scriptBtn'); if(pb) pb.textContent='⚡ Create My Product Ad';
+    toast('🛍️ Product Ads selected — upload your product photo and describe it');
   } else {
     if(avatarSection) avatarSection.style.display = 'none';
     if(cinematicSection) cinematicSection.style.display = 'block';
@@ -3417,6 +3464,140 @@ function selectAvatarCard(av){
   if(img && av.photo) img.src = av.photo;
   if(name) name.textContent = av.name;
   if(desc) desc.textContent = (av.premium ? 'Premium avatar' : 'Standard avatar') + (av.previewVideo ? ' · video preview available' : '');
+}
+
+// ===== PRODUCT ADS: upload photo(s) -> AI ad copy -> Ken Burns motion video =====
+var productImages = [];        // array of data URLs
+var productAspect = 'vertical';
+
+function handleProductImages(ev){
+  var files = ev.target.files;
+  if(!files || !files.length) return;
+  var thumbs=document.getElementById('productImgThumbs');
+  Array.prototype.forEach.call(files, function(file){
+    if(!file.type || file.type.indexOf('image/')!==0) return;
+    var reader=new FileReader();
+    reader.onload=function(e){
+      productImages.push(e.target.result);
+      var t=document.createElement('div');
+      t.style.cssText='position:relative;width:54px;height:54px;border-radius:8px;overflow:hidden;border:1px solid var(--bdr);';
+      var im=document.createElement('img'); im.src=e.target.result; im.style.cssText='width:100%;height:100%;object-fit:cover;';
+      var x=document.createElement('div'); x.textContent='×'; x.title='Remove';
+      x.style.cssText='position:absolute;top:0;right:0;background:rgba(0,0,0,0.6);color:#fff;width:18px;height:18px;line-height:16px;text-align:center;cursor:pointer;font-weight:700;';
+      var thisUrl=e.target.result;
+      x.onclick=function(){ var i=productImages.indexOf(thisUrl); if(i>=0) productImages.splice(i,1); t.remove(); };
+      t.appendChild(im); t.appendChild(x); thumbs.appendChild(t);
+    };
+    reader.readAsDataURL(file);
+  });
+  ev.target.value='';
+}
+
+function selectProductAspect(a, el){
+  productAspect=a;
+  ['vertical','square','landscape'].forEach(function(k){
+    var c=document.getElementById('par-'+k);
+    if(!c) return;
+    if(k===a){ c.style.background='var(--p)'; c.style.borderColor='var(--p)'; c.querySelectorAll('div').forEach(function(d,i){ d.style.color = i===1?'#fff':(i===2?'rgba(255,255,255,0.7)':d.style.color); }); }
+    else { c.style.background='var(--card)'; c.style.borderColor='var(--bdr)'; c.querySelectorAll('div').forEach(function(d,i){ if(i===1)d.style.color='var(--ts)'; if(i===2)d.style.color='var(--tm)'; }); }
+  });
+}
+
+async function generateProductAd(){
+  try { await _generateProductAdInner(); }
+  catch(e){ stopClimb(); clearprog('slidesRenderPbar'); document.getElementById('scriptBtn').disabled=false; showerr('Product ad error: '+(e&&e.message?e.message:e)); }
+}
+async function _generateProductAdInner(){
+  var prompt=document.getElementById('prompt').value.trim();
+  if(!prompt){ showerr('Please describe your product (what it is and its main benefit).'); return; }
+  if(!productImages.length){ showerr('Please upload at least one product photo first.'); return; }
+  clearerr();
+  document.getElementById('scriptBtn').disabled=true;
+  var dur=parseInt(document.getElementById('dsel').value||'20');
+  var nScenes = dur<=15 ? 3 : (dur<=30 ? 4 : 5);
+  var price=(document.getElementById('productPrice').value||'').trim();
+  var lang=document.getElementById('lsel')?document.getElementById('lsel').value:'English';
+  var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
+
+  document.getElementById('slidesStep').classList.add('on');
+  document.getElementById('slidesPreview').innerHTML='';
+  document.getElementById('slidesResultCard').style.display='none';
+  var rt=document.getElementById('reviewTitle'); if(rt) rt.textContent='Your Product Ad Scenes';
+  var rs=document.getElementById('reviewSub'); if(rs) rs.textContent='AI is writing your ad copy…';
+  startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Writing your ad…',8,40);
+
+  try{
+    // 1) AI writes ad copy as scene blocks
+    var sys='You are an expert direct-response ad copywriter. Output ONLY valid JSON, no markdown, no preamble.';
+    var user='Create punchy ad copy for a '+dur+'-second product video ad with exactly '+nScenes+' scenes for the brand "'+brand+'" in '+lang+'. Product: '+prompt+'.\\n'
+      +'Scene 1 = attention-grabbing hook headline. Middle scenes = one key benefit each (short). Final scene = strong call to action.\\n'
+      +'Return JSON: {"scenes":[{"headline":"...","sub":"..."}]} with '+nScenes+' scenes. Headlines max 6 words, subs max 8 words. Punchy, benefit-driven, no fluff.';
+    var r=await fetch(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})});
+    if(!r.ok) throw new Error('Ad copy generation failed ('+r.status+')');
+    var d=await r.json();
+    var raw=(d.text||'').replace(/```json|```/g,'').trim();
+    var parsed; try{ parsed=JSON.parse(raw); }catch(pe){ var m=raw.match(/\{[\s\S]*\}/); parsed=m?JSON.parse(m[0]):null; }
+    if(!parsed || !parsed.scenes || !parsed.scenes.length) throw new Error('Could not parse ad copy');
+
+    // 2) build slide specs (captions at bottom; price pill on last scene if provided)
+    slidesData = parsed.scenes.map(function(sc, i){
+      var blocks=[{text:sc.headline||'', size:0.075, weight:'bold', color:'text'}];
+      if(sc.sub) blocks.push({text:sc.sub, size:0.042, weight:'regular', color:'text_soft'});
+      if(price && i===parsed.scenes.length-1) blocks.push({text:price, size:0.07, weight:'bold', price:true});
+      return { blocks:blocks };
+    });
+    slidesAspect = productAspect;
+    if(!slidesPalette){ slidesPalette = {bg_dark:'#0B1F3A',bg_mid:'#16305A',accent:'#F4B400',accent2:'#3B82F6',text:'#FFFFFF',text_soft:'#FCD9A8',ink:'#0B1F3A'}; }
+
+    // 3) preview scenes (simple captions list)
+    finishClimb('slidesRenderPfill','slidesRenderPtxt','Copy ready!');
+    setTimeout(function(){ clearprog('slidesRenderPbar'); }, 600);
+    if(rs) rs.textContent=slidesData.length+' scenes ready — review, then create your ad';
+    renderSlidePreviews();
+    document.getElementById('renderSlidesBtn').style.display='';
+    document.getElementById('renderSlidesBtn').onclick=renderProductAd;
+    document.getElementById('slidesStep').scrollIntoView({behavior:'smooth'});
+    toast('Ad copy ready! Review and create your ad.');
+  }catch(e){
+    stopClimb(); clearprog('slidesRenderPbar');
+    showerr('Product ad copy failed: '+e.message);
+  }finally{
+    document.getElementById('scriptBtn').disabled=false;
+  }
+}
+
+async function renderProductAd(){
+  document.getElementById('renderSlidesBtn').disabled=true;
+  document.getElementById('slidesResultCard').style.display='block';
+  document.getElementById('slidesVideo').style.display='none';
+  document.getElementById('slidesDlBtn').disabled=true;
+  var dur=parseInt(document.getElementById('dsel').value||'20');
+  startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Creating your product ad…',8,95);
+  try{
+    var music=document.getElementById('productMusic').value;
+    var body={slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:productAspect,videoType:'productad',productImages:productImages};
+    if(music) body.musicTrack=music;
+    var r=await fetch(BACKEND+'/api/slides/animate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok) throw new Error('Render failed ('+r.status+')');
+    var d=await r.json();
+    if(!d.videoId) throw new Error('No video returned');
+    finishClimb('slidesRenderPfill','slidesRenderPtxt','Ready!');
+    var inlineData=d.videoData||null;
+    var url=inlineData||(BACKEND+'/api/video/'+d.videoId);
+    var vid=document.getElementById('slidesVideo'); vid.src=url; vid.style.display='block';
+    setTimeout(function(){ clearprog('slidesRenderPbar'); }, 800);
+    var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
+    dl.onclick=function(){ downloadSlidesVideo(d.videoId, inlineData); };
+    try{ downloadSlidesVideo(d.videoId, inlineData); }catch(_ad){}
+    var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
+    saveToLibrary(activeBrand, dur+'s', 'Product Ad', url, d.videoId, 'Product Ad', productAspect);
+    document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
+    toast('✅ Product ad ready — downloading!');
+  }catch(e){
+    stopClimb(); clearprog('slidesRenderPbar');
+    document.getElementById('renderSlidesBtn').disabled=false;
+    showerr('Product ad render failed: '+e.message);
+  }
 }
 
 // ===== TALKING AVATAR (Option A): script -> HeyGen -> poll -> deliver =====
