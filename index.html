@@ -144,7 +144,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </style>
 </head>
 <body>
-<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.52.0 IS LIVE — Product Ads now real AI video (Runway)</div>
+<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.53.0 IS LIVE — Product Ads scene styles + dramatic motion</div>
 <div class="topbar">
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -471,6 +471,15 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
         <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Price / Offer (optional)</div>
         <input type="text" id="productPrice" placeholder="e.g. $24.99  or  20% OFF  (leave blank for none)" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:14px;box-sizing:border-box;">
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Scene Style</div>
+        <select id="productScene" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:14px;">
+          <option value="dynamic" selected>Dynamic Studio — dramatic light sweeps & camera moves</option>
+          <option value="splash">Water Splash — product with splashing water & droplets</option>
+          <option value="luxury">Luxury — slow elegant orbit, soft premium lighting</option>
+          <option value="energetic">Energetic — fast punchy camera moves, vibrant</option>
+          <option value="nature">Nature — product in fresh outdoor/natural light</option>
+          <option value="smoke">Smoke & Glow — dramatic smoke, glowing rim light</option>
+        </select>
         <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Music</div>
         <select id="productMusic" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:8px;">
           <option value="">No music (silent)</option>
@@ -1252,7 +1261,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.52.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.53.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1278,7 +1287,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.52.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.53.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -3529,16 +3538,27 @@ async function _generateProductAdInner(){
 
   try{
     // AI writes: a punchy headline, a short benefit sub, and a CINEMATIC MOTION PROMPT for Runway
-    var sys='You are an expert product-ad creative director. Output ONLY valid JSON, no markdown.';
+    var sceneStyle=(document.getElementById('productScene')||{}).value||'dynamic';
+    var sceneGuide={
+      dynamic:'a dramatic studio scene: bold sweeping light beams, reflections, slow dramatic camera push-in and slight orbit around the product, dark premium backdrop',
+      splash:'the product surrounded by dynamic splashing water and floating droplets in slow motion, fresh and vivid, camera slowly orbiting, water catching the light',
+      luxury:'an elegant luxury scene: slow graceful orbit, soft glowing premium lighting, subtle bokeh, refined and high-end',
+      energetic:'fast punchy energetic camera moves, vibrant colorful lighting, quick push-in, lively and exciting commercial feel',
+      nature:'the product in fresh natural outdoor light, soft breeze, subtle leaves or sunlight rays, organic premium feel, gentle camera drift',
+      smoke:'dramatic dark scene with swirling smoke and a glowing rim light around the product, cinematic and moody, slow reveal camera move'
+    };
+    var sceneDesc=sceneGuide[sceneStyle]||sceneGuide.dynamic;
+    var sys='You are an expert product-ad creative director writing prompts for an AI video generator. Output ONLY valid JSON, no markdown.';
     var user='For a premium product video ad for brand "'+brand+'" in '+lang+', product: '+prompt+'.\n'
-      +'Return JSON: {"headline":"max 6 words punchy hook","sub":"max 8 words benefit","motionPrompt":"a vivid cinematic camera/motion description for an AI video generator animating this product photo — describe camera moves (slow push-in, orbit, dolly), lighting, and tasteful dynamic effects (e.g. soft studio light sweep, gentle rotation, subtle particles or water if relevant). Keep the product as the hero, photorealistic, premium commercial look. One sentence."}';
+      +'Desired scene style: '+sceneDesc+'.\n'
+      +'Return JSON: {"headline":"max 6 words punchy hook","sub":"max 8 words benefit","motionPrompt":"ONE vivid cinematic sentence for an AI video generator that animates this product photo. Keep the product itself as the unmistakable sharp realistic hero; describe dramatic camera movement plus the scene and effects from the desired style. Photorealistic premium commercial look."}';
     var r=await fetch(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})});
     if(!r.ok) throw new Error('Ad copy failed ('+r.status+')');
     var d=await r.json();
     var raw=(d.text||'').replace(/```json|```/g,'').trim();
     var parsed; try{ parsed=JSON.parse(raw); }catch(pe){ var m=raw.match(/\{[\s\S]*\}/); parsed=m?JSON.parse(m[0]):null; }
     if(!parsed) throw new Error('Could not parse ad copy');
-    productAdData = { headline:parsed.headline||'', sub:parsed.sub||'', price:price, motionPrompt:parsed.motionPrompt||'slow cinematic push-in, premium studio lighting' };
+    productAdData = { headline:parsed.headline||'', sub:parsed.sub||'', price:price, motionPrompt:parsed.motionPrompt||sceneDesc };
     if(!slidesPalette){ slidesPalette = {bg_dark:'#0B1F3A',bg_mid:'#16305A',accent:'#F4B400',accent2:'#3B82F6',text:'#FFFFFF',text_soft:'#FCD9A8',ink:'#0B1F3A'}; }
 
     // show a simple preview card of the ad copy + first product image
@@ -3579,7 +3599,7 @@ async function renderProductAd(){
   try{
     // 1) kick off Runway image-to-video from the product photo
     pdbg('Sending your product photo to the AI video engine…');
-    var fullPrompt=(productAdData.motionPrompt||'')+', premium commercial product ad, photorealistic, the product is the hero';
+    var fullPrompt=(productAdData.motionPrompt||'')+', dynamic dramatic camera motion, premium commercial product ad, photorealistic, the product stays the sharp clear hero, high production value, cinematic lighting';
     var gr=await ftimeout(BACKEND+'/api/runway/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:fullPrompt,imageUrl:productImages[0],ratio:ratio,duration:5})},90000);
     var gd=await gr.json();
     if(!gr.ok || !gd.id) throw new Error((gd&&gd.error)?(''+gd.error).slice(0,200):'AI video failed to start');
