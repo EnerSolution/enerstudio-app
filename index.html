@@ -144,7 +144,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </style>
 </head>
 <body>
-<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.38.0 IS LIVE — Smarter footage matching</div>
+<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.39.0 IS LIVE — Voiceover fix + loading bars</div>
 <div class="topbar">
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -1214,7 +1214,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.38.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.39.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1240,7 +1240,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.38.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.39.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1359,6 +1359,35 @@ function setprog(barId,fillId,txtId,pct,msg){
   document.getElementById(txtId).textContent=msg;
 }
 function clearprog(barId){document.getElementById(barId).classList.remove('on');}
+
+// Animated percentage climber for render progress (used by Slides/Quote/Faceless)
+var _climbTimer=null, _climbVal=0;
+function startClimb(barId,fillId,txtId,baseMsg,startPct,capPct){
+  stopClimb();
+  _climbVal=startPct||5;
+  var fill=document.getElementById(fillId), txt=document.getElementById(txtId), bar=document.getElementById(barId);
+  if(bar) bar.classList.add('on');
+  var cap=capPct||95;
+  var t0=Date.now();
+  function tick(){
+    // ease toward cap: faster early, slower near the cap
+    var remaining=cap-_climbVal;
+    _climbVal += Math.max(0.2, remaining*0.04);
+    if(_climbVal>cap) _climbVal=cap;
+    var secs=Math.floor((Date.now()-t0)/1000);
+    if(fill) fill.style.width=Math.floor(_climbVal)+'%';
+    if(txt) txt.textContent=(baseMsg||'Rendering…')+' '+Math.floor(_climbVal)+'%'+(secs>3?' · '+secs+'s':'');
+  }
+  tick();
+  _climbTimer=setInterval(tick, 700);
+}
+function finishClimb(fillId,txtId,msg){
+  stopClimb();
+  var fill=document.getElementById(fillId), txt=document.getElementById(txtId);
+  if(fill) fill.style.width='100%';
+  if(txt) txt.textContent=(msg||'Done!')+' 100%';
+}
+function stopClimb(){ if(_climbTimer){ clearInterval(_climbTimer); _climbTimer=null; } }
 
 function showerr(m){var e=document.getElementById('errbox');e.textContent=m;e.classList.add('on');}
 function clearerr(){document.getElementById('errbox').classList.remove('on');}
@@ -2683,7 +2712,7 @@ async function renderSlides(){
     audioPayload.voiceId=(document.getElementById('slidesVoiceSel')||{}).value||'';
     audioPayload.voiceSync=true;
   }
-  setprog('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt',30,'Rendering your slides...');
+  startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Rendering your slides…',10,95);
   try{
     var body=Object.assign({slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:slidesAspect,audioMode:slidesAudioMode},audioPayload);
     var r=await fetch(BACKEND+'/api/slides/animate',{
@@ -2693,13 +2722,13 @@ async function renderSlides(){
     if(!r.ok)throw new Error('Render failed ('+r.status+')');
     var d=await r.json();
     if(!d.videoId)throw new Error('No video returned');
-    setprog('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt',80,'Finalizing...');
+    finishClimb('slidesRenderPfill','slidesRenderPtxt','Ready!');
     // Prefer the inline video data (works even after backend sleeps); fall back to URL
     var inlineData = d.videoData || null;
     var url = inlineData || (BACKEND+'/api/video/'+d.videoId);
     var vid=document.getElementById('slidesVideo');
     vid.src=url; vid.style.display='block';
-    clearprog('slidesRenderPbar');
+    setTimeout(function(){ clearprog('slidesRenderPbar'); }, 800);
     var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
     dl.onclick=function(){ downloadSlidesVideo(d.videoId, inlineData); };
     var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
@@ -2708,7 +2737,7 @@ async function renderSlides(){
     document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
     toast('Animated Slides video ready! Saved to Library.');
   }catch(e){
-    clearprog('slidesRenderPbar');
+    stopClimb(); clearprog('slidesRenderPbar');
     document.getElementById('renderSlidesBtn').disabled=false;
     showerr('Render failed: '+e.message);
   }
@@ -2858,7 +2887,7 @@ async function renderQuotes(){
   document.getElementById('slidesDlBtn').disabled=true;
   // each card ~3.5s for a punchy social pace
   var perCard=3.5; var dur=Math.round(slidesData.length*perCard);
-  setprog('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt',30,'Rendering your cards (this can take up to a minute)...');
+  startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Rendering your cards…',10,95);
   try{
     var body={slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:quoteAspect,audioMode:'music'};
     var msel=document.getElementById('quoteMusicSel');
@@ -2868,11 +2897,11 @@ async function renderQuotes(){
     if(!r.ok)throw new Error('Render failed ('+r.status+')');
     var d=await r.json();
     if(!d.videoId)throw new Error('No video returned');
-    setprog('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt',80,'Finalizing...');
+    finishClimb('slidesRenderPfill','slidesRenderPtxt','Ready!');
     var inlineData=d.videoData||null;
     var url=inlineData||(BACKEND+'/api/video/'+d.videoId);
     var vid=document.getElementById('slidesVideo'); vid.src=url; vid.style.display='block';
-    clearprog('slidesRenderPbar');
+    setTimeout(function(){ clearprog('slidesRenderPbar'); }, 800);
     var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
     dl.onclick=function(){ downloadSlidesVideo(d.videoId, inlineData); };
     var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
@@ -2880,7 +2909,7 @@ async function renderQuotes(){
     document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
     toast('Quote video ready! Saved to Library.');
   }catch(e){
-    clearprog('slidesRenderPbar');
+    stopClimb(); clearprog('slidesRenderPbar');
     document.getElementById('renderSlidesBtn').disabled=false;
     showerr('Render failed: '+e.message);
   }
@@ -2914,9 +2943,31 @@ document.addEventListener('change', function(e){
   if(e.target && e.target.id==='facelessAudio'){
     var w=document.getElementById('facelessVoiceWrap');
     if(w) w.style.display = (e.target.value==='voice') ? 'block' : 'none';
-    if(e.target.value==='voice'){ var sel=document.getElementById('facelessVoiceId'); if(sel && !sel.options.length && typeof VOICES!=='undefined'){ VOICES.forEach(function(v){ var o=document.createElement('option'); o.value=v.id; o.textContent=v.name; sel.appendChild(o); }); } }
+    if(e.target.value==='voice'){ populateFacelessVoices(); }
   }
 });
+
+function populateFacelessVoices(){
+  var dst=document.getElementById('facelessVoiceId');
+  var src=document.getElementById('voiceSel');
+  if(!dst) return;
+  // Copy options from the main voice selector (already loaded from ElevenLabs)
+  if(src && src.options.length>1){
+    dst.innerHTML=src.innerHTML;
+    dst.value=src.value;
+  } else if(typeof allVoices!=='undefined' && allVoices.length){
+    dst.innerHTML='';
+    allVoices.slice(0,40).forEach(function(v){
+      var o=document.createElement('option'); o.value=v.voice_id; o.textContent=v.name+(v.labels&&v.labels.gender?' · '+v.labels.gender:''); dst.appendChild(o);
+    });
+    if(dst.options.length) dst.value=dst.options[0].value;
+  } else {
+    // voices not loaded yet — trigger a load and retry shortly
+    dst.innerHTML='<option value="">Loading voices…</option>';
+    if(typeof loadVoices==='function'){ loadVoices(); }
+    setTimeout(populateFacelessVoices, 3000);
+  }
+}
 
 async function generateFaceless(){
   var prompt=document.getElementById('prompt').value.trim();
@@ -2994,21 +3045,21 @@ async function renderFaceless(){
   var perScene=3.5; var dur=Math.round(slidesData.length*perScene);
   var audioSel=document.getElementById('facelessAudio').value;
   var bgMode=document.getElementById('facelessBgMode').value;
-  setprog('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt',30,'Rendering your video (this can take up to a minute)...');
+  startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Creating your video (fetching footage)…',8,95);
   try{
     var body={slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:facelessAspect,videoType:'faceless',stockMode:bgMode};
-    if(audioSel==='voice'){ body.audioMode='voice'; body.voiceId=document.getElementById('facelessVoiceId').value||(typeof VOICES!=='undefined'&&VOICES[0]?VOICES[0].id:''); }
+    if(audioSel==='voice'){ body.audioMode='voice'; body.voiceId=document.getElementById('facelessVoiceId').value||(typeof allVoices!=='undefined'&&allVoices[0]?allVoices[0].voice_id:''); }
     else if(audioSel.indexOf('music_')===0){ body.audioMode='music'; body.musicTrack=audioSel.replace('music_',''); }
     else { body.audioMode='music'; }
     var r=await fetch(BACKEND+'/api/slides/animate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     if(!r.ok)throw new Error('Render failed ('+r.status+')');
     var d=await r.json();
     if(!d.videoId)throw new Error('No video returned');
-    setprog('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt',80,'Finalizing...');
+    finishClimb('slidesRenderPfill','slidesRenderPtxt','Ready!');
     var inlineData=d.videoData||null;
     var url=inlineData||(BACKEND+'/api/video/'+d.videoId);
     var vid=document.getElementById('slidesVideo'); vid.src=url; vid.style.display='block';
-    clearprog('slidesRenderPbar');
+    setTimeout(function(){ clearprog('slidesRenderPbar'); }, 800);
     var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
     dl.onclick=function(){ downloadSlidesVideo(d.videoId, inlineData); };
     var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
@@ -3016,7 +3067,7 @@ async function renderFaceless(){
     document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
     toast('Faceless video ready! Saved to Library.');
   }catch(e){
-    clearprog('slidesRenderPbar');
+    stopClimb(); clearprog('slidesRenderPbar');
     document.getElementById('renderSlidesBtn').disabled=false;
     showerr('Render failed: '+e.message);
   }
