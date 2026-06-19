@@ -144,7 +144,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </style>
 </head>
 <body>
-<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.48.0 IS LIVE — Avatar clear progress + done message</div>
+<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.49.0 IS LIVE — Auto-download on finish (all types)</div>
 <div class="topbar">
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -1214,7 +1214,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.48.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.49.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1240,7 +1240,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.48.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.49.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2740,6 +2740,7 @@ async function renderSlides(){
     setTimeout(function(){ clearprog('slidesRenderPbar'); }, 800);
     var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
     dl.onclick=function(){ downloadSlidesVideo(d.videoId, inlineData); };
+    try{ downloadSlidesVideo(d.videoId, inlineData); }catch(_ad){} // auto-download when ready
     var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
     // Save to Library — store inline data when available so it always plays/downloads
     saveToLibrary(activeBrand, dur+'s', 'Animated Slides', url, d.videoId, 'Animated Slides', slidesAspect);
@@ -2913,6 +2914,7 @@ async function renderQuotes(){
     setTimeout(function(){ clearprog('slidesRenderPbar'); }, 800);
     var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
     dl.onclick=function(){ downloadSlidesVideo(d.videoId, inlineData); };
+    try{ downloadSlidesVideo(d.videoId, inlineData); }catch(_ad){} // auto-download when ready
     var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
     saveToLibrary(activeBrand, dur+'s', 'Quote / Social', url, d.videoId, 'Quote / Social', quoteAspect);
     document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
@@ -3071,6 +3073,7 @@ async function renderFaceless(){
     setTimeout(function(){ clearprog('slidesRenderPbar'); }, 800);
     var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
     dl.onclick=function(){ downloadSlidesVideo(d.videoId, inlineData); };
+    try{ downloadSlidesVideo(d.videoId, inlineData); }catch(_ad){} // auto-download when ready
     var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
     saveToLibrary(activeBrand, dur+'s', 'Faceless / Listicle', url, d.videoId, 'Faceless / Listicle', facelessAspect);
     document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
@@ -3518,11 +3521,17 @@ async function _generateAvatarVideoInner(){
           else if(pd.heygenUrl){ window.open(pd.heygenUrl,'_blank'); }
         };
         var ol=document.getElementById('slidesOpenLink'); if(ol && url){ ol.href=url; ol.style.display='block'; }
-        var rSub2=document.getElementById('slidesResultSub'); if(rSub2 && rSub2.textContent.indexOf('ready')===-1) rSub2.textContent='✅ Done! Your avatar video is ready below — and saved to your Library.';
-        var eb2=document.getElementById('errbox'); if(eb2){ eb2.textContent='✅ Avatar video ready! It is shown below and saved to your Library.'; eb2.classList.add('on'); eb2.style.background='rgba(52,211,153,0.1)'; eb2.style.borderColor='rgba(52,211,153,0.3)'; eb2.style.color='var(--gr)'; }
+        var rSub2=document.getElementById('slidesResultSub'); if(rSub2 && rSub2.textContent.indexOf('ready')===-1) rSub2.textContent='✅ Done! Downloading your video now — also saved to your Library.';
+        var eb2=document.getElementById('errbox'); if(eb2){ eb2.textContent='✅ Avatar video ready! Your download should start automatically. It is also shown below and saved to your Library.'; eb2.classList.add('on'); eb2.style.background='rgba(52,211,153,0.1)'; eb2.style.borderColor='rgba(52,211,153,0.3)'; eb2.style.color='var(--gr)'; }
         try{ saveToLibrary(activeBrand, dur+'s', 'AI Avatar', url, pd.videoId, 'AI Avatar', 'landscape'); }catch(_e){}
         document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
-        toast('✅ Avatar video ready!');
+        // AUTO-DOWNLOAD: start the download automatically when rendering finishes
+        try{
+          if(inlineData){ downloadSlidesVideo(pd.videoId, inlineData); }
+          else if(pd.videoId){ downloadSlidesVideo(pd.videoId, null); }
+          else if(pd.heygenUrl){ var a0=document.createElement('a'); a0.href=pd.heygenUrl; a0.download='enerstudio-avatar.mp4'; document.body.appendChild(a0); a0.click(); a0.remove(); }
+        }catch(_dlerr){}
+        toast('✅ Avatar video ready — downloading!');
       } else if(pd.status==='failed'){
         throw new Error(pd.error||'Generation failed on HeyGen');
       }
