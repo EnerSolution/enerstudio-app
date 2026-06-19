@@ -1105,7 +1105,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.15.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.16.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1131,7 +1131,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.15.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.16.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2324,15 +2324,20 @@ async function generateSlides(isRegen){
   var palHint=PALETTE_SLOTS.join(', ');
   var user='Design '+numSlides+' animated slides for a '+dur+'-second '+goal+' video for the brand "'+brand+'". Brief: '+prompt+'.\n\n'
     +'Return a JSON object: {"slides":[ ... ]}. Each slide object has:\n'
-    +'- "bg": {"type":"gradient"|"solid","from":SLOT,"to":SLOT,"color":SLOT,"shapes":[{"kind":"circle"|"bar","x":0-1,"y":0-1,"r":0-0.3,"w":0-1,"h":0-0.1,"color":SLOT,"anim":"fade"|"grow"|"drift"}]}\n'
+    +'- "bg": one of these styles, and VARY the style across slides:\n'
+    +'    gradient: {"type":"gradient","from":SLOT,"to":SLOT,"dir":"vertical"|"horizontal"}\n'
+    +'    solid:    {"type":"solid","color":SLOT}\n'
+    +'    split:    {"type":"split","color":SLOT,"block":SLOT,"side":"left"|"right"|"top"|"bottom","frac":0.3-0.45}\n'
+    +'    diagonal: {"type":"diagonal","color":SLOT,"block":SLOT}\n'
+    +'  Each bg may include "shapes":[{"kind":"circle"|"ring"|"bar","x":0-1,"y":0-1,"r":0.06-0.22,"w":0-0.4,"h":0-0.06,"color":SLOT,"anim":"slidein"|"grow"|"dropin"|"float"}]\n'
     +'- "lines": optional [{"x1":0-1,"y1":0-1,"x2":0-1,"y2":0-1,"color":SLOT,"w":0.004-0.012}]\n'
     +'- "blocks": [{"text":"...","size":0.04-0.14,"weight":"bold"|"regular"|"serif","color":SLOT,"x":0-1,"y":0-1,"align":"left"|"center"|"right","anim":"fade"|"rise"|"slide"|"pop"|"type"|"zoom"|"dropin","delay":0-0.7}]\n'
     +'- "voiceText": a short natural sentence (5-14 words) a narrator would say for THIS slide, matching its on-screen text.\n\n'
-    +'RULES: Colors must ONLY be one of these palette slot names (never raw hex): '+palHint+'. '
-    +'x/y are fractions of width/height (0=left/top, 1=right/bottom). Keep 1-3 text blocks per slide. '
-    +'Use large bold text for headlines (size 0.10-0.14), smaller for subtext (0.04-0.06). '
-    +'IMPORTANT for visual interest: give EACH text block and EACH shape a DIFFERENT animation than its neighbors — vary anim and delay so elements enter one after another with distinct movement (e.g. headline pops, subtext rises, a shape drifts in). '
-    +'Add 1-2 decorative shapes to most slides. First slide = title/hook, last slide = call to action with the website. Vary backgrounds across slides. '
+    +'RULES: Colors must ONLY be palette slot names (never raw hex): '+palHint+'. '
+    +'CRITICAL — VARIETY: every slide must use a DIFFERENT bg style/colors than the slide before it (alternate gradient, split, diagonal, solid; vary direction and which color is dominant). Do not repeat the same background twice in a row. '
+    +'CRITICAL — READABILITY: keep all text inside the central safe zone (x between 0.18 and 0.82). Place large shapes (circle/ring r>0.12) only near the EDGES or CORNERS (x<0.25 or x>0.75, or y<0.25 or y>0.75) so they NEVER sit behind or cover the headline text. Small accent bars may sit near text. '
+    +'MOTION: give each text block and each shape a different anim and stagger delays so elements enter one after another. Shapes also drift gently the whole slide automatically. '
+    +'Use large bold headlines (size 0.10-0.14) and smaller subtext (0.04-0.06). Add 1-2 shapes per slide. First slide = title/hook, last = call to action with the website. '
     +'NO text longer than 6 words per block. Output ONLY the JSON.';
 
   try{
@@ -2373,17 +2378,34 @@ function renderSlidePreviews(){
     var wrap=document.createElement('div');
     wrap.style.cssText='display:flex;flex-direction:column;gap:6px;';
     var bg=s.bg||{};
-    var bgCss;
-    if(bg.type==='gradient'){ bgCss='linear-gradient(160deg,'+c(bg.from,'bg_mid')+','+c(bg.to,'bg_dark')+')'; }
-    else { bgCss=c(bg.color,'bg_dark'); }
+    var bgCss, overlay='';
+    if(bg.type==='gradient'){
+      var dir = bg.dir==='horizontal' ? '90deg' : '160deg';
+      bgCss='linear-gradient('+dir+','+c(bg.from,'bg_mid')+','+c(bg.to,'bg_dark')+')';
+    } else if(bg.type==='split'){
+      bgCss=c(bg.color,'bg_dark');
+      var frac=Math.round((bg.frac||0.38)*100);
+      var side=bg.side||'left'; var blk=c(bg.block,'bg_mid');
+      if(side==='left') overlay='left:0;top:0;width:'+frac+'%;height:100%;';
+      else if(side==='right') overlay='right:0;top:0;width:'+frac+'%;height:100%;';
+      else if(side==='top') overlay='left:0;top:0;width:100%;height:'+frac+'%;';
+      else overlay='left:0;bottom:0;width:100%;height:'+frac+'%;';
+      overlay='position:absolute;'+overlay+'background:'+blk+';';
+    } else if(bg.type==='diagonal'){
+      bgCss=c(bg.color,'bg_dark');
+      overlay='position:absolute;inset:0;background:'+c(bg.block,'bg_mid')+';clip-path:polygon(100% 0,100% 100%,0 100%);';
+    } else { bgCss=c(bg.color,'bg_dark'); }
     var box=document.createElement('div');
     box.style.cssText='position:relative;width:100%;aspect-ratio:'+(isVert?'9/16':'16/9')+';border-radius:10px;overflow:hidden;background:'+bgCss+';border:1px solid var(--bdr);';
+    if(overlay){ var ov=document.createElement('div'); ov.style.cssText=overlay; box.appendChild(ov); }
     // shapes
     (bg.shapes||[]).forEach(function(sh){
       var el=document.createElement('div');
-      if(sh.kind==='circle'){
+      if(sh.kind==='circle' || sh.kind==='ring'){
         var d=(sh.r||0.1)*200; // % of width approx for preview
-        el.style.cssText='position:absolute;border-radius:50%;background:'+c(sh.color,'accent')+';width:'+(d)+'%;padding-top:'+(d)+'%;left:'+((sh.x||0.5)*100-d/2)+'%;top:'+((sh.y||0.5)*100-d/2)+'%;opacity:0.85;';
+        var base='position:absolute;border-radius:50%;width:'+(d)+'%;padding-top:'+(d)+'%;left:'+((sh.x||0.5)*100-d/2)+'%;top:'+((sh.y||0.5)*100-d/2)+'%;opacity:0.85;';
+        if(sh.kind==='ring'){ el.style.cssText=base+'background:transparent;border:3px solid '+c(sh.color,'accent')+';box-sizing:border-box;'; }
+        else { el.style.cssText=base+'background:'+c(sh.color,'accent')+';'; }
       } else {
         el.style.cssText='position:absolute;background:'+c(sh.color,'accent')+';left:'+((sh.x||0)*100)+'%;top:'+((sh.y||0)*100)+'%;width:'+((sh.w||0.2)*100)+'%;height:'+((sh.h||0.02)*100)+'%;';
       }
