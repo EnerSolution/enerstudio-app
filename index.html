@@ -1212,7 +1212,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.29.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.30.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1238,7 +1238,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.29.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.30.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2271,6 +2271,11 @@ var activeVtype = 'cinematic';
 var SOON_TYPES = ['talkingphoto','productad','explainer','slideshow','cartoon','motion'];
 function selectVtype(type, el){
   activeVtype = type;
+  // Clear any stale preview/scenes from a previous type so nothing looks left over
+  var _sp=document.getElementById('slidesPreview'); if(_sp) _sp.innerHTML='';
+  var _ss=document.getElementById('slidesStep'); if(_ss) _ss.classList.remove('on');
+  var _rc=document.getElementById('slidesResultCard'); if(_rc) _rc.style.display='none';
+  if(typeof slidesData!=='undefined') slidesData=[];
   ['cinematic','avatar','whiteboard','slides','quote','faceless'].forEach(function(t){
     var card = document.getElementById('vt-'+t);
     if(!card) return;
@@ -4228,6 +4233,9 @@ updateCreditDisplay();
 // Apply default ANNUAL billing display
 memIsAnnual = false; toggleMemBilling(); // flips to true and updates all prices
 updatePlanButtons();
+// Initialize the default video type so the highlighted tile and its config section match on load
+try { selectVtype('faceless', document.getElementById('vt-faceless')); } catch(e){}
+
 </script>
 </body>
 </html>
