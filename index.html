@@ -144,7 +144,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </style>
 </head>
 <body>
-<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.40.0 IS LIVE — Talking Avatar (HeyGen) live</div>
+<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.41.0 IS LIVE — Avatar autoload + HeyGen voice fix</div>
 <div class="topbar">
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -718,8 +718,8 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       </div>
       <div class="card" id="slidesResultCard" style="display:none;">
         <div class="step-header">
-          <div class="step-num">3</div>
-          <div><div class="step-title">Your Animated Slides Video</div><div class="step-sub">Rendered in your brand colors</div></div>
+          <div class="step-num" id="slidesResultNum">3</div>
+          <div><div class="step-title" id="slidesResultTitle">Your Animated Slides Video</div><div class="step-sub" id="slidesResultSub">Rendered in your brand colors</div></div>
         </div>
         <div class="pbar" id="slidesRenderPbar"><div class="ptrack"><div class="pfill" id="slidesRenderPfill"></div></div><div class="ptxt" id="slidesRenderPtxt">Rendering...</div></div>
         <video id="slidesVideo" controls style="display:none;width:100%;border-radius:10px;"></video>
@@ -1214,7 +1214,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.40.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.41.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1240,7 +1240,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.40.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.41.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2310,6 +2310,9 @@ function selectVtype(type, el){
   var _sr=document.getElementById('stockReview'); if(_sr){ _sr.innerHTML=''; _sr.style.display='none'; }
   var _ss=document.getElementById('slidesStep'); if(_ss) _ss.classList.remove('on');
   var _rc=document.getElementById('slidesResultCard'); if(_rc) _rc.style.display='none';
+  var _rn=document.getElementById('slidesResultNum'); if(_rn) _rn.textContent='3';
+  var _rt2=document.getElementById('slidesResultTitle'); if(_rt2) _rt2.textContent='Your Video';
+  var _rs2=document.getElementById('slidesResultSub'); if(_rs2) _rs2.textContent='Rendered in your brand colors';
   if(typeof slidesData!=='undefined') slidesData=[];
   ['cinematic','avatar','whiteboard','slides','quote','faceless'].forEach(function(t){
     var card = document.getElementById('vt-'+t);
@@ -2344,6 +2347,7 @@ function selectVtype(type, el){
     if(avatarSection) avatarSection.style.display = 'block';
     if(cinematicSection) cinematicSection.style.display = 'none';
     var avb=document.getElementById('scriptBtn'); if(avb) avb.textContent='⚡ Generate Avatar Video';
+    if(typeof loadHeyGenAvatars==='function'){ avatarRetries=0; loadHeyGenAvatars(); }
     toast('AI Avatar selected — pick a presenter, then describe what they should say');
   } else if(type === 'cinematic'){
     if(avatarSection) avatarSection.style.display = 'none';
@@ -3418,16 +3422,14 @@ async function generateAvatarVideo(){
   if(!avatarConfig.selectedId){ showerr('Please select a presenter avatar first (tap one in the grid above).'); return; }
   clearerr();
   document.getElementById('scriptBtn').disabled=true;
-  // reuse the slides result area for the video output
-  document.getElementById('slidesStep').classList.add('on');
+  // Avatar uses ONLY the result card (no scene-preview step). Hide the preview card.
+  document.getElementById('slidesStep').classList.remove('on');
   document.getElementById('slidesResultCard').style.display='block';
   document.getElementById('slidesVideo').style.display='none';
   document.getElementById('slidesDlBtn').disabled=true;
-  var rt=document.getElementById('reviewTitle'); if(rt) rt.textContent='Your Avatar Video';
-  var rs=document.getElementById('reviewSub'); if(rs) rs.textContent='Your presenter is being generated';
-  document.getElementById('slidesPreview').innerHTML='';
-  document.getElementById('renderSlidesBtn').style.display='none';
-  var regb=document.getElementById('regenBtn'); if(regb) regb.style.display='none';
+  var rNum=document.getElementById('slidesResultNum'); if(rNum) rNum.textContent='🎤';
+  var rTit=document.getElementById('slidesResultTitle'); if(rTit) rTit.textContent='Your Avatar Video';
+  var rSub=document.getElementById('slidesResultSub'); if(rSub) rSub.textContent='Your AI presenter is being generated — this takes a few minutes';
 
   var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
   var dur=parseInt(document.getElementById('dsel').value||'30');
@@ -3448,8 +3450,7 @@ async function generateAvatarVideo(){
 
     // 2) start HeyGen generation
     startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Generating your presenter (this can take a few minutes)…',32,93);
-    var voiceId=(document.getElementById('voiceSel')||{}).value||'';
-    var gr=await fetch(BACKEND+'/api/heygen/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({avatarId:avatarConfig.selectedId,script:script,voiceId:voiceId,aspect:'landscape'})});
+    var gr=await fetch(BACKEND+'/api/heygen/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({avatarId:avatarConfig.selectedId,script:script,gender:avatarConfig.gender,aspect:'landscape'})});
     var gd=await gr.json();
     if(!gr.ok || !gd.videoId) throw new Error((gd && gd.error) ? gd.error : 'Avatar generation failed to start');
 
