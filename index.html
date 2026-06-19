@@ -705,12 +705,12 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <div class="card">
         <div class="step-header">
           <div class="step-num">2</div>
-          <div><div class="step-title">Review Your Slides</div><div class="step-sub">AI designed these in your brand colors — approve to render, or regenerate</div></div>
+          <div><div class="step-title" id="reviewTitle">Review Your Slides</div><div class="step-sub" id="reviewSub">AI designed these in your brand colors — approve to render, or regenerate</div></div>
         </div>
         <div class="pbar" id="slidesPbar"><div class="ptrack"><div class="pfill" id="slidesPfill"></div></div><div class="ptxt" id="slidesPtxt">Designing slides...</div></div>
         <div id="slidesPreview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:1rem;"></div>
         <div class="action-row">
-          <button class="abtn" onclick="generateSlides(true)">🔄 Regenerate Design</button>
+          <button class="abtn" id="regenBtn" onclick="generateSlides(true)">🔄 Regenerate Design</button>
           <button class="abtn pri" id="renderSlidesBtn" onclick="renderSlides()" disabled>✅ Approve & Render Video →</button>
         </div>
       </div>
@@ -1212,7 +1212,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.28.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.29.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1238,7 +1238,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.28.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.29.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2485,6 +2485,9 @@ async function generateSlides(isRegen){
     clearprog('slidesPbar');
     document.getElementById('renderSlidesBtn').disabled=false;
     document.getElementById('renderSlidesBtn').onclick=renderSlides;
+    var srt=document.getElementById('reviewTitle'); if(srt) srt.textContent='Review Your Slides';
+    var srs=document.getElementById('reviewSub'); if(srs) srs.textContent='AI designed these in your brand colors — approve to render, or regenerate';
+    var srb=document.getElementById('regenBtn'); if(srb) srb.onclick=function(){ generateSlides(true); };
     document.getElementById('scriptBtn').disabled=false;
     document.getElementById('slidesStep').scrollIntoView({behavior:'smooth'});
     toast(slidesData.length+' slides designed! Review and approve to render.');
@@ -2817,6 +2820,9 @@ async function generateQuotes(){
     clearprog('slidesPbar');
     document.getElementById('renderSlidesBtn').disabled=false;
     document.getElementById('renderSlidesBtn').onclick=renderQuotes; // route render to quote handler
+    var qrt=document.getElementById('reviewTitle'); if(qrt) qrt.textContent='Review Your Quote Cards';
+    var qrs=document.getElementById('reviewSub'); if(qrs) qrs.textContent='AI designed these cards in your brand colors — approve to render, or regenerate';
+    var qrb=document.getElementById('regenBtn'); if(qrb) qrb.onclick=function(){ generateQuotes(true); };
     document.getElementById('scriptBtn').disabled=false;
     document.getElementById('slidesStep').scrollIntoView({behavior:'smooth'});
     toast(slidesData.length+' quote card'+(slidesData.length>1?'s':'')+' ready! Review and render.');
@@ -2944,6 +2950,9 @@ async function generateFaceless(){
     clearprog('slidesPbar');
     document.getElementById('renderSlidesBtn').disabled=false;
     document.getElementById('renderSlidesBtn').onclick=renderFaceless;
+    var rt=document.getElementById('reviewTitle'); if(rt) rt.textContent='Review Your Scenes';
+    var rs=document.getElementById('reviewSub'); if(rs) rs.textContent='AI created these scenes — approve to render your video, or regenerate';
+    var rb=document.getElementById('regenBtn'); if(rb) rb.onclick=function(){ generateFaceless(true); };
     document.getElementById('scriptBtn').disabled=false;
     document.getElementById('slidesStep').scrollIntoView({behavior:'smooth'});
     toast(slidesData.length+' scenes ready! Review and create your video.');
