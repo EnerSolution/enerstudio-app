@@ -144,7 +144,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </style>
 </head>
 <body>
-<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.36.0 IS LIVE — Faceless playback + download fixed</div>
+<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.37.0 IS LIVE — Faceless stock footage review + replace</div>
 <div class="topbar">
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -710,6 +710,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
         <div class="pbar" id="slidesPbar"><div class="ptrack"><div class="pfill" id="slidesPfill"></div></div><div class="ptxt" id="slidesPtxt">Designing slides...</div></div>
         <div id="slidesPreview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:1rem;"></div>
+        <div id="stockReview" style="display:none;margin-bottom:1rem;"></div>
         <div class="action-row">
           <button class="abtn" id="regenBtn" onclick="generateSlides(true)">🔄 Regenerate Design</button>
           <button class="abtn pri" id="renderSlidesBtn" onclick="renderSlides()" disabled>✅ Approve & Render Video →</button>
@@ -1213,7 +1214,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.36.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.37.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1239,7 +1240,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.36.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.37.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2274,6 +2275,7 @@ function selectVtype(type, el){
   activeVtype = type;
   // Clear any stale preview/scenes from a previous type so nothing looks left over
   var _sp=document.getElementById('slidesPreview'); if(_sp) _sp.innerHTML='';
+  var _sr=document.getElementById('stockReview'); if(_sr){ _sr.innerHTML=''; _sr.style.display='none'; }
   var _ss=document.getElementById('slidesStep'); if(_ss) _ss.classList.remove('on');
   var _rc=document.getElementById('slidesResultCard'); if(_rc) _rc.style.display='none';
   if(typeof slidesData!=='undefined') slidesData=[];
@@ -2925,6 +2927,7 @@ async function generateFaceless(){
   document.getElementById('slidesResultCard').style.display='none';
   document.getElementById('renderSlidesBtn').disabled=true;
   document.getElementById('slidesPreview').innerHTML='';
+  var _sr0=document.getElementById('stockReview'); if(_sr0){ _sr0.innerHTML=''; _sr0.style.display='none'; }
   slidesAspect=facelessAspect;
 
   var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
@@ -2972,6 +2975,9 @@ async function generateFaceless(){
     document.getElementById('scriptBtn').disabled=false;
     document.getElementById('slidesStep').scrollIntoView({behavior:'smooth'});
     toast(slidesData.length+' scenes ready! Review and create your video.');
+    // If stock footage mode is on, load candidate clips so the user can preview/replace each scene's footage
+    var bgModeSel=document.getElementById('facelessBgMode');
+    if(bgModeSel && bgModeSel.value==='auto'){ loadStockPreviews(); }
   }catch(e){
     clearprog('slidesPbar');
     document.getElementById('scriptBtn').disabled=false;
@@ -3014,6 +3020,97 @@ async function renderFaceless(){
     document.getElementById('renderSlidesBtn').disabled=false;
     showerr('Render failed: '+e.message);
   }
+}
+
+// ===== STOCK FOOTAGE REVIEW: preview the clip chosen for each scene, allow replace =====
+var stockCandidates = []; // per scene: { query, candidates:[{id,thumb,fileUrl}], chosenIdx }
+
+async function loadStockPreviews(){
+  var box=document.getElementById('stockReview');
+  if(!box) return;
+  box.style.display='block';
+  box.innerHTML='<div style="font-size:12px;color:var(--ac);padding:10px;">🎬 Loading stock footage options for each scene…</div>';
+  var queries = slidesData.map(function(s){ return s.stockQuery || (s.blocks&&s.blocks[0]&&s.blocks[0].text) || 'background'; });
+  try{
+    var r=await fetch(BACKEND+'/api/stock/preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({queries:queries,aspect:facelessAspect})});
+    var d=await r.json();
+    if(d.configured===false){ box.innerHTML='<div style="font-size:12px;color:var(--tm);padding:10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;">Stock footage key not detected on the server — scenes will use animated backgrounds.</div>'; return; }
+    stockCandidates = (d.scenes||[]).map(function(sc){ return { query:sc.query, candidates:sc.candidates||[], chosenIdx:0 }; });
+    // set the default chosen clip on each slide
+    stockCandidates.forEach(function(sc,i){
+      if(sc.candidates.length && slidesData[i]) slidesData[i].chosenClipUrl = sc.candidates[0].fileUrl;
+    });
+    renderStockReview();
+  }catch(e){
+    box.innerHTML='<div style="font-size:12px;color:var(--re);padding:10px;">Could not load stock previews: '+e.message+'. Scenes will still render with auto-selected footage.</div>';
+  }
+}
+
+function renderStockReview(){
+  var box=document.getElementById('stockReview');
+  if(!box) return;
+  box.innerHTML='<div style="font-size:13px;font-weight:600;color:var(--ts);margin-bottom:8px;">🎬 Footage for each scene — tap a thumbnail to swap, or edit the search term</div>';
+  var grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;';
+  stockCandidates.forEach(function(sc,i){
+    var card=document.createElement('div');
+    card.style.cssText='background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:10px;';
+    var label=document.createElement('div');
+    label.style.cssText='font-size:11px;color:var(--tm);margin-bottom:6px;';
+    label.textContent='Scene '+(i+1);
+    card.appendChild(label);
+    // search box
+    var srow=document.createElement('div'); srow.style.cssText='display:flex;gap:6px;margin-bottom:8px;';
+    var inp=document.createElement('input'); inp.type='text'; inp.value=sc.query;
+    inp.style.cssText='flex:1;background:var(--card);border:1px solid var(--bdr);border-radius:6px;padding:6px 8px;font-family:DM Sans,sans-serif;font-size:12px;color:var(--tx);outline:none;';
+    var sbtn=document.createElement('button'); sbtn.textContent='🔍'; sbtn.title='Search new footage';
+    sbtn.style.cssText='background:var(--pg);border:1px solid var(--ba);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--ac);cursor:pointer;';
+    sbtn.onclick=(function(idx,input){ return function(){ researchScene(idx, input.value); }; })(i,inp);
+    srow.appendChild(inp); srow.appendChild(sbtn); card.appendChild(srow);
+    // thumbnails
+    if(!sc.candidates.length){
+      var none=document.createElement('div'); none.style.cssText='font-size:11px;color:var(--tm);'; none.textContent='No footage found — this scene will use an animated background.'; card.appendChild(none);
+    } else {
+      var thumbs=document.createElement('div'); thumbs.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:6px;';
+      sc.candidates.forEach(function(c,ci){
+        var t=document.createElement('div');
+        t.style.cssText='position:relative;border-radius:6px;overflow:hidden;cursor:pointer;border:2px solid '+(ci===sc.chosenIdx?'var(--p)':'transparent')+';';
+        t.id='thumb-'+i+'-'+ci;
+        var im=document.createElement('img'); im.src=c.thumb; im.loading='lazy';
+        im.style.cssText='width:100%;height:70px;object-fit:cover;display:block;';
+        t.appendChild(im);
+        if(ci===sc.chosenIdx){ var chk=document.createElement('div'); chk.textContent='✓'; chk.style.cssText='position:absolute;top:2px;right:4px;color:#fff;font-weight:700;font-size:13px;text-shadow:0 1px 3px #000;'; t.appendChild(chk); }
+        t.onclick=(function(sceneIdx,candIdx){ return function(){ chooseStock(sceneIdx,candIdx); }; })(i,ci);
+        thumbs.appendChild(t);
+      });
+      card.appendChild(thumbs);
+    }
+    grid.appendChild(card);
+  });
+  box.appendChild(grid);
+}
+
+function chooseStock(sceneIdx, candIdx){
+  var sc=stockCandidates[sceneIdx]; if(!sc) return;
+  sc.chosenIdx=candIdx;
+  if(slidesData[sceneIdx] && sc.candidates[candIdx]) slidesData[sceneIdx].chosenClipUrl=sc.candidates[candIdx].fileUrl;
+  renderStockReview();
+  toast('Scene '+(sceneIdx+1)+' footage updated');
+}
+
+async function researchScene(sceneIdx, newQuery){
+  var sc=stockCandidates[sceneIdx]; if(!sc) return;
+  newQuery=(newQuery||'').trim(); if(!newQuery) return;
+  toast('Searching footage for scene '+(sceneIdx+1)+'…');
+  try{
+    var r=await fetch(BACKEND+'/api/stock/preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({queries:[newQuery],aspect:facelessAspect})});
+    var d=await r.json();
+    var got=(d.scenes&&d.scenes[0]&&d.scenes[0].candidates)||[];
+    sc.query=newQuery; sc.candidates=got; sc.chosenIdx=0;
+    if(slidesData[sceneIdx]){ slidesData[sceneIdx].stockQuery=newQuery; slidesData[sceneIdx].chosenClipUrl = got.length?got[0].fileUrl:null; }
+    renderStockReview();
+    toast(got.length?('Found '+got.length+' clips'):'No clips found — try different words');
+  }catch(e){ toast('Search failed: '+e.message); }
 }
 
 
