@@ -1105,7 +1105,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.14.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.15.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1131,7 +1131,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.14.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.15.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2520,14 +2520,16 @@ async function renderSlides(){
     var d=await r.json();
     if(!d.videoId)throw new Error('No video returned');
     setprog('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt',80,'Finalizing...');
-    var url=BACKEND+'/api/video/'+d.videoId;
+    // Prefer the inline video data (works even after backend sleeps); fall back to URL
+    var inlineData = d.videoData || null;
+    var url = inlineData || (BACKEND+'/api/video/'+d.videoId);
     var vid=document.getElementById('slidesVideo');
     vid.src=url; vid.style.display='block';
     clearprog('slidesRenderPbar');
     var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
-    dl.onclick=function(){ downloadSlidesVideo(d.videoId); };
+    dl.onclick=function(){ downloadSlidesVideo(d.videoId, inlineData); };
     var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
-    // Save to Library tagged as Animated Slides + brand
+    // Save to Library — store inline data when available so it always plays/downloads
     saveToLibrary(activeBrand, dur+'s', 'Animated Slides', url, d.videoId, 'Animated Slides', slidesAspect);
     document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
     toast('Animated Slides video ready! Saved to Library.');
@@ -2539,12 +2541,21 @@ async function renderSlides(){
 }
 
 // Dedicated, self-contained download for slides (does NOT touch cinematic DOM)
-async function downloadSlidesVideo(videoId){
-  var directUrl = BACKEND+'/api/video/'+videoId;
+async function downloadSlidesVideo(videoId, inlineData){
   var fname = 'enerstudio-slides-'+(activeBrand||'video').replace(/\s/g,'-')+'.mp4';
+  // Best path: we already have the video bytes inline — download instantly, no backend call
+  if(inlineData){
+    try{
+      var ai=document.createElement('a');
+      ai.href=inlineData; ai.download=fname;
+      document.body.appendChild(ai); ai.click(); ai.remove();
+      toast('Download started!');
+      return;
+    }catch(e){ /* fall through to fetch */ }
+  }
+  var directUrl = BACKEND+'/api/video/'+videoId;
   toast('Preparing download...');
   try{
-    // Race the fetch against a timeout so it can never hang forever
     var ctrl = new AbortController();
     var to = setTimeout(function(){ ctrl.abort(); }, 20000);
     var resp = await fetch(directUrl, { signal: ctrl.signal });
@@ -2559,16 +2570,7 @@ async function downloadSlidesVideo(videoId){
     setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
     toast('Download started!');
   }catch(e){
-    // Fallback: open the video directly so the user can save it manually
-    console.warn('Blob download failed, opening direct link:', e.message);
-    toast('Opening video in a new tab — right-click → Save Video As');
-    try{
-      var a2 = document.createElement('a');
-      a2.href = directUrl; a2.target = '_blank'; a2.rel = 'noopener';
-      document.body.appendChild(a2); a2.click(); a2.remove();
-    }catch(e2){
-      window.open(directUrl, '_blank');
-    }
+    toast('This video expired on the server. Please re-render to download it.');
   }
 }
 
@@ -2868,6 +2870,7 @@ var photoLibrary = JSON.parse(localStorage.getItem('enerstudio_photos') || '[]')
 var _currentPhotoSessionId = Date.now();
 
 function saveToLibrary(brand, duration, goal, videoUrl, videoId, videoType, aspect){
+  var isInline = videoUrl && videoUrl.indexOf('data:') === 0;
   var entry = {
     id: Date.now(),
     brand: brand,
@@ -2875,14 +2878,23 @@ function saveToLibrary(brand, duration, goal, videoUrl, videoId, videoType, aspe
     goal: goal,
     videoType: videoType || 'Cinematic AI',
     aspect: aspect || 'landscape',
-    videoUrl: videoUrl,
+    videoUrl: videoUrl,                 // may be a big data: URL — kept in memory this session
     videoId: videoId || null,
-    isPermanent: videoUrl && videoUrl.indexOf('blob:') === -1,
+    isInline: isInline,
+    isPermanent: videoUrl && videoUrl.indexOf('blob:') === -1 && !isInline,
     date: new Date().toLocaleDateString(),
     time: new Date().toLocaleTimeString()
   };
   videoLibrary.unshift(entry);
-  try{ localStorage.setItem('enerstudio_library', JSON.stringify(videoLibrary.slice(0,50))); }catch(e){}
+  // Persist a LIGHT version to localStorage (strip big inline data so we don't blow the quota).
+  try{
+    var light = videoLibrary.slice(0,50).map(function(v){
+      var c = Object.assign({}, v);
+      if(c.isInline){ c.videoUrl = BACKEND+'/api/video/'+c.videoId; } // store URL ref, not the blob
+      return c;
+    });
+    localStorage.setItem('enerstudio_library', JSON.stringify(light));
+  }catch(e){ /* quota or serialization issue — library still works in-memory this session */ }
   renderLibrary();
 }
 
