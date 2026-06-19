@@ -1212,7 +1212,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.31.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.32.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1238,7 +1238,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.31.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.32.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2514,6 +2514,15 @@ function renderSlidePreviews(){
   var grid=document.getElementById('slidesPreview');
   grid.style.gridTemplateColumns = isVert?'repeat(auto-fill,minmax(180px,1fr))':(isSquare?'repeat(auto-fill,minmax(220px,1fr))':'repeat(auto-fill,minmax(300px,1fr))');
   grid.innerHTML='';
+  // Debug badge: proves a fresh generation ran (scene count, first scene text, time)
+  try{
+    var firstTxt='';
+    if(slidesData[0] && slidesData[0].blocks && slidesData[0].blocks[0]) firstTxt=slidesData[0].blocks[0].text||'';
+    var dbg=document.createElement('div');
+    dbg.style.cssText='grid-column:1/-1;font-size:11px;color:var(--tm);padding:6px 10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;margin-bottom:6px;';
+    dbg.textContent='✓ Generated '+slidesData.length+' scenes · '+new Date().toLocaleTimeString()+' · first: "'+firstTxt.slice(0,40)+'"';
+    grid.appendChild(dbg);
+  }catch(e){}
   slidesData.forEach(function(s,idx){
     var wrap=document.createElement('div');
     wrap.style.cssText='display:flex;flex-direction:column;gap:6px;';
