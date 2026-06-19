@@ -1159,7 +1159,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.20.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.21.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1185,7 +1185,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.20.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.21.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1235,6 +1235,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 <script>
 var BACKEND = 'https://enerstudio-backend.onrender.com';
 var activeBrand = 'Solar Canada';
+var activeBrandSite = 'SolarCanadaPro.ca';
 var scriptText = '';
 var scenePrompts = [];
 var sceneImageUrls = [];
@@ -1282,6 +1283,7 @@ function setBrand(i, name, url) {
   for(var j=0;j<5;j++){var e=document.getElementById('bi'+j);if(e)e.classList.remove('on');}
   var e=document.getElementById('bi'+i);if(e)e.classList.add('on');
   activeBrand=name;
+  activeBrandSite=url||'';
   document.getElementById('statBrand').textContent=name;
   document.getElementById('brandsub').textContent=name+' · '+url+' · Cinematic AI Video';
   document.getElementById('bsel').value=name;
@@ -2735,10 +2737,11 @@ async function generateQuotes(){
   var user='Create '+n+' punchy, scroll-stopping '+(n>1?'quote/tip cards (a series)':'single quote card')+' for the brand "'+brand+'" about: '+prompt+'.\n'
     +'Return {"slides":[...]}. Each card = one slide object:\n'
     +'- "bg": vary style per card — {"type":"gradient","from":SLOT,"to":SLOT,"dir":"vertical"|"horizontal"} OR {"type":"solid","color":SLOT} OR {"type":"diagonal","color":SLOT,"block":SLOT}. Optional "shapes":[{"kind":"circle"|"ring","x":0-1,"y":0-1,"r":0.08-0.2,"color":SLOT,"anim":"float"|"grow"}] placed in CORNERS only.\n'
-    +'- "blocks": ONE big bold quote/tip (size 0.07-0.11) centered, plus optional small label or number. Use anim "pop"|"rise"|"zoom".\n'
+    +'- "blocks": ONE big bold quote/tip (size 0.07-0.11) centered. Use anim "pop"|"rise"|"zoom". Do NOT add any card numbers, counters, or "1/2/3" labels anywhere.\n'
     +'- "voiceText": empty string "" (these cards use music, not voice).\n'
     +'RULES: colors ONLY from palette slots: '+palHint+'. Each card ONE powerful sentence (max 12 words) that motivates the reader. '
-    +(n>1?'Make it a numbered series (card 1, 2, 3...) building a theme; last card = call to action with the brand or website. ':'One unforgettable line. ')
+    +(n>1?'Build a theme across the cards; the LAST card is a call to action. When you mention the website, you MUST use exactly "'+(activeBrandSite||'')+'" — never invent or change the domain. ':'One unforgettable line. If you mention the website use exactly "'+(activeBrandSite||'')+'". ')
+    +'Do NOT number the cards or show any digits like 1, 2, 3 as labels. '
     +'Keep text in the center safe zone (x 0.5, y around 0.45). Vary backgrounds across cards. Output ONLY the JSON.';
   try{
     var r=await fetch(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})});
