@@ -144,7 +144,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </style>
 </head>
 <body>
-<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.39.0 IS LIVE — Voiceover fix + loading bars</div>
+<div id="deployMarker" style="background:#16a34a;color:#fff;text-align:center;padding:6px;font-size:13px;font-weight:700;font-family:sans-serif;">✅ BUILD 8.40.0 IS LIVE — Talking Avatar (HeyGen) live</div>
 <div class="topbar">
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -1214,7 +1214,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.39.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.40.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1240,7 +1240,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.39.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.40.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1420,6 +1420,7 @@ async function generateScript(){
   if(activeVtype === 'slides'){ return generateSlides(false); }
   if(activeVtype === 'quote'){ return generateQuotes(false); }
   if(activeVtype === 'faceless'){ return generateFaceless(false); }
+  if(activeVtype === 'avatar'){ return generateAvatarVideo(); }
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){showerr('Please describe your video first.');return;}
   clearerr();
@@ -2304,6 +2305,8 @@ function selectVtype(type, el){
   activeVtype = type;
   // Clear any stale preview/scenes from a previous type so nothing looks left over
   var _sp=document.getElementById('slidesPreview'); if(_sp) _sp.innerHTML='';
+  var _rsb=document.getElementById('renderSlidesBtn'); if(_rsb) _rsb.style.display='';
+  var _rgb=document.getElementById('regenBtn'); if(_rgb) _rgb.style.display='';
   var _sr=document.getElementById('stockReview'); if(_sr){ _sr.innerHTML=''; _sr.style.display='none'; }
   var _ss=document.getElementById('slidesStep'); if(_ss) _ss.classList.remove('on');
   var _rc=document.getElementById('slidesResultCard'); if(_rc) _rc.style.display='none';
@@ -2340,7 +2343,8 @@ function selectVtype(type, el){
   if(type === 'avatar'){
     if(avatarSection) avatarSection.style.display = 'block';
     if(cinematicSection) cinematicSection.style.display = 'none';
-    toast('AI Avatar selected — choose your presenter style below');
+    var avb=document.getElementById('scriptBtn'); if(avb) avb.textContent='⚡ Generate Avatar Video';
+    toast('AI Avatar selected — pick a presenter, then describe what they should say');
   } else if(type === 'cinematic'){
     if(avatarSection) avatarSection.style.display = 'none';
     if(cinematicSection) cinematicSection.style.display = 'block';
@@ -3405,6 +3409,85 @@ function selectAvatarCard(av){
   if(img && av.photo) img.src = av.photo;
   if(name) name.textContent = av.name;
   if(desc) desc.textContent = (av.premium ? 'Premium avatar' : 'Standard avatar') + (av.previewVideo ? ' · video preview available' : '');
+}
+
+// ===== TALKING AVATAR (Option A): script -> HeyGen -> poll -> deliver =====
+async function generateAvatarVideo(){
+  var prompt=document.getElementById('prompt').value.trim();
+  if(!prompt){ showerr('Please describe what the presenter should talk about.'); return; }
+  if(!avatarConfig.selectedId){ showerr('Please select a presenter avatar first (tap one in the grid above).'); return; }
+  clearerr();
+  document.getElementById('scriptBtn').disabled=true;
+  // reuse the slides result area for the video output
+  document.getElementById('slidesStep').classList.add('on');
+  document.getElementById('slidesResultCard').style.display='block';
+  document.getElementById('slidesVideo').style.display='none';
+  document.getElementById('slidesDlBtn').disabled=true;
+  var rt=document.getElementById('reviewTitle'); if(rt) rt.textContent='Your Avatar Video';
+  var rs=document.getElementById('reviewSub'); if(rs) rs.textContent='Your presenter is being generated';
+  document.getElementById('slidesPreview').innerHTML='';
+  document.getElementById('renderSlidesBtn').style.display='none';
+  var regb=document.getElementById('regenBtn'); if(regb) regb.style.display='none';
+
+  var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
+  var dur=parseInt(document.getElementById('dsel').value||'30');
+  var lang=document.getElementById('lsel')?document.getElementById('lsel').value:'English';
+  var maxWords=Math.floor(dur*2.3);
+  startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Writing the script…',6,30);
+  try{
+    // 1) write a spoken script
+    var sys='You write natural spoken voiceover scripts. Output ONLY the words the presenter says aloud — no stage directions, no labels, no scene notes.';
+    var user='Write a '+dur+'-second spoken presenter script in '+lang+' for the brand "'+brand+'". Topic: '+prompt+'. Maximum '+maxWords+' words. Natural, engaging, first-person presenter tone. End with a call to action. Only the spoken words.';
+    var sr=await fetch(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})});
+    if(!sr.ok) throw new Error('Script writing failed ('+sr.status+')');
+    var sd=await sr.json();
+    var script=(sd.text||'').trim().replace(/\*\*/g,'');
+    var words=script.split(/\s+/).filter(Boolean);
+    if(words.length>maxWords){ script=words.slice(0,maxWords).join(' '); var lp=script.lastIndexOf('.'); if(lp>script.length*0.6) script=script.slice(0,lp+1); }
+    if(!script) throw new Error('Empty script');
+
+    // 2) start HeyGen generation
+    startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Generating your presenter (this can take a few minutes)…',32,93);
+    var voiceId=(document.getElementById('voiceSel')||{}).value||'';
+    var gr=await fetch(BACKEND+'/api/heygen/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({avatarId:avatarConfig.selectedId,script:script,voiceId:voiceId,aspect:'landscape'})});
+    var gd=await gr.json();
+    if(!gr.ok || !gd.videoId) throw new Error((gd && gd.error) ? gd.error : 'Avatar generation failed to start');
+
+    // 3) poll status
+    var heygenId=gd.videoId;
+    var done=false, tries=0;
+    while(!done && tries<150){ // up to ~10 min
+      await new Promise(function(r){ setTimeout(r,4000); });
+      tries++;
+      var pr=await fetch(BACKEND+'/api/heygen/status/'+encodeURIComponent(heygenId));
+      var pd=await pr.json();
+      if(pd.status==='completed'){
+        done=true;
+        finishClimb('slidesRenderPfill','slidesRenderPtxt','Ready!');
+        var inlineData=pd.videoData||null;
+        var url=inlineData||(pd.videoId?(BACKEND+'/api/video/'+pd.videoId):pd.heygenUrl);
+        var vid=document.getElementById('slidesVideo'); vid.src=url; vid.style.display='block';
+        setTimeout(function(){ clearprog('slidesRenderPbar'); }, 800);
+        var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
+        dl.onclick=function(){ downloadSlidesVideo(pd.videoId, inlineData); };
+        var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
+        saveToLibrary(activeBrand, dur+'s', 'AI Avatar', url, pd.videoId, 'AI Avatar', 'landscape');
+        document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
+        toast('Avatar video ready! Saved to Library.');
+      } else if(pd.status==='failed'){
+        throw new Error(pd.error||'Generation failed on HeyGen');
+      }
+      // else keep polling (processing/pending/waiting)
+    }
+    if(!done) throw new Error('Timed out waiting for the avatar video. It may still finish — check your Library shortly.');
+  }catch(e){
+    stopClimb(); clearprog('slidesRenderPbar');
+    showerr('Avatar video failed: '+e.message);
+  }finally{
+    document.getElementById('scriptBtn').disabled=false;
+    var rsb=document.getElementById('renderSlidesBtn'); if(rsb) rsb.style.display='';
+    var rgb=document.getElementById('regenBtn'); if(rgb) rgb.style.display='';
+  }
 }
 
 
