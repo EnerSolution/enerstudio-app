@@ -49,6 +49,10 @@ select:focus{border-color:var(--p);}
 .btn-primary{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;width:100%;justify-content:center;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
 .btn-primary:hover{opacity:0.9;transform:translateY(-1px);}
 .btn-primary:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+/* Video type tile hover: lift + blue border/glow so it's clearly interactive */
+.vtile{transition:all 0.18s ease;}
+.vtile:hover{border-color:var(--p)!important;background:rgba(99,102,241,0.10)!important;transform:translateY(-2px);box-shadow:0 6px 18px rgba(99,102,241,0.18);}
+.vtile.soon:hover{transform:none;box-shadow:none;border-color:var(--p)!important;opacity:0.85!important;}
 .btn-secondary{background:var(--sur);border:1px solid var(--bdr);color:var(--ts);}
 .btn-secondary:hover{border-color:var(--p);color:var(--ac);}
 .btn-green{background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.3);color:var(--gr);}
@@ -196,72 +200,73 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <div class="card">
       <div class="ch"><div class="ct">🎯 Video Type</div><div class="csub">Choose your production style</div></div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
-        <div id="vt-faceless" onclick="selectVtype('faceless',this)" style="background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
-          <div style="font-size:22px;margin-bottom:4px;">🎞️</div>
-          <div style="font-size:11px;font-weight:600;color:#fff;">Faceless</div>
-          <div style="font-size:9px;color:rgba(255,255,255,0.7);margin-top:2px;">Listicle / Shorts</div>
+        <div id="vt-avatar" class="vtile" onclick="selectVtype('avatar',this)" style="background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div style="font-size:22px;margin-bottom:4px;">🎤</div>
+          <div style="font-size:11px;font-weight:600;color:#fff;">AI Avatar</div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.7);margin-top:2px;">Presenter</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.3);color:#fff;padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
-        <div id="vt-quote" onclick="selectVtype('quote',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
-          <div style="font-size:22px;margin-bottom:4px;">💬</div>
-          <div style="font-size:11px;font-weight:600;color:var(--ts);">Quote / Social</div>
-          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Quote cards</div>
+        <div id="vt-faceless" class="vtile" onclick="selectVtype('faceless',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div style="font-size:22px;margin-bottom:4px;">🎞️</div>
+          <div style="font-size:11px;font-weight:600;color:var(--ts);">Faceless</div>
+          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Listicle / Shorts</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
-        <div id="vt-slides" onclick="selectVtype('slides',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
-          <div style="font-size:22px;margin-bottom:4px;">📊</div>
-          <div style="font-size:11px;font-weight:600;color:var(--ts);">Animated Slides</div>
-          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Kinetic text</div>
+        <div id="vt-productad" class="vtile" onclick="selectVtype('productad',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div style="font-size:22px;margin-bottom:4px;">🛍️</div>
+          <div style="font-size:11px;font-weight:600;color:var(--ts);">Product Ads</div>
+          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Image to ad</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
-        <div id="vt-avatar" onclick="selectVtype('avatar',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
-          <div style="font-size:22px;margin-bottom:4px;">🎤</div>
-          <div style="font-size:11px;font-weight:600;color:var(--ts);">AI Avatar</div>
-          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Presenter</div>
-          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
-        </div>
-        <div id="vt-cinematic" onclick="selectVtype('cinematic',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
+        <div id="vt-cinematic" class="vtile" onclick="selectVtype('cinematic',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
           <div style="font-size:22px;margin-bottom:4px;">🎬</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Cinematic AI</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Real scenes</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
-        <div id="vt-whiteboard" onclick="selectVtype('whiteboard',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
+        <div id="vt-quote" class="vtile" onclick="selectVtype('quote',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div style="font-size:22px;margin-bottom:4px;">💬</div>
+          <div style="font-size:11px;font-weight:600;color:var(--ts);">Quote / Social</div>
+          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Quote cards</div>
+          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
+        </div>
+        <div id="vt-slides" class="vtile" onclick="selectVtype('slides',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div style="font-size:22px;margin-bottom:4px;">📊</div>
+          <div style="font-size:11px;font-weight:600;color:var(--ts);">Animated Slides</div>
+          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Kinetic text</div>
+          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
+        </div>
+        <div id="vt-whiteboard" class="vtile" onclick="selectVtype('whiteboard',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
           <div style="font-size:22px;margin-bottom:4px;">✏️</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Whiteboard</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Animation</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
-        <div id="vt-talkingphoto" onclick="comingSoon('Talking Photo')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
+        <div id="vt-talkingphoto" class="vtile soon" onclick="comingSoon('Talking Photo')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">🗣️</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Talking Photo</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Animate a face</div>
           <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
         </div>
-        <div id="vt-productad" onclick="selectVtype('productad',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all 0.2s;">
-          <div style="font-size:22px;margin-bottom:4px;">🛍️</div>
-          <div style="font-size:11px;font-weight:600;color:var(--ts);">Product Ads</div>
-          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Image to ad</div>
-        </div>
-        <div id="vt-explainer" onclick="comingSoon('Explainer')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
+        <div id="vt-explainer" class="vtile soon" onclick="comingSoon('Explainer')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">📈</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Explainer</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Infographic</div>
           <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
         </div>
-        <div id="vt-slideshow" onclick="comingSoon('Slideshow')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
+        <div id="vt-slideshow" class="vtile soon" onclick="comingSoon('Slideshow')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">🖼️</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Slideshow</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Photo montage</div>
           <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
         </div>
-        <div id="vt-cartoon" onclick="comingSoon('Cartoon')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
+        <div id="vt-cartoon" class="vtile soon" onclick="comingSoon('Cartoon')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">🎨</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Cartoon</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">2D Animation</div>
           <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
         </div>
-        <div id="vt-motion" onclick="comingSoon('Motion Graphics')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
+        <div id="vt-motion" class="vtile soon" onclick="comingSoon('Motion Graphics')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">⚡</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Motion</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Graphics</div>
@@ -1261,7 +1266,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.54.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.55.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1287,7 +1292,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.54.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.55.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2371,7 +2376,7 @@ function selectVtype(type, el){
   var _rt2=document.getElementById('slidesResultTitle'); if(_rt2) _rt2.textContent='Your Video';
   var _rs2=document.getElementById('slidesResultSub'); if(_rs2) _rs2.textContent='Rendered in your brand colors';
   if(typeof slidesData!=='undefined') slidesData=[];
-  ['cinematic','avatar','whiteboard','slides','quote','faceless'].forEach(function(t){
+  ['avatar','faceless','productad','cinematic','quote','slides','whiteboard'].forEach(function(t){
     var card = document.getElementById('vt-'+t);
     if(!card) return;
     if(t === type){
@@ -4762,7 +4767,7 @@ updateCreditDisplay();
 memIsAnnual = false; toggleMemBilling(); // flips to true and updates all prices
 updatePlanButtons();
 // Initialize the default video type so the highlighted tile and its config section match on load
-try { selectVtype('faceless', document.getElementById('vt-faceless')); } catch(e){}
+try { selectVtype('avatar', document.getElementById('vt-avatar')); } catch(e){}
 
 </script>
 </body>
