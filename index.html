@@ -539,8 +539,15 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
         </div>
         <div id="tpAiMode" style="display:none;">
+          <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Art Style</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;">
+            <div id="tpstyle-realistic" onclick="selectTpStyle('realistic',this)" style="background:var(--p);border:1.5px solid var(--p);border-radius:9px;padding:8px 4px;text-align:center;cursor:pointer;"><div style="font-size:17px;">🧑</div><div style="font-size:9px;font-weight:600;color:#fff;margin-top:2px;">Realistic</div></div>
+            <div id="tpstyle-cartoon" onclick="selectTpStyle('cartoon',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:9px;padding:8px 4px;text-align:center;cursor:pointer;"><div style="font-size:17px;">🎨</div><div style="font-size:9px;font-weight:600;color:var(--ts);margin-top:2px;">Cartoon</div></div>
+            <div id="tpstyle-mascot" onclick="selectTpStyle('mascot',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:9px;padding:8px 4px;text-align:center;cursor:pointer;"><div style="font-size:17px;">🐾</div><div style="font-size:9px;font-weight:600;color:var(--ts);margin-top:2px;">Mascot</div></div>
+            <div id="tpstyle-anime" onclick="selectTpStyle('anime',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:9px;padding:8px 4px;text-align:center;cursor:pointer;"><div style="font-size:17px;">✨</div><div style="font-size:9px;font-weight:600;color:var(--ts);margin-top:2px;">Anime</div></div>
+          </div>
           <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Describe the character</div>
-          <textarea id="tpCharDesc" rows="2" placeholder="e.g. a friendly female solar advisor in her 30s · a cartoon dog in a business suit · a wise older male professor" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:8px;box-sizing:border-box;resize:vertical;"></textarea>
+          <textarea id="tpCharDesc" rows="2" placeholder="e.g. a friendly female solar advisor in her 30s · a golden retriever with floppy ears in a business suit · a wise older male professor" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:8px;box-sizing:border-box;resize:vertical;"></textarea>
           <div style="font-size:10px;color:var(--tm);background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:7px;padding:7px 9px;margin-bottom:8px;">⚖️ Original or fictional characters only. For legal reasons, real or identifiable people (celebrities, politicians, public figures) can\u2019t be created.</div>
           <button onclick="generateTpCharacter()" id="tpGenCharBtn" style="width:100%;background:var(--sur);border:1px solid var(--p);border-radius:8px;padding:9px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--ac);cursor:pointer;margin-bottom:8px;">🎨 Generate Character Preview</button>
           <div id="tpCharPreview" style="display:none;align-items:center;gap:14px;margin-bottom:12px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:10px;">
@@ -1361,7 +1368,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.60.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.61.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1387,7 +1394,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.60.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.61.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -3817,7 +3824,22 @@ async function renderProductAd(){
 
 // ===== TALKING PHOTO (Avatar IV — flagship premium) =====
 var tpImage = null, tpGender = 'female', tpAspect = 'landscape';
-var tpMode = 'upload', tpCharUrl = null;
+var tpMode = 'upload', tpCharUrl = null, tpStyle = 'realistic';
+var TP_STYLE_GUIDE = {
+  realistic: 'Photorealistic real-looking human, natural lighting, professional headshot quality. ',
+  cartoon:   'Polished 3D Pixar-style cartoon character, friendly and expressive, clean studio background. ',
+  mascot:    'A friendly brand-mascot style character (can be an animal or creature) with clear expressive face suitable for talking, clean background. ',
+  anime:     'High-quality anime/illustrated style character with expressive face, clean background. '
+};
+function selectTpStyle(s, el){
+  tpStyle = s;
+  ['realistic','cartoon','mascot','anime'].forEach(function(k){
+    var c=document.getElementById('tpstyle-'+k); if(!c) return;
+    var divs=c.querySelectorAll('div');
+    if(k===s){ c.style.background='var(--p)'; c.style.borderColor='var(--p)'; if(divs[1])divs[1].style.color='#fff'; }
+    else { c.style.background='var(--card)'; c.style.borderColor='var(--bdr)'; if(divs[1])divs[1].style.color='var(--ts)'; }
+  });
+}
 
 function selectTpMode(mode, el){
   tpMode = mode;
@@ -3834,10 +3856,11 @@ function selectTpMode(mode, el){
 async function generateTpCharacter(){
   var desc = (document.getElementById('tpCharDesc').value||'').trim();
   if(!desc){ showerr('Describe the character first (e.g. "a friendly female solar advisor in her 30s").'); return; }
+  var styledDesc = (TP_STYLE_GUIDE[tpStyle]||'') + desc;
   clearerr();
   var btn=document.getElementById('tpGenCharBtn'); btn.disabled=true; btn.textContent='🎨 Generating character…';
   try{
-    var r=await fetch(BACKEND+'/api/heygen/character',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({description:desc,gender:tpGender})});
+    var r=await fetch(BACKEND+'/api/heygen/character',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({description:styledDesc,gender:tpGender})});
     var d=await r.json();
     if(d.blocked){ showerr(d.error); btn.disabled=false; btn.textContent='🎨 Generate Character Preview'; return; }
     if(!r.ok || !d.generationId) throw new Error((d&&d.error)?(''+d.error).slice(0,180):'Character generation failed');
