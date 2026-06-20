@@ -259,11 +259,12 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Animation</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
-        <div id="vt-talkingphoto" class="vtile soon" onclick="comingSoon('Talking Photo')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
+        <div id="vt-talkingphoto" class="vtile" onclick="selectVtype('talkingphoto',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div class="vinfo" onclick="vtInfo(event,'talkingphoto')" onmouseenter="vtInfo(event,'talkingphoto')">?</div>
           <div style="font-size:22px;margin-bottom:4px;">🗣️</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Talking Photo</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Animate a face</div>
-          <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
+          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-explainer" class="vtile soon" onclick="comingSoon('Explainer')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">📈</div>
@@ -511,6 +512,39 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </select>
         <div style="margin-top:12px;padding:8px 10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;font-size:11px;color:var(--tm);">
           💡 Describe your product and AI writes the ad copy. Your photo is animated by Runway AI into real cinematic motion (5-second clip), then captions, price & music are added. Premium type — uses your AI video credits (~$0.25–0.50 per ad).
+        </div>
+      </div>
+    </div>
+
+    <!-- TALKING PHOTO CONFIG SECTION -->
+    <div id="talkingphoto-config-section" style="display:none;">
+      <div class="card">
+        <div class="ch"><div class="ct">🗣️ Talking Photo Setup</div><div class="csub">Upload any photo — a person, mascot, or pet — and our most advanced AI makes it speak with lifelike lip-sync</div></div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Photo</div>
+        <input type="file" id="tpImgInput" accept="image/*" onchange="handleTpImage(event)" style="display:none;">
+        <div id="tpUploadBox" onclick="document.getElementById('tpImgInput').click()" style="border:1.5px dashed var(--bdr);border-radius:10px;padding:22px;text-align:center;cursor:pointer;margin-bottom:8px;background:var(--sur);">
+          <div style="font-size:26px;">📷</div>
+          <div style="font-size:12px;font-weight:600;color:var(--ts);margin-top:6px;">Tap to upload a photo</div>
+          <div style="font-size:10px;color:var(--tm);margin-top:2px;">Clear, front-facing portraits work best</div>
+        </div>
+        <div id="tpPreviewWrap" style="display:none;align-items:center;gap:14px;margin-bottom:12px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:10px;">
+          <img id="tpPreviewImg" style="width:80px;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--bdr);">
+          <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--ts);">Photo ready ✓</div><div style="font-size:11px;color:var(--tm);margin-top:2px;">This face will speak your script</div></div>
+          <div onclick="clearTpImage()" style="font-size:12px;color:var(--re);cursor:pointer;padding:4px 8px;">Change</div>
+        </div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Voice</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <div id="tpv-female" onclick="selectTpGender('female',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:#fff;">Female Voice</div></div>
+          <div id="tpv-male" onclick="selectTpGender('male',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:var(--ts);">Male Voice</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Aspect Ratio</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <div id="tpar-landscape" onclick="selectTpAspect('landscape',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:16px;">🖥️</div><div style="font-size:10px;font-weight:600;color:#fff;">Landscape</div></div>
+          <div id="tpar-vertical" onclick="selectTpAspect('vertical',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:16px;">📱</div><div style="font-size:10px;font-weight:600;color:var(--ts);">Vertical</div></div>
+          <div id="tpar-square" onclick="selectTpAspect('square',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:16px;">⬛</div><div style="font-size:10px;font-weight:600;color:var(--ts);">Square</div></div>
+        </div>
+        <div style="padding:9px 11px;background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(52,211,153,0.06));border:1px solid rgba(99,102,241,0.25);border-radius:8px;font-size:11px;color:var(--ts);">
+          ✨ <strong>Powered by HeyGen Avatar IV</strong> — our most advanced engine, with expressive facial motion, natural head movement and 1080p output. Premium type — uses your Premium credits. Describe what the photo should say below.
         </div>
       </div>
     </div>
@@ -1311,7 +1345,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.58.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.59.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1337,7 +1371,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.58.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.59.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1400,7 +1434,8 @@ var VT_INFO = {
   cinematic:{ icon:'🎬', name:'Cinematic AI', what:'Premium AI-generated film scenes from your script — realistic, movie-quality visuals with voiceover.', use:'Best for high-impact brand films, storytelling, and flagship promotional videos.', tip:'This is the premium flagship type. Describe your vision and AI generates real cinematic scenes.' },
   quote:{ icon:'💬', name:'Quote / Social', what:'Clean, eye-catching quote cards animated for social feeds — single quotes or a series.', use:'Perfect for daily motivation, brand quotes, tips, and shareable social posts.', tip:'Square format optimized for Instagram/LinkedIn. Great for consistent daily posting.' },
   slides:{ icon:'📊', name:'Animated Slides', what:'Kinetic text and animated slides in your brand colors — clear, professional, information-rich.', use:'Best for educational content, how-tos, summaries, and key-point presentations.', tip:'Upload your logo and AI matches your brand colors automatically.' },
-  whiteboard:{ icon:'✏️', name:'Whiteboard', what:'A hand draws your message on a whiteboard — the classic engaging explainer style.', use:'Great for teaching, simplifying complex ideas, and tutorials that hold attention.', tip:'Keep the script focused on one clear idea for the strongest whiteboard effect.' }
+  whiteboard:{ icon:'✏️', name:'Whiteboard', what:'A hand draws your message on a whiteboard — the classic engaging explainer style.', use:'Great for teaching, simplifying complex ideas, and tutorials that hold attention.', tip:'Keep the script focused on one clear idea for the strongest whiteboard effect.' },
+  talkingphoto:{ icon:'🗣️', name:'Talking Photo', what:'Upload ANY photo — a person, a mascot, even a pet — and our most advanced AI brings it to life speaking your script, with lifelike lip-sync and natural expressions.', use:'Perfect for personal spokespeople, founders, testimonials, characters, and scroll-stopping social content.', tip:'A clear, front-facing portrait gives the most realistic result. Powered by HeyGen Avatar IV at 1080p.' }
 };
 var _vtPopEl=null;
 function vtInfo(ev, type){
@@ -1582,6 +1617,7 @@ async function generateScript(){
   if(activeVtype === 'quote'){ return generateQuotes(false); }
   if(activeVtype === 'faceless'){ return generateFaceless(false); }
   if(activeVtype === 'productad'){ return generateProductAd(); }
+  if(activeVtype === 'talkingphoto'){ return generateTalkingPhoto(); }
   if(activeVtype === 'avatar'){ return generateAvatarVideo(); }
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){showerr('Please describe your video first.');return;}
@@ -2465,7 +2501,7 @@ function toggleBrandDropdown(){
 
 // VIDEO TYPE
 var activeVtype = 'cinematic';
-var SOON_TYPES = ['talkingphoto','explainer','slideshow','cartoon','motion'];
+var SOON_TYPES = ['explainer','slideshow','cartoon','motion'];
 function selectVtype(type, el){
   activeVtype = type;
   // Clear any stale preview/scenes from a previous type so nothing looks left over
@@ -2479,7 +2515,7 @@ function selectVtype(type, el){
   var _rt2=document.getElementById('slidesResultTitle'); if(_rt2) _rt2.textContent='Your Video';
   var _rs2=document.getElementById('slidesResultSub'); if(_rs2) _rs2.textContent='Rendered in your brand colors';
   if(typeof slidesData!=='undefined') slidesData=[];
-  ['avatar','faceless','productad','cinematic','quote','slides','whiteboard'].forEach(function(t){
+  ['avatar','faceless','productad','cinematic','quote','slides','whiteboard','talkingphoto'].forEach(function(t){
     var card = document.getElementById('vt-'+t);
     if(!card) return;
     if(t === type){
@@ -2506,9 +2542,10 @@ function selectVtype(type, el){
   var _qc = document.getElementById('quote-config-section'); if(_qc && type!=='quote') _qc.style.display='none';
   var _fc = document.getElementById('faceless-config-section'); if(_fc && type!=='faceless') _fc.style.display='none';
   var _pc = document.getElementById('productad-config-section'); if(_pc && type!=='productad') _pc.style.display='none';
+  var _tpc = document.getElementById('talkingphoto-config-section'); if(_tpc && type!=='talkingphoto') _tpc.style.display='none';
   var _sb = document.getElementById('scriptBtn');
   if(_sb){ _sb.disabled=false; }
-  if(_sb) _sb.textContent = (type==='slides') ? '⚡ Design My Slides' : (type==='quote' ? '⚡ Create My Quote Cards' : (type==='faceless' ? '⚡ Create My Video' : (type==='productad' ? '⚡ Create My Product Ad' : '⚡ Generate Script')));
+  if(_sb) _sb.textContent = (type==='slides') ? '⚡ Design My Slides' : (type==='quote' ? '⚡ Create My Quote Cards' : (type==='faceless' ? '⚡ Create My Video' : (type==='productad' ? '⚡ Create My Product Ad' : (type==='talkingphoto' ? '⚡ Bring My Photo to Life' : '⚡ Generate Script'))));
 
   if(type === 'avatar'){
     if(avatarSection) avatarSection.style.display = 'block';
@@ -2550,6 +2587,13 @@ function selectVtype(type, el){
     var vw4 = document.getElementById('voiceSelectorWrap'); if(vw4) vw4.style.display='none';
     var pb = document.getElementById('scriptBtn'); if(pb) pb.textContent='⚡ Create My Product Ad';
     toast('🛍️ Product Ads selected — upload your product photo and describe it');
+  } else if(type === 'talkingphoto'){
+    if(avatarSection) avatarSection.style.display = 'none';
+    if(cinematicSection) cinematicSection.style.display = 'block';
+    var tpc = document.getElementById('talkingphoto-config-section'); if(tpc) tpc.style.display='block';
+    var vw5 = document.getElementById('voiceSelectorWrap'); if(vw5) vw5.style.display='none';
+    var tpb = document.getElementById('scriptBtn'); if(tpb) tpb.textContent='⚡ Bring My Photo to Life';
+    toast('🗣️ Talking Photo selected — upload a photo and describe what it should say');
   } else {
     if(avatarSection) avatarSection.style.display = 'none';
     if(cinematicSection) cinematicSection.style.display = 'block';
@@ -3752,6 +3796,121 @@ async function renderProductAd(){
     stopClimb(); clearprog('slidesRenderPbar');
     document.getElementById('renderSlidesBtn').disabled=false;
     showerr('Product ad render failed: '+e.message);
+  }
+}
+
+// ===== TALKING PHOTO (Avatar IV — flagship premium) =====
+var tpImage = null, tpGender = 'female', tpAspect = 'landscape';
+function handleTpImage(ev){
+  var f = ev.target.files && ev.target.files[0];
+  if(!f || f.type.indexOf('image/')!==0) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    tpImage = e.target.result;
+    document.getElementById('tpPreviewImg').src = tpImage;
+    document.getElementById('tpPreviewWrap').style.display = 'flex';
+    document.getElementById('tpUploadBox').style.display = 'none';
+  };
+  reader.readAsDataURL(f);
+  ev.target.value='';
+}
+function clearTpImage(){
+  tpImage=null;
+  document.getElementById('tpPreviewWrap').style.display='none';
+  document.getElementById('tpUploadBox').style.display='block';
+}
+function selectTpGender(g, el){
+  tpGender=g;
+  ['female','male'].forEach(function(k){ var c=document.getElementById('tpv-'+k); if(!c)return;
+    if(k===g){ c.style.background='var(--p)'; c.style.borderColor='var(--p)'; c.querySelector('div').style.color='#fff'; }
+    else { c.style.background='var(--card)'; c.style.borderColor='var(--bdr)'; c.querySelector('div').style.color='var(--ts)'; } });
+}
+function selectTpAspect(a, el){
+  tpAspect=a;
+  ['landscape','vertical','square'].forEach(function(k){ var c=document.getElementById('tpar-'+k); if(!c)return;
+    var divs=c.querySelectorAll('div');
+    if(k===a){ c.style.background='var(--p)'; c.style.borderColor='var(--p)'; if(divs[1])divs[1].style.color='#fff'; }
+    else { c.style.background='var(--card)'; c.style.borderColor='var(--bdr)'; if(divs[1])divs[1].style.color='var(--ts)'; } });
+}
+
+async function generateTalkingPhoto(){
+  try { await _generateTalkingPhotoInner(); }
+  catch(e){ stopClimb(); clearprog('slidesRenderPbar'); document.getElementById('scriptBtn').disabled=false; showerr('Talking Photo error: '+(e&&e.message?e.message:e)); }
+}
+async function _generateTalkingPhotoInner(){
+  var prompt=document.getElementById('prompt').value.trim();
+  if(!prompt){ showerr('Please describe what the photo should say.'); return; }
+  if(!tpImage){ showerr('Please upload a photo first.'); return; }
+  clearerr();
+  document.getElementById('scriptBtn').disabled=true;
+  document.getElementById('slidesStep').classList.remove('on');
+  document.getElementById('slidesResultCard').style.display='block';
+  document.getElementById('slidesVideo').style.display='none';
+  document.getElementById('slidesDlBtn').disabled=true;
+  var rNum=document.getElementById('slidesResultNum'); if(rNum) rNum.textContent='🗣️';
+  var rTit=document.getElementById('slidesResultTitle'); if(rTit) rTit.textContent='Your Talking Photo';
+  function tdbg(msg){ var s=document.getElementById('slidesResultSub'); if(s) s.textContent='⏳ '+msg; var eb=document.getElementById('errbox'); if(eb){ eb.textContent='⏳ '+msg; eb.classList.add('on'); eb.style.background='rgba(99,102,241,0.1)'; eb.style.borderColor='var(--ba)'; eb.style.color='var(--ac)'; } }
+  tdbg('Starting…');
+  document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
+  var dur=parseInt(document.getElementById('dsel').value||'20');
+  var lang=document.getElementById('lsel')?document.getElementById('lsel').value:'English';
+  var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
+  var maxWords=Math.floor(dur*2.3);
+  function ftimeout(url,opts,ms){ return new Promise(function(resolve,reject){ var c=new AbortController(); var t=setTimeout(function(){c.abort();reject(new Error('Timed out (server waking up — try again)'));},ms); fetch(url,Object.assign({},opts,{signal:c.signal})).then(function(r){clearTimeout(t);resolve(r);}).catch(function(e){clearTimeout(t);reject(e);}); }); }
+  startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Writing the script…',6,30);
+  try{
+    // 1) script
+    tdbg('Writing the script…');
+    var sys='You write natural spoken scripts. Output ONLY the words spoken aloud — no stage directions or labels.';
+    var user='Write a '+dur+'-second first-person spoken script in '+lang+' for "'+brand+'". The speaker should say: '+prompt+'. Maximum '+maxWords+' words. Natural and engaging. Only the spoken words.';
+    var sr=await ftimeout(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})},90000);
+    if(!sr.ok) throw new Error('Script writing failed ('+sr.status+')');
+    var sd=await sr.json();
+    var script=(sd.text||'').trim().replace(/\*\*/g,'');
+    var words=script.split(/\s+/).filter(Boolean);
+    if(words.length>maxWords){ script=words.slice(0,maxWords).join(' '); var lp=script.lastIndexOf('.'); if(lp>script.length*0.6) script=script.slice(0,lp+1); }
+    if(!script) throw new Error('Empty script');
+
+    // 2) talking photo generate (Avatar IV)
+    startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Bringing your photo to life (this takes a few minutes)…',32,93);
+    tdbg('Uploading your photo and starting the AI (Avatar IV)…');
+    var gr=await ftimeout(BACKEND+'/api/heygen/talkingphoto',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({photo:tpImage,script:script,gender:tpGender,aspect:tpAspect})},120000);
+    var gd=await gr.json();
+    if(!gr.ok || !gd.videoId) throw new Error((gd&&gd.error)?(''+gd.error).slice(0,200):'Talking Photo failed to start');
+    tdbg('AI is animating your photo'+(gd.engine==='avatar_iv'?' with Avatar IV':'')+'…');
+
+    // 3) poll (reuse heygen status)
+    var hgId=gd.videoId, done=false, tries=0;
+    while(!done && tries<150){
+      await new Promise(function(r){ setTimeout(r,4000); });
+      tries++;
+      var pd; try{ var pr=await ftimeout(BACKEND+'/api/heygen/status/'+encodeURIComponent(hgId),{},40000); pd=await pr.json(); }
+      catch(pe){ tdbg('Still animating… '+(tries*4)+'s'); continue; }
+      tdbg('🎬 Animating your photo — keep this page open. '+(tries*4)+'s (usually 2–5 min)');
+      if(pd.status==='completed'){
+        done=true;
+        finishClimb('slidesRenderPfill','slidesRenderPtxt','Ready!');
+        var inlineData=pd.videoData||null;
+        var url=inlineData||(pd.videoId?(BACKEND+'/api/video/'+pd.videoId):(pd.heygenUrl||''));
+        var vid=document.getElementById('slidesVideo'); if(url){ vid.src=url; vid.style.display='block'; vid.onerror=function(){ var s=document.getElementById('slidesResultSub'); if(s) s.innerHTML='Your video is ready — <a href="'+url+'" target="_blank" style="color:var(--ac);text-decoration:underline;">click here to open/download</a>.'; }; }
+        setTimeout(function(){ clearprog('slidesRenderPbar'); }, 800);
+        var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
+        dl.onclick=function(){ if(inlineData){ downloadSlidesVideo(pd.videoId, inlineData); } else if(pd.videoId){ downloadSlidesVideo(pd.videoId, null); } else if(pd.heygenUrl){ window.open(pd.heygenUrl,'_blank'); } };
+        try{ if(inlineData) downloadSlidesVideo(pd.videoId, inlineData); else if(pd.videoId) downloadSlidesVideo(pd.videoId, null); }catch(_ad){}
+        var ol=document.getElementById('slidesOpenLink'); if(ol&&url){ ol.href=url; ol.style.display='block'; }
+        var rSub2=document.getElementById('slidesResultSub'); if(rSub2) rSub2.textContent='✅ Done! Your talking photo is ready below — downloading and saved to Library.';
+        var eb2=document.getElementById('errbox'); if(eb2){ eb2.textContent='✅ Talking Photo ready! Downloading now and saved to your Library.'; eb2.classList.add('on'); eb2.style.background='rgba(52,211,153,0.1)'; eb2.style.borderColor='rgba(52,211,153,0.3)'; eb2.style.color='var(--gr)'; }
+        try{ saveToLibrary(activeBrand, dur+'s', 'Talking Photo', url, pd.videoId, 'Talking Photo', tpAspect); }catch(_e){}
+        document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
+        toast('✅ Talking Photo ready — downloading!');
+      } else if(pd.status==='failed'){ throw new Error(pd.error||'Generation failed — try a clearer, front-facing photo'); }
+    }
+    if(!done) throw new Error('Taking longer than usual — it will keep finishing; check your Library in a few minutes.');
+  }catch(e){
+    stopClimb(); clearprog('slidesRenderPbar');
+    showerr('Talking Photo failed: '+e.message);
+  }finally{
+    document.getElementById('scriptBtn').disabled=false;
   }
 }
 
