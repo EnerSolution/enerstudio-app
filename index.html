@@ -520,6 +520,11 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <div id="talkingphoto-config-section" style="display:none;">
       <div class="card">
         <div class="ch"><div class="ct">🗣️ Talking Photo Setup</div><div class="csub">Upload any photo — a person, mascot, or pet — and our most advanced AI makes it speak with lifelike lip-sync</div></div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <div id="tpmode-upload" onclick="selectTpMode('upload',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:#fff;">📷 Upload my photo</div></div>
+          <div id="tpmode-ai" onclick="selectTpMode('ai',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:var(--ts);">✨ Describe a character</div></div>
+        </div>
+        <div id="tpUploadMode">
         <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Photo</div>
         <input type="file" id="tpImgInput" accept="image/*" onchange="handleTpImage(event)" style="display:none;">
         <div id="tpUploadBox" onclick="document.getElementById('tpImgInput').click()" style="border:1.5px dashed var(--bdr);border-radius:10px;padding:22px;text-align:center;cursor:pointer;margin-bottom:8px;background:var(--sur);">
@@ -531,6 +536,17 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <img id="tpPreviewImg" style="width:80px;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--bdr);">
           <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--ts);">Photo ready ✓</div><div style="font-size:11px;color:var(--tm);margin-top:2px;">This face will speak your script</div></div>
           <div onclick="clearTpImage()" style="font-size:12px;color:var(--re);cursor:pointer;padding:4px 8px;">Change</div>
+        </div>
+        </div>
+        <div id="tpAiMode" style="display:none;">
+          <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Describe the character</div>
+          <textarea id="tpCharDesc" rows="2" placeholder="e.g. a friendly female solar advisor in her 30s · a cartoon dog in a business suit · a wise older male professor" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:8px;box-sizing:border-box;resize:vertical;"></textarea>
+          <div style="font-size:10px;color:var(--tm);background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:7px;padding:7px 9px;margin-bottom:8px;">⚖️ Original or fictional characters only. For legal reasons, real or identifiable people (celebrities, politicians, public figures) can\u2019t be created.</div>
+          <button onclick="generateTpCharacter()" id="tpGenCharBtn" style="width:100%;background:var(--sur);border:1px solid var(--p);border-radius:8px;padding:9px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--ac);cursor:pointer;margin-bottom:8px;">🎨 Generate Character Preview</button>
+          <div id="tpCharPreview" style="display:none;align-items:center;gap:14px;margin-bottom:12px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:10px;">
+            <img id="tpCharImg" style="width:80px;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--bdr);">
+            <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--ts);">Character ready ✓</div><div style="font-size:11px;color:var(--tm);margin-top:2px;">This character will speak your script</div></div>
+          </div>
         </div>
         <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Voice</div>
         <div style="display:flex;gap:8px;margin-bottom:14px;">
@@ -1345,7 +1361,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.59.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.60.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1371,7 +1387,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.59.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.60.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -3801,6 +3817,50 @@ async function renderProductAd(){
 
 // ===== TALKING PHOTO (Avatar IV — flagship premium) =====
 var tpImage = null, tpGender = 'female', tpAspect = 'landscape';
+var tpMode = 'upload', tpCharUrl = null;
+
+function selectTpMode(mode, el){
+  tpMode = mode;
+  document.getElementById('tpmode-upload').style.background = mode==='upload'?'var(--p)':'var(--card)';
+  document.getElementById('tpmode-upload').style.borderColor = mode==='upload'?'var(--p)':'var(--bdr)';
+  document.getElementById('tpmode-upload').querySelector('div').style.color = mode==='upload'?'#fff':'var(--ts)';
+  document.getElementById('tpmode-ai').style.background = mode==='ai'?'var(--p)':'var(--card)';
+  document.getElementById('tpmode-ai').style.borderColor = mode==='ai'?'var(--p)':'var(--bdr)';
+  document.getElementById('tpmode-ai').querySelector('div').style.color = mode==='ai'?'#fff':'var(--ts)';
+  document.getElementById('tpUploadMode').style.display = mode==='upload'?'block':'none';
+  document.getElementById('tpAiMode').style.display = mode==='ai'?'block':'none';
+}
+
+async function generateTpCharacter(){
+  var desc = (document.getElementById('tpCharDesc').value||'').trim();
+  if(!desc){ showerr('Describe the character first (e.g. "a friendly female solar advisor in her 30s").'); return; }
+  clearerr();
+  var btn=document.getElementById('tpGenCharBtn'); btn.disabled=true; btn.textContent='🎨 Generating character…';
+  try{
+    var r=await fetch(BACKEND+'/api/heygen/character',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({description:desc,gender:tpGender})});
+    var d=await r.json();
+    if(d.blocked){ showerr(d.error); btn.disabled=false; btn.textContent='🎨 Generate Character Preview'; return; }
+    if(!r.ok || !d.generationId) throw new Error((d&&d.error)?(''+d.error).slice(0,180):'Character generation failed');
+    // poll for the image
+    var genId=d.generationId, img=null, tries=0;
+    while(!img && tries<40){
+      await new Promise(function(res){ setTimeout(res,3000); });
+      tries++;
+      btn.textContent='🎨 Generating character… '+(tries*3)+'s';
+      var pr=await fetch(BACKEND+'/api/heygen/character/'+encodeURIComponent(genId));
+      var pd=await pr.json();
+      if(pd.status==='completed' && pd.images && pd.images.length){ img=pd.images[0]; break; }
+      if(pd.status==='failed') throw new Error('Character generation failed — try a different description');
+    }
+    if(!img) throw new Error('Character is taking too long — please try again');
+    tpCharUrl=img;
+    document.getElementById('tpCharImg').src=img;
+    document.getElementById('tpCharPreview').style.display='flex';
+    toast('Character ready! Now describe what they should say and generate.');
+  }catch(e){ showerr('Character generation failed: '+e.message); }
+  finally{ btn.disabled=false; btn.textContent='🎨 Generate Character Preview'; }
+}
+
 function handleTpImage(ev){
   var f = ev.target.files && ev.target.files[0];
   if(!f || f.type.indexOf('image/')!==0) return;
@@ -3840,7 +3900,8 @@ async function generateTalkingPhoto(){
 async function _generateTalkingPhotoInner(){
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){ showerr('Please describe what the photo should say.'); return; }
-  if(!tpImage){ showerr('Please upload a photo first.'); return; }
+  if(tpMode==='upload' && !tpImage){ showerr('Please upload a photo first.'); return; }
+  if(tpMode==='ai' && !tpCharUrl){ showerr('Please generate a character preview first (in the "Describe a character" section).'); return; }
   clearerr();
   document.getElementById('scriptBtn').disabled=true;
   document.getElementById('slidesStep').classList.remove('on');
@@ -3874,7 +3935,9 @@ async function _generateTalkingPhotoInner(){
     // 2) talking photo generate (Avatar IV)
     startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Bringing your photo to life (this takes a few minutes)…',32,93);
     tdbg('Uploading your photo and starting the AI (Avatar IV)…');
-    var gr=await ftimeout(BACKEND+'/api/heygen/talkingphoto',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({photo:tpImage,script:script,gender:tpGender,aspect:tpAspect})},120000);
+    var tpBody={script:script,gender:tpGender,aspect:tpAspect};
+    if(tpMode==='ai'){ tpBody.photoUrl=tpCharUrl; } else { tpBody.photo=tpImage; }
+    var gr=await ftimeout(BACKEND+'/api/heygen/talkingphoto',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(tpBody)},120000);
     var gd=await gr.json();
     if(!gr.ok || !gd.videoId) throw new Error((gd&&gd.error)?(''+gd.error).slice(0,200):'Talking Photo failed to start');
     tdbg('AI is animating your photo'+(gd.engine==='avatar_iv'?' with Avatar IV':'')+'…');
