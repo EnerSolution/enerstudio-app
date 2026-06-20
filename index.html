@@ -159,10 +159,65 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 </head>
 <body>
 
+<!-- ════ PILOT ONBOARDING (fresh-member experience, no payment) ════ -->
+<div id="onboard" style="position:fixed;inset:0;z-index:100000;background:linear-gradient(135deg,#0a0c10,#11151c);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;font-family:'DM Sans',sans-serif;">
+  <div style="width:100%;max-width:440px;">
+    <!-- STEP 1: WELCOME -->
+    <div id="ob-step1" class="ob-step">
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#fff;">EnerStudio<span style="color:var(--gr,#34d399)">.</span><span style="font-size:18px;font-weight:400;color:var(--ts,#cbd5e1)">io</span></div>
+        <div style="font-size:14px;color:var(--ac,#a5b4fc);margin-top:4px;font-weight:600;">&#10022; Founding Member Preview</div>
+      </div>
+      <div style="background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.75rem;">
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:10px;">Create studio-quality AI videos in minutes 🎬</div>
+        <div style="font-size:13.5px;color:var(--ts,#cbd5e1);line-height:1.7;margin-bottom:1.25rem;">You've been invited to test EnerStudio as a founding member. Describe a video in plain words — our AI writes, designs, and produces it for you. Talking avatars, product ads, faceless shorts, animated slides and more.</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem;">
+          <div style="font-size:12.5px;color:var(--ts,#cbd5e1);">✅ Full access to all video types</div>
+          <div style="font-size:12.5px;color:var(--ts,#cbd5e1);">✅ Credits on us — nothing to pay</div>
+          <div style="font-size:12.5px;color:var(--ts,#cbd5e1);">✅ Your honest feedback shapes the platform</div>
+        </div>
+        <button onclick="obNext(2)" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Get Started →</button>
+      </div>
+    </div>
+    <!-- STEP 2: ACCOUNT -->
+    <div id="ob-step2" class="ob-step" style="display:none;">
+      <div style="background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.75rem;">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:4px;">Create your account</div>
+        <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1.25rem;">Step 1 of 2</div>
+        <label style="font-size:12px;color:var(--tm,#94a3b8);">Your name</label>
+        <input id="ob-name" type="text" placeholder="Jane Smith" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
+        <label style="font-size:12px;color:var(--tm,#94a3b8);">Email</label>
+        <input id="ob-email" type="email" placeholder="you@company.com" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
+        <label style="font-size:12px;color:var(--tm,#94a3b8);">Company / brand (optional)</label>
+        <input id="ob-company" type="text" placeholder="Acme Inc." style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 18px;box-sizing:border-box;">
+        <button onclick="obCreateAccount()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Continue →</button>
+        <div id="ob-err" style="display:none;font-size:12px;color:var(--re,#f87171);margin-top:10px;text-align:center;"></div>
+      </div>
+    </div>
+    <!-- STEP 3: PLAN (no payment) -->
+    <div id="ob-step3" class="ob-step" style="display:none;">
+      <div style="background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.75rem;">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:4px;">Your Founding Member plan</div>
+        <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1.25rem;">Step 2 of 2</div>
+        <div style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(52,211,153,0.06));border:1.5px solid var(--p,#6366f1);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem;position:relative;">
+          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--gr,#34d399);color:#0a0c10;font-size:10px;font-weight:800;padding:3px 12px;border-radius:12px;">FOUNDING MEMBER — FREE</div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#fff;margin-top:6px;">Full Access Pilot</div>
+          <div style="font-size:13px;color:var(--ts,#cbd5e1);margin-top:8px;line-height:1.7;">• All 8 video types unlocked<br>• Generous credit allowance (on us)<br>• Priority feedback channel</div>
+          <div style="margin-top:12px;font-size:22px;font-weight:800;color:#fff;">$0 <span style="font-size:13px;font-weight:400;color:var(--tm,#94a3b8);text-decoration:line-through;">$99/mo</span></div>
+          <div style="font-size:11px;color:var(--gr,#34d399);margin-top:2px;">Payment skipped for pilot testers</div>
+        </div>
+        <button onclick="obFinish()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Activate &amp; Enter Studio →</button>
+        <div style="font-size:10.5px;color:var(--tm,#94a3b8);text-align:center;margin-top:10px;">No credit card required during the pilot.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="topbar">
   <div class="logo">EnerStudio<span style="-webkit-text-fill-color:var(--gr);color:var(--gr)">.</span><span style="font-size:13px;font-weight:400;-webkit-text-fill-color:var(--ts);color:var(--ts)">io</span></div>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="pill"><div class="pdot"></div>Live</div>
+    <span id="pilotWho" style="font-size:12px;color:var(--ac);cursor:pointer;" onclick="pilotReset()" title="Start fresh as a new tester"></span>
     <span style="font-size:12px;color:var(--tm)">EnerStudio.io — Beta</span>
   </div>
 </div>
@@ -1368,7 +1423,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.61.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.62.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1394,7 +1449,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.61.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.62.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1448,6 +1503,56 @@ var BACKEND = 'https://enerstudio-backend.onrender.com';
 // Render free tier sleeps after 15 min idle (≈50s cold start). We warm it on load
 // so by the time the user generates, it's already awake — and ping every 10 min.
 function warmBackend(){ try{ fetch(BACKEND+'/api/ping',{cache:'no-store'}).catch(function(){}); }catch(e){} }
+
+// ── PILOT ONBOARDING ──
+var pilotUser = null;
+try { pilotUser = JSON.parse(localStorage.getItem('enerstudio_pilot_user') || 'null'); } catch(e){}
+function obNext(step){
+  ['ob-step1','ob-step2','ob-step3'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display='none'; });
+  var s=document.getElementById('ob-step'+step); if(s) s.style.display='block';
+}
+function obCreateAccount(){
+  var name=(document.getElementById('ob-name').value||'').trim();
+  var email=(document.getElementById('ob-email').value||'').trim();
+  var company=(document.getElementById('ob-company').value||'').trim();
+  var err=document.getElementById('ob-err');
+  if(!name){ err.textContent='Please enter your name.'; err.style.display='block'; return; }
+  if(!email || email.indexOf('@')<1 || email.indexOf('.')<0){ err.textContent='Please enter a valid email.'; err.style.display='block'; return; }
+  err.style.display='none';
+  pilotUser = { name:name, email:email, company:company, joined:new Date().toISOString() };
+  obNext(3);
+}
+function obFinish(){
+  try { localStorage.setItem('enerstudio_pilot_user', JSON.stringify(pilotUser)); } catch(e){}
+  var ov=document.getElementById('onboard'); if(ov) ov.style.display='none';
+  applyPilotUser();
+}
+function applyPilotUser(){
+  if(!pilotUser) return;
+  try{
+    var firstName=(pilotUser.name||'').split(' ')[0];
+    var who=document.getElementById('pilotWho');
+    if(who) who.textContent='👤 '+firstName+' · New tester?';
+  }catch(e){}
+}
+function pilotReset(){
+  if(!confirm('Start fresh as a new tester?\n\nThis clears the current tester\u2019s session (account, library and brand settings on this browser) so the next person can sign up clean.')) return;
+  try{
+    localStorage.removeItem('enerstudio_pilot_user');
+    localStorage.removeItem('enerstudio_library');
+    localStorage.removeItem('enerstudio_photos');
+    localStorage.removeItem('enerstudio_brandLogos');
+  }catch(e){}
+  location.reload();
+}
+function obShowIfNeeded(){
+  var ov=document.getElementById('onboard');
+  if(!ov) return;
+  if(pilotUser){ ov.style.display='none'; applyPilotUser(); }
+  else { ov.style.display='flex'; }
+}
+obShowIfNeeded();
+
 
 // ── VIDEO TYPE INFO POPOVERS ──
 var VT_INFO = {
