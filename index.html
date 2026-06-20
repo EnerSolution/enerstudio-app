@@ -1048,6 +1048,34 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
   </div>
 
+  <!-- BUY EXTRA CREDITS -->
+  <div style="background:linear-gradient(135deg,rgba(99,102,241,0.10),rgba(52,211,153,0.06));border:1px solid rgba(99,102,241,0.3);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
+    <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:6px;">⚡ Buy Extra Credits</div>
+    <div style="font-size:13px;color:var(--ts);line-height:1.7;margin-bottom:1rem;">Need more premium videos before your next refresh? Top up instantly. Extra credits never expire and stack on top of your plan — use them for any <strong style="color:var(--ac);">Premium</strong> video type (AI Avatar, Cinematic AI, Product Ads).</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <div onclick="buyCredits('mini')" style="background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--p)';this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='var(--bdr)';this.style.transform='none';">
+        <div style="font-size:12px;color:var(--tm);margin-bottom:4px;">Mini Pack</div>
+        <div style="font-size:22px;font-weight:800;color:var(--ac);">$19</div>
+        <div style="font-size:11px;color:var(--ts);margin-top:4px;">+300 premium credits</div>
+        <div style="font-size:10px;color:var(--tm);margin-top:2px;">≈ 10 premium videos</div>
+      </div>
+      <div onclick="buyCredits('value')" style="background:var(--sur);border:1.5px solid var(--p);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;position:relative;transition:all 0.15s;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='none';">
+        <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--p);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;">BEST VALUE</div>
+        <div style="font-size:12px;color:var(--tm);margin-bottom:4px;">Value Pack</div>
+        <div style="font-size:22px;font-weight:800;color:var(--ac);">$49</div>
+        <div style="font-size:11px;color:var(--ts);margin-top:4px;">+900 premium credits</div>
+        <div style="font-size:10px;color:var(--gr);margin-top:2px;">≈ 30 videos · save 20%</div>
+      </div>
+      <div onclick="buyCredits('pro')" style="background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--p)';this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='var(--bdr)';this.style.transform='none';">
+        <div style="font-size:12px;color:var(--tm);margin-bottom:4px;">Pro Pack</div>
+        <div style="font-size:22px;font-weight:800;color:var(--ac);">$99</div>
+        <div style="font-size:11px;color:var(--ts);margin-top:4px;">+2000 premium credits</div>
+        <div style="font-size:10px;color:var(--gr);margin-top:2px;">≈ 66 videos · save 33%</div>
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--tm);margin-top:10px;text-align:center;">Secure checkout via Stripe · Credits added instantly · Never expire</div>
+  </div>
+
   <!-- REFRESH PLAN EXPLAINER -->
   <div style="background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(99,102,241,0.05));border:1px solid rgba(251,191,36,0.25);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
     <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;">🔄 Plan Refresh — Use More Anytime</div>
@@ -1283,7 +1311,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.57.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.58.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1309,7 +1337,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.57.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.58.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -4685,6 +4713,7 @@ var PLAN_POOLS = {
 var TYPE_POOL = {
   'cinematic': 'premium',
   'avatar': 'premium',
+  'productad': 'premium',
   'whiteboard': 'standard',
   'cartoon': 'standard',
   'motion': 'motion'
@@ -4701,6 +4730,25 @@ var memberCredits = {
 
 function getVideosFromSeconds(seconds, durSeconds){
   return Math.floor(seconds / durSeconds);
+}
+
+// ── BUY EXTRA CREDITS (Stripe-ready; charging wired when Stripe is integrated) ──
+var CREDIT_PACKS = {
+  mini:  { credits: 300,  price: 19, label: 'Mini Pack' },
+  value: { credits: 900,  price: 49, label: 'Value Pack' },
+  pro:   { credits: 2000, price: 99, label: 'Pro Pack' }
+};
+function buyCredits(packKey){
+  var pack = CREDIT_PACKS[packKey];
+  if(!pack) return;
+  // When Stripe is live, this will open Stripe Checkout for `pack` and, on success,
+  // the webhook will credit the member's premium pool. For now we confirm intent
+  // and explain that secure checkout is being connected.
+  alert('💳 ' + pack.label + ' — $' + pack.price + ' for ' + pack.credits + ' premium credits\n\n'
+    + 'Secure Stripe checkout is being connected. Once live, your credits will be added instantly after payment and will never expire.\n\n'
+    + 'Thanks for your interest — this is launching very soon!');
+  // NOTE for integration: on Stripe success, call:
+  //   memberCredits.premiumRemaining += pack.credits; updateCreditDisplay();
 }
 
 function deductCredits(videoType, durationSeconds){
