@@ -1266,7 +1266,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.55.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.56.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1292,7 +1292,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.55.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.56.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1349,6 +1349,24 @@ function warmBackend(){ try{ fetch(BACKEND+'/api/ping',{cache:'no-store'}).catch
 warmBackend();
 setInterval(warmBackend, 10*60*1000);
 document.addEventListener('visibilitychange', function(){ if(!document.hidden) warmBackend(); });
+
+// ── BUTTON WATCHDOG: never leave a primary action button stuck disabled ──
+// If a flow throws before its re-enable line runs, a button can hang forever.
+// This safety net re-enables key buttons when no render/progress is actually running.
+var _opActive = false;            // set true while a genuine operation runs
+function opStart(){ _opActive = true; }
+function opEnd(){ _opActive = false; }
+setInterval(function(){
+  try{
+    // a real operation is running only if a progress bar is visibly active
+    var anyProg = document.querySelector('.pbar.on');
+    if(anyProg || _opActive) return;
+    ['scriptBtn','renderSlidesBtn','approveScriptBtn','approveImagesBtn'].forEach(function(id){
+      var b=document.getElementById(id);
+      if(b && b.disabled){ b.disabled=false; }
+    });
+  }catch(e){}
+}, 4000);
 
 var activeBrand = 'Solar Canada';
 var activeBrandSite = 'SolarCanadaPro.ca';
@@ -1582,8 +1600,11 @@ async function approveScript(){
   document.getElementById('step3').classList.add('on');
   document.getElementById('approveScriptBtn').disabled=true;
   document.getElementById('step3').scrollIntoView({behavior:'smooth'});
-  await generateSceneImages();
-  document.getElementById('approveScriptBtn').disabled=false;
+  try{
+    await generateSceneImages();
+  } finally {
+    document.getElementById('approveScriptBtn').disabled=false;
+  }
 }
 
 // GENERATE SCENE IMAGES
