@@ -53,6 +53,16 @@ select:focus{border-color:var(--p);}
 .vtile{transition:all 0.18s ease;}
 .vtile:hover{border-color:var(--p)!important;background:rgba(99,102,241,0.10)!important;transform:translateY(-2px);box-shadow:0 6px 18px rgba(99,102,241,0.18);}
 .vtile.soon:hover{transform:none;box-shadow:none;border-color:var(--p)!important;opacity:0.85!important;}
+/* Info "?" badge on tiles */
+.vtile{position:relative;}
+.vinfo{position:absolute;top:5px;right:5px;width:17px;height:17px;border-radius:50%;background:rgba(255,255,255,0.12);color:var(--ts);font-size:11px;font-weight:700;line-height:17px;text-align:center;cursor:help;z-index:3;border:1px solid rgba(255,255,255,0.18);transition:all 0.15s;}
+.vinfo:hover{background:var(--p);color:#fff;border-color:var(--p);}
+/* Popover */
+#vtPop{position:fixed;z-index:9999;max-width:280px;background:var(--card,#15181f);border:1px solid var(--p);border-radius:12px;padding:14px 16px;box-shadow:0 12px 40px rgba(0,0,0,0.5);display:none;font-family:'DM Sans',sans-serif;}
+#vtPop h4{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin:0 0 6px;color:var(--tx,#fff);display:flex;align-items:center;gap:6px;}
+#vtPop p{font-size:12.5px;line-height:1.6;color:var(--ts,#cbd5e1);margin:0 0 8px;}
+#vtPop .vtTip{font-size:11.5px;color:var(--ac,#a5b4fc);background:rgba(99,102,241,0.1);border-radius:7px;padding:6px 9px;margin:0;}
+#vtPop .vtClose{position:absolute;top:8px;right:10px;cursor:pointer;color:var(--tm,#94a3b8);font-size:16px;font-weight:700;line-height:1;}
 .btn-secondary{background:var(--sur);border:1px solid var(--bdr);color:var(--ts);}
 .btn-secondary:hover{border-color:var(--p);color:var(--ac);}
 .btn-green{background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.3);color:var(--gr);}
@@ -201,42 +211,49 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <div class="ch"><div class="ct">🎯 Video Type</div><div class="csub">Choose your production style</div></div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
         <div id="vt-avatar" class="vtile" onclick="selectVtype('avatar',this)" style="background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div class="vinfo" onclick="vtInfo(event,'avatar')" onmouseenter="vtInfo(event,'avatar')">?</div>
           <div style="font-size:22px;margin-bottom:4px;">🎤</div>
           <div style="font-size:11px;font-weight:600;color:#fff;">AI Avatar</div>
           <div style="font-size:9px;color:rgba(255,255,255,0.7);margin-top:2px;">Presenter</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.3);color:#fff;padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-faceless" class="vtile" onclick="selectVtype('faceless',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div class="vinfo" onclick="vtInfo(event,'faceless')" onmouseenter="vtInfo(event,'faceless')">?</div>
           <div style="font-size:22px;margin-bottom:4px;">🎞️</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Faceless</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Listicle / Shorts</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-productad" class="vtile" onclick="selectVtype('productad',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div class="vinfo" onclick="vtInfo(event,'productad')" onmouseenter="vtInfo(event,'productad')">?</div>
           <div style="font-size:22px;margin-bottom:4px;">🛍️</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Product Ads</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Image to ad</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-cinematic" class="vtile" onclick="selectVtype('cinematic',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div class="vinfo" onclick="vtInfo(event,'cinematic')" onmouseenter="vtInfo(event,'cinematic')">?</div>
           <div style="font-size:22px;margin-bottom:4px;">🎬</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Cinematic AI</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Real scenes</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-quote" class="vtile" onclick="selectVtype('quote',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div class="vinfo" onclick="vtInfo(event,'quote')" onmouseenter="vtInfo(event,'quote')">?</div>
           <div style="font-size:22px;margin-bottom:4px;">💬</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Quote / Social</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Quote cards</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-slides" class="vtile" onclick="selectVtype('slides',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div class="vinfo" onclick="vtInfo(event,'slides')" onmouseenter="vtInfo(event,'slides')">?</div>
           <div style="font-size:22px;margin-bottom:4px;">📊</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Animated Slides</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Kinetic text</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-whiteboard" class="vtile" onclick="selectVtype('whiteboard',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div class="vinfo" onclick="vtInfo(event,'whiteboard')" onmouseenter="vtInfo(event,'whiteboard')">?</div>
           <div style="font-size:22px;margin-bottom:4px;">✏️</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Whiteboard</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Animation</div>
@@ -1266,7 +1283,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);">Ali Amiri</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);">EnerSolution Inc.</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.56.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.57.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1292,7 +1309,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.56.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.57.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1346,6 +1363,43 @@ var BACKEND = 'https://enerstudio-backend.onrender.com';
 // Render free tier sleeps after 15 min idle (≈50s cold start). We warm it on load
 // so by the time the user generates, it's already awake — and ping every 10 min.
 function warmBackend(){ try{ fetch(BACKEND+'/api/ping',{cache:'no-store'}).catch(function(){}); }catch(e){} }
+
+// ── VIDEO TYPE INFO POPOVERS ──
+var VT_INFO = {
+  avatar:{ icon:'🎤', name:'AI Avatar', what:'A realistic AI presenter speaks your script on camera — no filming, no actor, no studio.', use:'Perfect for explainers, course intros, announcements, spokesperson and welcome videos.', tip:'Pick a presenter, type your topic, and AI writes the script and delivers a talking-presenter video.' },
+  faceless:{ icon:'🎞️', name:'Faceless / Listicle', what:'Punchy short-form videos with real stock footage behind bold captions — the viral Reels/TikTok/Shorts style.', use:'Great for tips, listicles, "Top 5" videos, and social content that grows a following fast.', tip:'Describe your topic; AI builds the scenes and matches real footage. You can swap any clip before rendering.' },
+  productad:{ icon:'🛍️', name:'Product Ads', what:'Turns your product photo into a cinematic ad — real AI motion, captions, price callout and music.', use:'Ideal for e-commerce, Shopify/Amazon sellers, and any product launch or promo.', tip:'Upload a clean product photo, pick a scene style (Splash, Luxury, Smoke…), and AI animates it into an ad.' },
+  cinematic:{ icon:'🎬', name:'Cinematic AI', what:'Premium AI-generated film scenes from your script — realistic, movie-quality visuals with voiceover.', use:'Best for high-impact brand films, storytelling, and flagship promotional videos.', tip:'This is the premium flagship type. Describe your vision and AI generates real cinematic scenes.' },
+  quote:{ icon:'💬', name:'Quote / Social', what:'Clean, eye-catching quote cards animated for social feeds — single quotes or a series.', use:'Perfect for daily motivation, brand quotes, tips, and shareable social posts.', tip:'Square format optimized for Instagram/LinkedIn. Great for consistent daily posting.' },
+  slides:{ icon:'📊', name:'Animated Slides', what:'Kinetic text and animated slides in your brand colors — clear, professional, information-rich.', use:'Best for educational content, how-tos, summaries, and key-point presentations.', tip:'Upload your logo and AI matches your brand colors automatically.' },
+  whiteboard:{ icon:'✏️', name:'Whiteboard', what:'A hand draws your message on a whiteboard — the classic engaging explainer style.', use:'Great for teaching, simplifying complex ideas, and tutorials that hold attention.', tip:'Keep the script focused on one clear idea for the strongest whiteboard effect.' }
+};
+var _vtPopEl=null;
+function vtInfo(ev, type){
+  try{ ev.stopPropagation(); ev.preventDefault(); }catch(e){}
+  var info=VT_INFO[type]; if(!info) return;
+  if(!_vtPopEl){
+    _vtPopEl=document.createElement('div'); _vtPopEl.id='vtPop';
+    document.body.appendChild(_vtPopEl);
+  }
+  _vtPopEl.innerHTML='<span class="vtClose" onclick="hideVtInfo()">×</span>'
+    +'<h4>'+info.icon+' '+info.name+'</h4>'
+    +'<p>'+info.what+'</p>'
+    +'<p style="color:var(--tm,#94a3b8);"><strong style="color:var(--ts,#cbd5e1);">Best for:</strong> '+info.use+'</p>'
+    +'<p class="vtTip">💡 '+info.tip+'</p>';
+  _vtPopEl.style.display='block';
+  // position near the badge
+  var r=(ev.target&&ev.target.getBoundingClientRect)?ev.target.getBoundingClientRect():{left:100,top:100,bottom:120};
+  var pw=280, ph=_vtPopEl.offsetHeight||170;
+  var left=Math.min(r.left, window.innerWidth-pw-12); if(left<8) left=8;
+  var top=r.bottom+8; if(top+ph>window.innerHeight-8) top=Math.max(8, r.top-ph-8);
+  _vtPopEl.style.left=left+'px'; _vtPopEl.style.top=top+'px';
+}
+function hideVtInfo(){ if(_vtPopEl) _vtPopEl.style.display='none'; }
+// close on outside click or scroll
+document.addEventListener('click', function(e){ if(_vtPopEl && _vtPopEl.style.display==='block' && !_vtPopEl.contains(e.target) && !(e.target&&e.target.classList&&e.target.classList.contains('vinfo'))) hideVtInfo(); });
+window.addEventListener('scroll', hideVtInfo, true);
+
 warmBackend();
 setInterval(warmBackend, 10*60*1000);
 document.addEventListener('visibilitychange', function(){ if(!document.hidden) warmBackend(); });
