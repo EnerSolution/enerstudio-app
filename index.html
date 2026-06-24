@@ -233,6 +233,26 @@ video{width:100%;border-radius:10px;margin-top:10px;}
   </div>
 </div>
 
+<!-- ════ ADD / EDIT BRAND MODAL ════ -->
+<div id="brandModal" style="display:none;position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:20px;font-family:'DM Sans',sans-serif;">
+  <div style="width:100%;max-width:460px;background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.6rem;max-height:90vh;overflow-y:auto;">
+    <div style="font-family:'Syne',sans-serif;font-size:19px;font-weight:700;color:#fff;margin-bottom:4px;">Add your brand</div>
+    <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1.1rem;">Tell our AI about your brand so it can write scripts tailored to your business.</div>
+    <label style="font-size:12px;color:var(--tm,#94a3b8);">Brand name *</label>
+    <input id="bm-name" type="text" placeholder="e.g. Acme Coffee Co." style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
+    <label style="font-size:12px;color:var(--tm,#94a3b8);">Website (optional, but recommended)</label>
+    <input id="bm-site" type="text" placeholder="e.g. acmecoffee.com" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 6px;box-sizing:border-box;">
+    <div style="font-size:11px;color:var(--tm,#94a3b8);margin-bottom:14px;">Our AI will review your site to understand your business.</div>
+    <label style="font-size:12px;color:var(--tm,#94a3b8);">Describe your brand (optional)</label>
+    <textarea id="bm-desc" rows="3" placeholder="What do you do, who are your customers, and what tone fits you? e.g. We roast small-batch specialty coffee and ship it to home brewers across Canada. Friendly, warm, a little playful." style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:13px;color:#fff;outline:none;margin:5px 0 16px;box-sizing:border-box;resize:vertical;"></textarea>
+    <div id="bm-status" style="display:none;font-size:12.5px;color:var(--ac,#a5b4fc);margin-bottom:14px;text-align:center;"></div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="closeBrandModal()" style="flex:1;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--ts,#cbd5e1);cursor:pointer;">Cancel</button>
+      <button id="bm-save" onclick="saveBrandFromModal()" style="flex:2;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:12px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Add Brand</button>
+    </div>
+  </div>
+</div>
+
 <div class="topbar">
   <div style="display:flex;align-items:center;gap:10px;">
     <div id="mobileMenuBtn" onclick="toggleSidebar()" style="display:none;font-size:22px;cursor:pointer;line-height:1;color:var(--ts);">☰</div>
@@ -1444,7 +1464,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.65.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.66.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1470,7 +1490,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.65.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.66.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1714,6 +1734,17 @@ var whiteboardPrompts = [
 
 
 // BRAND
+function getBrandBrief(){
+  var b=userBrands.filter(function(x){return x.name===activeBrand;})[0];
+  if(b && b.brief) return b.brief;
+  if(b && b.description) return b.description;
+  return '';
+}
+function brandContextBlock(){
+  var brief=getBrandBrief();
+  if(!brief) return '';
+  return '\n\nIMPORTANT brand context — write everything to fit THIS brand:\n'+brief+'\n';
+}
 function renderBrandList(){
   var list=document.getElementById('brandList');
   if(list){
@@ -1772,15 +1803,39 @@ function updateBrand(v){
   var bsub=document.getElementById('brandsub'); if(bsub) bsub.textContent=v?(v+(activeBrandSite?' · '+activeBrandSite:'')):'Add your brand to get started';
   var lbl=document.getElementById('activeBrandLabel'); if(lbl) lbl.textContent=v||'Add your brand';
 }
-function addBrand(){
-  var name=prompt('Brand name (e.g. your company name):');
-  if(!name) return; name=name.trim(); if(!name) return;
-  var site=prompt('Website or handle (optional, e.g. yoursite.com):')||'';
-  userBrands.push({name:name, site:site.trim()});
+function addBrand(){ openBrandModal(); }
+function openBrandModal(){
+  document.getElementById('bm-name').value='';
+  document.getElementById('bm-site').value='';
+  document.getElementById('bm-desc').value='';
+  var st=document.getElementById('bm-status'); st.style.display='none'; st.textContent='';
+  var sv=document.getElementById('bm-save'); sv.disabled=false; sv.textContent='Add Brand';
+  document.getElementById('brandModal').style.display='flex';
+  // close the sidebar dropdown if open
+  var dd=document.getElementById('brandDropdown'); if(dd) dd.style.display='none';
+}
+function closeBrandModal(){ document.getElementById('brandModal').style.display='none'; }
+async function saveBrandFromModal(){
+  var name=(document.getElementById('bm-name').value||'').trim();
+  var site=(document.getElementById('bm-site').value||'').trim();
+  var desc=(document.getElementById('bm-desc').value||'').trim();
+  if(!name){ var st0=document.getElementById('bm-status'); st0.style.display='block'; st0.style.color='var(--re)'; st0.textContent='Please enter a brand name.'; return; }
+  var sv=document.getElementById('bm-save'); sv.disabled=true; sv.textContent='Working…';
+  var st=document.getElementById('bm-status'); st.style.display='block'; st.style.color='var(--ac)';
+  st.textContent = site ? '🔎 Reviewing your website and building your brand profile…' : '🧠 Building your brand profile…';
+  var brief='', siteRead=false;
+  try{
+    var r=await fetch(BACKEND+'/api/brand/profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,website:site,description:desc})});
+    var d=await r.json();
+    brief=(d&&d.brief)?d.brief:(desc||('Brand: '+name));
+    siteRead=!!(d&&d.siteRead);
+  }catch(e){ brief=desc||('Brand: '+name); }
+  userBrands.push({name:name, site:site, description:desc, brief:brief});
   persistBrands();
   renderBrandList();
-  setBrand(userBrands.length-1, name, site.trim());
-  toast('Brand "'+name+'" added');
+  setBrand(userBrands.length-1, name, site);
+  closeBrandModal();
+  toast('Brand "'+name+'" added'+(siteRead?' — website reviewed ✓':''));
 }
 function removeBrand(i){
   var b=userBrands[i]; if(!b) return;
@@ -2971,7 +3026,7 @@ async function generateSlides(isRegen){
   // 2) Ask Claude to design slide specs as JSON
   var sys='You are a professional motion-graphics slide designer. You output ONLY valid JSON, no markdown, no commentary. You design animated marketing slides.';
   var palHint=PALETTE_SLOTS.join(', ');
-  var user='Design '+numSlides+' animated slides for a '+dur+'-second '+goal+' video for the brand "'+brand+'". Brief: '+prompt+'.\n\n'
+  var user='Design '+numSlides+' animated slides for a '+dur+'-second '+goal+' video for the brand "'+brand+'". Brief: '+prompt+'.'+brandContextBlock()+'\n\n'
     +'Return a JSON object: {"slides":[ ... ]}. Each slide object has:\n'
     +'- "bg": one of these styles, and VARY the style across slides:\n'
     +'    gradient: {"type":"gradient","from":SLOT,"to":SLOT,"dir":"vertical"|"horizontal"}\n'
@@ -3321,7 +3376,7 @@ async function generateQuotes(){
   setprog('slidesPbar','slidesPfill','slidesPtxt',55,'Writing your '+(n>1?n+' quote cards':'quote card')+'...');
   var palHint=PALETTE_SLOTS.join(', ');
   var sys='You are a viral social-media copywriter and designer. Output ONLY valid JSON, no markdown.';
-  var user='Create '+n+' punchy, scroll-stopping '+(n>1?'quote/tip cards (a series)':'single quote card')+' for the brand "'+brand+'" about: '+prompt+'.\n'
+  var user='Create '+n+' punchy, scroll-stopping '+(n>1?'quote/tip cards (a series)':'single quote card')+' for the brand "'+brand+'" about: '+prompt+'.'+brandContextBlock()+'\n'
     +'Return {"slides":[...]}. Each card = one slide object:\n'
     +'- "bg": vary style per card — {"type":"gradient","from":SLOT,"to":SLOT,"dir":"vertical"|"horizontal"} OR {"type":"solid","color":SLOT} OR {"type":"diagonal","color":SLOT,"block":SLOT}. Optional "shapes":[{"kind":"circle"|"ring","x":0-1,"y":0-1,"r":0.08-0.2,"color":SLOT,"anim":"float"|"grow"}] placed in CORNERS only.\n'
     +'- "blocks": ONE big bold quote/tip (size 0.07-0.11) centered. Use anim "pop"|"rise"|"zoom". Do NOT add any card numbers, counters, or "1/2/3" labels anywhere.\n'
@@ -3474,7 +3529,7 @@ async function generateFaceless(){
   var palHint=PALETTE_SLOTS.join(', ');
   var sys='You are a viral short-form video scriptwriter and designer. Output ONLY valid JSON, no markdown.';
   var totalScenes = isListicle ? (n+2) : (n+2); // intro + points + CTA
-  var user='Create a faceless '+(isListicle?('"Top '+n+'" listicle'):'story-style')+' short video for brand "'+brand+'" about: '+prompt+'.\n'
+  var user='Create a faceless '+(isListicle?('"Top '+n+'" listicle'):'story-style')+' short video for brand "'+brand+'" about: '+prompt+'.'+brandContextBlock()+'\n'
     +'Return {"slides":[...]} with '+totalScenes+' scenes. Scene 1 = bold hook/title. '
     +(isListicle?('Then '+n+' scenes, each one numbered point (1..'+n+') with a short punchy headline + one supporting line. '):('Then '+n+' story beats that build momentum. '))
     +'Final scene = call to action with the website "'+(activeBrandSite||'')+'".\n'
@@ -3963,6 +4018,7 @@ async function _generateProductAdInner(){
     var user='For a premium product video ad for brand "'+brand+'" in '+lang+', product: '+prompt+'.\n'
       +'Desired scene style: '+sceneDesc+'.\n'
       +'Return JSON: {"headline":"max 6 words punchy hook","sub":"max 8 words benefit","motionPrompt":"ONE vivid cinematic sentence for an AI video generator that animates this product photo. Keep the product itself as the unmistakable sharp realistic hero; describe dramatic camera movement plus the scene and effects from the desired style. Photorealistic premium commercial look."}';
+    user += brandContextBlock();
     var r=await fetch(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})});
     if(!r.ok) throw new Error('Ad copy failed ('+r.status+')');
     var d=await r.json();
@@ -4182,7 +4238,7 @@ async function _generateTalkingPhotoInner(){
     // 1) script
     tdbg('Writing the script…');
     var sys='You write natural spoken scripts. Output ONLY the words spoken aloud — no stage directions or labels.';
-    var user='Write a '+dur+'-second first-person spoken script in '+lang+' for "'+brand+'". The speaker should say: '+prompt+'. Maximum '+maxWords+' words. Natural and engaging. Only the spoken words.';
+    var user='Write a '+dur+'-second first-person spoken script in '+lang+' for "'+brand+'". The speaker should say: '+prompt+'. Maximum '+maxWords+' words. Natural and engaging. Only the spoken words.' + brandContextBlock();
     var sr=await ftimeout(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})},90000);
     if(!sr.ok) throw new Error('Script writing failed ('+sr.status+')');
     var sd=await sr.json();
@@ -4282,7 +4338,7 @@ async function _generateAvatarVideoInner(){
     // 1) write a spoken script
     dbg('Writing script with AI…');
     var sys='You write natural spoken voiceover scripts. Output ONLY the words the presenter says aloud — no stage directions, no labels, no scene notes.';
-    var user='Write a '+dur+'-second spoken presenter script in '+lang+' for the brand "'+brand+'". Topic: '+prompt+'. Maximum '+maxWords+' words. Natural, engaging, first-person presenter tone. End with a call to action. Only the spoken words.';
+    var user='Write a '+dur+'-second spoken presenter script in '+lang+' for the brand "'+brand+'". Topic: '+prompt+'. Maximum '+maxWords+' words. Natural, engaging, first-person presenter tone. End with a call to action. Only the spoken words.' + brandContextBlock();
     var sr=await fetchTimeout(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})}, 90000);
     if(!sr.ok) throw new Error('Script writing failed ('+sr.status+')');
     var sd=await sr.json();
