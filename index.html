@@ -270,6 +270,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <span class="slabel">Platform</span>
     <div class="nitem on" id="nav-create" onclick="showPage('create',this)">⚡ Create Video</div>
     <div class="nitem" id="nav-library" onclick="showPage('library',this)">📁 Library</div>
+    <div class="nitem" id="nav-autopilot" onclick="showPage('autopilot',this)">🤖 Auto-Pilot</div>
     <div class="nitem" id="nav-analytics" onclick="showPage('analytics',this)">📊 Analytics</div>
     <div class="nitem" id="nav-membership" onclick="showPage('membership',this)">👥 Membership</div>
     <div class="ndiv"></div>
@@ -1030,6 +1031,78 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
 </div>
 
+<!-- AUTO-PILOT PAGE -->
+<div id="page-autopilot" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
+  <div style="max-width:900px;">
+    <div class="ptitle" style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--tx);">🤖 Auto-Pilot Content Engine</div>
+    <div class="psub" style="color:var(--tm);margin-bottom:1.5rem;">Set it once. EnerStudio creates fresh on-brand videos on your schedule, writes the caption, and notifies you to review &amp; post — hands-off content, your approval before anything goes live.</div>
+
+    <!-- CREATE SCHEDULE -->
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div class="ch"><div class="ct">➕ New Auto-Pilot Schedule</div><div class="csub">Pick what to create, how often, and where it'll be posted.</div></div>
+
+      <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:6px 0 8px;">Brand</div>
+      <select id="ap-brand" style="width:100%;margin-bottom:14px;"></select>
+
+      <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:6px 0 8px;">Video type</div>
+      <select id="ap-vtype" style="width:100%;margin-bottom:14px;">
+        <option value="faceless">Faceless / Listicle</option>
+        <option value="quote">Quote / Social Card</option>
+        <option value="slides">Animated Slides</option>
+        <option value="productad">Product Ad</option>
+        <option value="cinematic">Cinematic AI</option>
+        <option value="spokesperson">Spokesperson (Enzo / mascot)</option>
+      </select>
+
+      <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:6px 0 8px;">Topic / theme (what should the videos be about?)</div>
+      <textarea id="ap-theme" rows="2" placeholder="e.g. Tips for homeowners considering solar, seasonal promos, common myths about heat pumps..." style="width:100%;margin-bottom:14px;"></textarea>
+
+      <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:6px 0 8px;">Aspect ratio</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <div class="ap-ar on" data-ar="vertical" onclick="apSelAspect('vertical',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:#fff;">📱 Vertical</div></div>
+        <div class="ap-ar" data-ar="square" onclick="apSelAspect('square',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:var(--ts);">⬜ Square</div></div>
+        <div class="ap-ar" data-ar="landscape" onclick="apSelAspect('landscape',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:var(--ts);">🖥️ Landscape</div></div>
+      </div>
+
+      <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:6px 0 8px;">How often?</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+        <div class="ap-fr on" data-fr="daily" onclick="apSelFreq('daily',this)" style="flex:1;min-width:90px;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:#fff;">Daily</div></div>
+        <div class="ap-fr" data-fr="everyother" onclick="apSelFreq('everyother',this)" style="flex:1;min-width:90px;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:var(--ts);">Every other day</div></div>
+        <div class="ap-fr" data-fr="weekly" onclick="apSelFreq('weekly',this)" style="flex:1;min-width:90px;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:var(--ts);">Weekly</div></div>
+        <div class="ap-fr" data-fr="monthly" onclick="apSelFreq('monthly',this)" style="flex:1;min-width:90px;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:var(--ts);">Monthly</div></div>
+      </div>
+
+      <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:6px 0 8px;">Post to (select one or more)</div>
+      <div id="ap-platforms" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+        <div class="ap-pf" data-pf="YouTube" onclick="apTogglePlatform(this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:20px;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--ts);">▶️ YouTube</div>
+        <div class="ap-pf" data-pf="Instagram" onclick="apTogglePlatform(this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:20px;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--ts);">📷 Instagram</div>
+        <div class="ap-pf" data-pf="TikTok" onclick="apTogglePlatform(this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:20px;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--ts);">🎵 TikTok</div>
+        <div class="ap-pf" data-pf="LinkedIn" onclick="apTogglePlatform(this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:20px;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--ts);">💼 LinkedIn</div>
+        <div class="ap-pf" data-pf="Facebook" onclick="apTogglePlatform(this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:20px;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--ts);">👍 Facebook</div>
+      </div>
+
+      <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:13px;color:var(--ts);cursor:pointer;">
+        <input type="checkbox" id="ap-startnow" style="width:16px;height:16px;"> Create the first one right now (to test)
+      </label>
+
+      <button onclick="apCreateSchedule()" id="ap-save-btn" style="width:100%;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">⚡ Activate Auto-Pilot</button>
+      <div style="font-size:11px;color:var(--tm);text-align:center;margin-top:10px;">You'll review &amp; approve every video before it's posted. Nothing goes live without you.</div>
+    </div>
+
+    <!-- ACTIVE SCHEDULES -->
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div class="ch"><div class="ct">📅 Your Schedules</div></div>
+      <div id="ap-schedule-list"><div style="font-size:13px;color:var(--tm);padding:8px;">No schedules yet. Create one above to start.</div></div>
+    </div>
+
+    <!-- CONTENT QUEUE -->
+    <div class="card">
+      <div class="ch"><div class="ct">📥 Content Queue</div><div class="csub">Videos waiting for you to create, review, approve, and post.</div></div>
+      <div id="ap-queue-list"><div style="font-size:13px;color:var(--tm);padding:8px;">Nothing in the queue yet.</div></div>
+    </div>
+  </div>
+</div>
+
 <!-- MEMBERSHIP PAGE -->
 <div id="page-membership" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
   <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">👥 Membership & Credits</div>
@@ -1469,7 +1542,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.70.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.71.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1495,7 +1568,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.70.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.71.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -4618,7 +4691,7 @@ function showPage(pageId, navEl){
   if(mainDiv) mainDiv.style.display = pageId === 'create' ? 'block' : 'none';
 
   // Hide all secondary pages
-  ['library','membership','settings','analytics','support'].forEach(function(p){
+  ['library','membership','settings','analytics','support','autopilot'].forEach(function(p){
     var el = document.getElementById('page-'+p);
     if(el){ el.style.display = 'none'; el.style.flex = ''; }
   });
@@ -4636,7 +4709,7 @@ function showPage(pageId, navEl){
   document.querySelectorAll('.nitem').forEach(function(n){ n.classList.remove('on'); });
   if(navEl) navEl.classList.add('on');
   else {
-    var navMap = {'create':'nav-create','library':'nav-library','membership':'nav-membership','settings':'nav-settings'};
+    var navMap = {'create':'nav-create','library':'nav-library','membership':'nav-membership','settings':'nav-settings','autopilot':'nav-autopilot'};
     var el = document.getElementById(navMap[pageId]);
     if(el) el.classList.add('on');
   }
@@ -4646,9 +4719,176 @@ function showPage(pageId, navEl){
   if(pageId === 'library') renderLibrary();
   if(pageId === 'settings'){ renderLogoGrid(); loadAdminCredits(); }
   if(pageId === 'membership') updateMembershipCredits();
+  if(pageId === 'autopilot'){ initAutopilot(); }
 
   // Scroll to top of page
   window.scrollTo(0,0);
+}
+
+// ════════ AUTO-PILOT CONTENT ENGINE (frontend) ════════
+var apAspect='vertical', apFreq='daily', apPlatforms=[];
+function apSelAspect(a, el){ apAspect=a; document.querySelectorAll('.ap-ar').forEach(function(c){ var on=c===el; c.style.background=on?'var(--p)':'var(--card)'; c.style.borderColor=on?'var(--p)':'var(--bdr)'; var dd=c.querySelector('div'); if(dd)dd.style.color=on?'#fff':'var(--ts)'; }); }
+function apSelFreq(f, el){ apFreq=f; document.querySelectorAll('.ap-fr').forEach(function(c){ var on=c===el; c.style.background=on?'var(--p)':'var(--card)'; c.style.borderColor=on?'var(--p)':'var(--bdr)'; var dd=c.querySelector('div'); if(dd)dd.style.color=on?'#fff':'var(--ts)'; }); }
+function apTogglePlatform(el){
+  var pf=el.getAttribute('data-pf');
+  var i=apPlatforms.indexOf(pf);
+  if(i>=0){ apPlatforms.splice(i,1); el.style.background='var(--card)'; el.style.borderColor='var(--bdr)'; el.style.color='var(--ts)'; }
+  else { apPlatforms.push(pf); el.style.background='var(--p)'; el.style.borderColor='var(--p)'; el.style.color='#fff'; }
+}
+function apUserEmail(){ return (pilotUser&&pilotUser.email)?pilotUser.email:'pilot@enerstudio.io'; }
+
+function initAutopilot(){
+  var sel=document.getElementById('ap-brand');
+  if(sel){
+    sel.innerHTML='';
+    if(userBrands.length){ userBrands.forEach(function(b){ var o=document.createElement('option'); o.value=b.name; o.textContent=b.name; sel.appendChild(o); }); }
+    else { var o=document.createElement('option'); o.value=''; o.textContent='— Add a brand first —'; sel.appendChild(o); }
+  }
+  apLoadSchedules();
+  apLoadQueue();
+}
+
+async function apCreateSchedule(){
+  var brand=document.getElementById('ap-brand').value;
+  if(!brand){ toast('Add a brand first (left sidebar → Your Brands)'); return; }
+  if(!apPlatforms.length){ toast('Pick at least one platform to post to'); return; }
+  var vtype=document.getElementById('ap-vtype').value;
+  var theme=document.getElementById('ap-theme').value.trim();
+  var startNow=document.getElementById('ap-startnow').checked;
+  var brandObj=userBrands.filter(function(x){return x.name===brand;})[0]||{};
+  var btn=document.getElementById('ap-save-btn'); btn.disabled=true; btn.textContent='Activating…';
+  try{
+    var r=await fetch(BACKEND+'/api/auto/schedule',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      userEmail:apUserEmail(), brand:brand, brandBrief:(brandObj.brief||brandObj.description||''),
+      videoType:vtype, aspect:apAspect, frequency:apFreq, theme:theme, platforms:apPlatforms, startNow:startNow
+    })});
+    var d=await r.json();
+    if(!r.ok||!d.ok) throw new Error((d&&d.error)||'Failed');
+    toast('✅ Auto-Pilot activated for '+brand);
+    document.getElementById('ap-theme').value='';
+    if(startNow){ await fetch(BACKEND+'/api/auto/cron?key=ener2026',{method:'POST'}).catch(function(){}); }
+    apLoadSchedules(); apLoadQueue();
+  }catch(e){ toast('Could not activate: '+e.message); }
+  finally{ btn.disabled=false; btn.textContent='⚡ Activate Auto-Pilot'; }
+}
+
+var apFreqLabel={daily:'Daily',everyother:'Every other day',weekly:'Weekly',monthly:'Monthly'};
+async function apLoadSchedules(){
+  var box=document.getElementById('ap-schedule-list'); if(!box) return;
+  try{
+    var r=await fetch(BACKEND+'/api/auto/schedules?email='+encodeURIComponent(apUserEmail()));
+    var d=await r.json();
+    var list=(d&&d.schedules)?d.schedules:[];
+    if(!list.length){ box.innerHTML='<div style="font-size:13px;color:var(--tm);padding:8px;">No schedules yet. Create one above to start.</div>'; return; }
+    box.innerHTML='';
+    list.forEach(function(s){
+      var next=new Date(s.nextRun);
+      var row=document.createElement('div');
+      row.style.cssText='border:1px solid var(--bdr);border-radius:10px;padding:12px;margin-bottom:10px;background:var(--sur);';
+      row.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">'+
+        '<div><div style="font-weight:700;color:var(--tx);font-size:14px;">'+s.brand+' · '+s.videoType+'</div>'+
+        '<div style="font-size:12px;color:var(--tm);margin-top:3px;">'+ (apFreqLabel[s.frequency]||s.frequency) +' · '+(s.platforms||[]).join(', ')+'</div>'+
+        '<div style="font-size:11px;color:var(--tm);margin-top:3px;">'+(s.active?('Next: '+next.toLocaleString()):'Paused')+'</div></div>'+
+        '<div style="display:flex;gap:6px;">'+
+        '<button onclick="apSchedAction(\''+s.id+'\',\'runnow\')" style="background:var(--pg);border:1px solid var(--ba);border-radius:7px;padding:6px 10px;font-size:11px;color:var(--ac);cursor:pointer;">Run now</button>'+
+        '<button onclick="apSchedAction(\''+s.id+'\',\''+(s.active?'pause':'resume')+'\')" style="background:var(--card);border:1px solid var(--bdr);border-radius:7px;padding:6px 10px;font-size:11px;color:var(--ts);cursor:pointer;">'+(s.active?'Pause':'Resume')+'</button>'+
+        '<button onclick="apSchedAction(\''+s.id+'\',\'delete\')" style="background:var(--card);border:1px solid var(--bdr);border-radius:7px;padding:6px 10px;font-size:11px;color:var(--re);cursor:pointer;">Delete</button>'+
+        '</div></div>';
+      box.appendChild(row);
+    });
+  }catch(e){ box.innerHTML='<div style="font-size:13px;color:var(--tm);padding:8px;">Could not load schedules (server may be waking up — try again).</div>'; }
+}
+async function apSchedAction(id, action){
+  if(action==='delete' && !confirm('Delete this schedule?')) return;
+  try{ await fetch(BACKEND+'/api/auto/schedule/'+id+'/'+action,{method:'POST'}); }catch(e){}
+  if(action==='runnow'){ await fetch(BACKEND+'/api/auto/cron?key=ener2026',{method:'POST'}).catch(function(){}); toast('Creating a new item…'); }
+  apLoadSchedules(); apLoadQueue();
+}
+
+var apVtypeName={faceless:'Faceless',quote:'Quote',slides:'Slides',productad:'Product Ad',cinematic:'Cinematic',spokesperson:'Spokesperson'};
+async function apLoadQueue(){
+  var box=document.getElementById('ap-queue-list'); if(!box) return;
+  try{
+    var r=await fetch(BACKEND+'/api/auto/queue?email='+encodeURIComponent(apUserEmail()));
+    var d=await r.json();
+    var items=(d&&d.items)?d.items:[];
+    if(!items.length){ box.innerHTML='<div style="font-size:13px;color:var(--tm);padding:8px;">Nothing in the queue yet.</div>'; return; }
+    box.innerHTML='';
+    items.forEach(function(it){
+      var statusBadge={pending_create:'⏳ Ready to create',approved:'🎬 Create on Create page',posted:'📤 Posted'}[it.status]||it.status;
+      var card=document.createElement('div');
+      card.style.cssText='border:1px solid var(--bdr);border-radius:12px;padding:14px;margin-bottom:12px;background:var(--sur);';
+      var head='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px;">'+
+        '<div style="font-weight:700;color:var(--tx);font-size:14px;">'+it.brand+' · '+(apVtypeName[it.videoType]||it.videoType)+'</div>'+
+        '<div style="font-size:11px;background:var(--pg);color:var(--ac);padding:2px 8px;border-radius:10px;">'+statusBadge+'</div></div>';
+      var body='';
+      body+='<div style="font-size:12px;color:var(--tm);margin-bottom:8px;">'+(it.theme?('Topic: '+it.theme):'A fresh on-brand video.')+' · For: '+(it.platforms||[]).join(', ')+'</div>';
+      if(it.status==='pending_create'){
+        body+='<button onclick="apCreateVideo(\''+it.id+'\')" style="background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border:none;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;">🎬 Create this video</button> '+
+          '<button onclick="apQueueAction(\''+it.id+'\',\'discard\')" style="background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--re);cursor:pointer;">Discard</button>'+
+          '<div id="apgen-'+it.id+'" style="font-size:12px;color:var(--ac);margin-top:8px;"></div>';
+      } else {
+        body+='<div style="font-size:11px;color:var(--tm);text-transform:uppercase;margin-bottom:4px;">Caption (editable)</div>'+
+          '<textarea id="apcap-'+it.id+'" rows="4" style="width:100%;margin-bottom:8px;">'+(it.caption||'')+'</textarea>'+
+          '<div style="font-size:11px;color:var(--tm);margin-bottom:8px;">Find your finished video in the Library, then post it:</div>'+
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;">'+
+          '<button onclick="apSaveCaption(\''+it.id+'\')" style="background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--ts);cursor:pointer;">💾 Save caption</button>';
+        (it.platforms||[]).forEach(function(pf){
+          body+='<button onclick="apPrepUpload(\''+it.id+'\',\''+pf+'\')" style="background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--ac);cursor:pointer;">📤 Post to '+pf+'</button>';
+        });
+        body+='<button onclick="apQueueAction(\''+it.id+'\',\'discard\')" style="background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--re);cursor:pointer;">Done / Discard</button>';
+        body+='</div>';
+      }
+      card.innerHTML=head+body;
+      box.appendChild(card);
+    });
+  }catch(e){ box.innerHTML='<div style="font-size:13px;color:var(--tm);padding:8px;">Could not load queue (server waking up — try again).</div>'; }
+}
+async function apQueueAction(id, action){
+  if(action==='discard' && !confirm('Remove this item?')) return;
+  try{ await fetch(BACKEND+'/api/auto/queue/'+id+'/'+action,{method:'POST'}); }catch(e){}
+  apLoadQueue();
+}
+async function apSaveCaption(id){
+  var cap=document.getElementById('apcap-'+id).value;
+  try{ await fetch(BACKEND+'/api/auto/queue/'+id+'/caption',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caption:cap})}); toast('Caption saved'); }catch(e){}
+}
+
+// Create the actual video: preset the Create page with this item's type/brand/theme, then send the member there to generate.
+async function apCreateVideo(id){
+  var status=document.getElementById('apgen-'+id);
+  try{
+    var r=await fetch(BACKEND+'/api/auto/queue?email='+encodeURIComponent(apUserEmail()));
+    var d=await r.json();
+    var it=(d.items||[]).filter(function(x){return x.id===id;})[0];
+    if(!it){ toast('Item not found'); return; }
+    var theme=it.theme||('A short '+it.videoType+' video for '+it.brand);
+    activeVtype=it.videoType;
+    try{ selectVtype(it.videoType, document.getElementById('vt-'+it.videoType)); }catch(e){}
+    var pEl=document.getElementById('prompt'); if(pEl) pEl.value=theme;
+    var bsel=document.getElementById('bsel'); if(bsel){ bsel.value=it.brand; updateBrand(it.brand); }
+    await fetch(BACKEND+'/api/auto/queue/'+id+'/approve',{method:'POST'}).catch(function(){});
+    showPage('create', document.getElementById('nav-create'));
+    toast('✅ Set up on the Create page — click the generate button to produce this video, then post it from Auto-Pilot.');
+  }catch(e){ if(status) status.textContent='Could not start: '+e.message; }
+}
+
+var apUploadUrls={
+  YouTube:'https://www.youtube.com/upload',
+  Instagram:'https://www.instagram.com/',
+  TikTok:'https://www.tiktok.com/upload',
+  LinkedIn:'https://www.linkedin.com/feed/',
+  Facebook:'https://www.facebook.com/'
+};
+async function apPrepUpload(id, platform){
+  var capEl=document.getElementById('apcap-'+id);
+  var cap=capEl?capEl.value:'';
+  try{ await navigator.clipboard.writeText(cap); toast('📋 Caption copied — paste it on '+platform+' after picking your video'); }
+  catch(e){ toast('Caption ready — copy it from the box'); }
+  await fetch(BACKEND+'/api/auto/queue/'+id+'/posted',{method:'POST'}).catch(function(){});
+  var url=apUploadUrls[platform]||('https://'+platform.toLowerCase()+'.com');
+  window.open(url,'_blank');
+  setTimeout(apLoadQueue, 1500);
 }
 
 // VIDEO LIBRARY
