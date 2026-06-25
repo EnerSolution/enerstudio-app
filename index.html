@@ -1469,7 +1469,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.68.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.69.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1495,7 +1495,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.68.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.69.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -4240,7 +4240,7 @@ async function loadTpVoices(){
     if(wantMode==='eleven'){
       var r=await fetch(BACKEND+'/api/voice/list');
       var d=await r.json();
-      tpVoices=((d&&d.voices)?d.voices:[]).map(function(v){ return {voice_id:v.voice_id,name:v.name,gender:((v.labels&&v.labels.gender)||'').toLowerCase(),preview:v.preview_url||'',tags:((v.labels&&(v.labels.descriptive||v.labels.accent))||'')}; });
+      tpVoices=((d&&d.voices)?d.voices:[]).map(function(v){ return {voice_id:v.voice_id,name:v.name,gender:(v.gender||'').toLowerCase(),preview:v.preview_url||'',tags:(v.descr||'')}; });
     } else {
       var r2=await fetch(BACKEND+'/api/heygen/voices');
       var d2=await r2.json();
@@ -4252,7 +4252,7 @@ async function loadTpVoices(){
 }
 function renderTpVoices(){
   var list=document.getElementById('tpVoiceList'); if(!list||!tpVoices) return;
-  var filtered=tpVoices.filter(function(v){ return v.gender===tpGender; });
+  var filtered = spokesMode ? tpVoices.slice() : tpVoices.filter(function(v){ return v.gender===tpGender; });
   if(!filtered.length) filtered=tpVoices;
   list.innerHTML='';
   filtered.forEach(function(v){
