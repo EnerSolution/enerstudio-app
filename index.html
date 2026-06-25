@@ -1091,7 +1091,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ACTIVE SCHEDULES -->
     <div class="card" style="margin-bottom:1.5rem;">
-      <div class="ch"><div class="ct">📅 Your Schedules</div></div>
+      <div class="ch" style="display:flex;justify-content:space-between;align-items:center;"><div class="ct">📅 Your Schedules</div><button onclick="apClearAll()" style="background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:6px 12px;font-size:11px;color:var(--re);cursor:pointer;">🗑️ Clear all</button></div>
       <div id="ap-schedule-list"><div style="font-size:13px;color:var(--tm);padding:8px;">No schedules yet. Create one above to start.</div></div>
     </div>
 
@@ -1542,7 +1542,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.71.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.72.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1568,7 +1568,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.71.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.72.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -4738,6 +4738,8 @@ function apTogglePlatform(el){
 function apUserEmail(){ return (pilotUser&&pilotUser.email)?pilotUser.email:'pilot@enerstudio.io'; }
 
 function initAutopilot(){
+  // reload brands from storage (defensive — ensures persisted brands always show)
+  try { userBrands = JSON.parse(localStorage.getItem('enerstudio_brands') || '[]'); } catch(e){}
   var sel=document.getElementById('ap-brand');
   if(sel){
     sel.innerHTML='';
@@ -4797,6 +4799,11 @@ async function apLoadSchedules(){
       box.appendChild(row);
     });
   }catch(e){ box.innerHTML='<div style="font-size:13px;color:var(--tm);padding:8px;">Could not load schedules (server may be waking up — try again).</div>'; }
+}
+async function apClearAll(){
+  if(!confirm('Clear ALL your Auto-Pilot schedules and queued items? This cannot be undone.')) return;
+  try{ await fetch(BACKEND+'/api/auto/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:apUserEmail()})}); toast('Cleared'); }catch(e){}
+  apLoadSchedules(); apLoadQueue();
 }
 async function apSchedAction(id, action){
   if(action==='delete' && !confirm('Delete this schedule?')) return;
