@@ -1469,7 +1469,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.69.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.70.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1495,7 +1495,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.69.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.70.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2928,6 +2928,7 @@ function selectVtype(type, el){
     spokesMode=true;
     // spokesperson uses upload only (animate any image) — hide the AI-character toggle
     selectTpMode('upload');
+    try{ selectTpAspect('square'); }catch(e){}
     var tpModeRow2=document.getElementById('tpModeRow'); if(tpModeRow2) tpModeRow2.style.display='none';
     var tpTitle2=document.getElementById('tpConfigTitle'); if(tpTitle2) tpTitle2.textContent='🤖 Spokesperson Setup';
     try{ loadTpVoices(); }catch(e){}
@@ -4422,7 +4423,7 @@ async function _generateSpokespersonInner(){
     // 2) animate the character image with Runway
     startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Animating your character…',30,70);
     sdbg('Animating your character with AI motion…');
-    var motionPrompt='A friendly animated mascot character gently comes to life: subtle head movement, expressive glowing eye, slight body bob, scarf and details softly moving, looking at the camera as if speaking warmly. Keep the character sharp and centered, clean background, premium 3D animation look.';
+    var motionPrompt='The friendly mascot character stays fully in frame, centered, with a locked static camera and no zoom. He comes to life warmly: bright blinking eyes, eyebrows raising expressively, a friendly head tilt and nod, a small cheerful wave, and his scarf gently moving. Energetic, lively, welcoming, as if happily greeting the viewer. Keep the whole character visible and sharp, clean simple background, premium polished 3D animation.';
     var gr=await ftimeout(BACKEND+'/api/runway/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:motionPrompt,imageUrl:tpImage,ratio:ratio,duration:5})},90000);
     var gd=await gr.json();
     if(!gr.ok || !gd.id) throw new Error((gd&&gd.error)?(''+gd.error).slice(0,200):'Animation failed to start');
