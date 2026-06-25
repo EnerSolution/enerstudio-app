@@ -362,11 +362,12 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Animate a face</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
-        <div id="vt-explainer" class="vtile soon" onclick="comingSoon('Explainer')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
-          <div style="font-size:22px;margin-bottom:4px;">📈</div>
-          <div style="font-size:11px;font-weight:600;color:var(--ts);">Explainer</div>
-          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Infographic</div>
-          <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
+        <div id="vt-spokesperson" class="vtile" onclick="selectVtype('spokesperson',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div class="vinfo" onclick="vtInfo(event,'spokesperson')" onmouseenter="vtInfo(event,'spokesperson')">?</div>
+          <div style="font-size:22px;margin-bottom:4px;">🤖</div>
+          <div style="font-size:11px;font-weight:600;color:var(--ts);">Spokesperson</div>
+          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Animated mascot + voice</div>
+          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
         <div id="vt-slideshow" class="vtile soon" onclick="comingSoon('Slideshow')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">🖼️</div>
@@ -615,8 +616,8 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <!-- TALKING PHOTO CONFIG SECTION -->
     <div id="talkingphoto-config-section" style="display:none;">
       <div class="card">
-        <div class="ch"><div class="ct">🗣️ Talking Photo Setup</div><div class="csub">Upload any photo — a person, mascot, or pet — and our most advanced AI makes it speak with lifelike lip-sync</div></div>
-        <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <div class="ch"><div class="ct" id="tpConfigTitle">🗣️ Talking Photo Setup</div><div class="csub">Upload any photo — a person, mascot, or pet — and our most advanced AI makes it speak with lifelike lip-sync</div></div>
+        <div id="tpModeRow" style="display:flex;gap:8px;margin-bottom:14px;">
           <div id="tpmode-upload" onclick="selectTpMode('upload',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:#fff;">📷 Upload my photo</div></div>
           <div id="tpmode-ai" onclick="selectTpMode('ai',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:var(--ts);">✨ Describe a character</div></div>
         </div>
@@ -1468,7 +1469,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.67.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.68.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1494,7 +1495,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.67.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.68.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1640,7 +1641,8 @@ var VT_INFO = {
   quote:{ icon:'💬', name:'Quote / Social', what:'Clean, eye-catching quote cards animated for social feeds — single quotes or a series.', use:'Perfect for daily motivation, brand quotes, tips, and shareable social posts.', tip:'Square format optimized for Instagram/LinkedIn. Great for consistent daily posting.' },
   slides:{ icon:'📊', name:'Animated Slides', what:'Kinetic text and animated slides in your brand colors — clear, professional, information-rich.', use:'Best for educational content, how-tos, summaries, and key-point presentations.', tip:'Upload your logo and AI matches your brand colors automatically.' },
   whiteboard:{ icon:'✏️', name:'Whiteboard', what:'A hand draws your message on a whiteboard — the classic engaging explainer style.', use:'Great for teaching, simplifying complex ideas, and tutorials that hold attention.', tip:'Keep the script focused on one clear idea for the strongest whiteboard effect.' },
-  talkingphoto:{ icon:'🗣️', name:'Talking Photo', what:'Upload ANY photo — a person, a mascot, even a pet — and our most advanced AI brings it to life speaking your script, with lifelike lip-sync and natural expressions.', use:'Perfect for personal spokespeople, founders, testimonials, characters, and scroll-stopping social content.', tip:'A clear, front-facing portrait gives the most realistic result. Powered by HeyGen Avatar IV at 1080p.' }
+  talkingphoto:{ icon:'🗣️', name:'Talking Photo', what:'Upload ANY photo — a person, a mascot, even a pet — and our most advanced AI brings it to life speaking your script, with lifelike lip-sync and natural expressions.', use:'Perfect for personal spokespeople, founders, testimonials, characters, and scroll-stopping social content.', tip:'A clear, front-facing portrait gives the most realistic result. Powered by HeyGen Avatar IV at 1080p.' },
+  spokesperson:{ icon:'🤖', name:'Spokesperson', what:'Bring a mascot, character, logo or any image to life — AI adds cinematic motion and a natural spoken voiceover of your script.', use:'Perfect for brand mascots and characters (like Enzo!), intros, and explainers where a human face is not needed.', tip:'Best for non-human characters. Upload your image, pick a voice, and AI animates it with motion + voiceover (not lip-sync).' }
 };
 var _vtPopEl=null;
 function vtInfo(ev, type){
@@ -1923,6 +1925,7 @@ async function generateScript(){
   if(activeVtype === 'faceless'){ return generateFaceless(false); }
   if(activeVtype === 'productad'){ return generateProductAd(); }
   if(activeVtype === 'talkingphoto'){ return generateTalkingPhoto(); }
+  if(activeVtype === 'spokesperson'){ return generateSpokesperson(); }
   if(activeVtype === 'avatar'){ return generateAvatarVideo(); }
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){showerr('Please describe your video first.');return;}
@@ -2819,7 +2822,7 @@ function closeSidebarMobile(){
 
 // VIDEO TYPE
 var activeVtype = 'cinematic';
-var SOON_TYPES = ['explainer','slideshow','cartoon','motion'];
+var SOON_TYPES = ['slideshow','cartoon','motion'];
 function selectVtype(type, el){
   activeVtype = type;
   // Clear any stale preview/scenes from a previous type so nothing looks left over
@@ -2833,7 +2836,7 @@ function selectVtype(type, el){
   var _rt2=document.getElementById('slidesResultTitle'); if(_rt2) _rt2.textContent='Your Video';
   var _rs2=document.getElementById('slidesResultSub'); if(_rs2) _rs2.textContent='Rendered in your brand colors';
   if(typeof slidesData!=='undefined') slidesData=[];
-  ['avatar','faceless','productad','cinematic','quote','slides','whiteboard','talkingphoto'].forEach(function(t){
+  ['avatar','faceless','productad','cinematic','quote','slides','whiteboard','talkingphoto','spokesperson'].forEach(function(t){
     var card = document.getElementById('vt-'+t);
     if(!card) return;
     if(t === type){
@@ -2860,7 +2863,7 @@ function selectVtype(type, el){
   var _qc = document.getElementById('quote-config-section'); if(_qc && type!=='quote') _qc.style.display='none';
   var _fc = document.getElementById('faceless-config-section'); if(_fc && type!=='faceless') _fc.style.display='none';
   var _pc = document.getElementById('productad-config-section'); if(_pc && type!=='productad') _pc.style.display='none';
-  var _tpc = document.getElementById('talkingphoto-config-section'); if(_tpc && type!=='talkingphoto') _tpc.style.display='none';
+  var _tpc = document.getElementById('talkingphoto-config-section'); if(_tpc && type!=='talkingphoto' && type!=='spokesperson') _tpc.style.display='none';
   var _sb = document.getElementById('scriptBtn');
   if(_sb){ _sb.disabled=false; }
   if(_sb) _sb.textContent = (type==='slides') ? '⚡ Design My Slides' : (type==='quote' ? '⚡ Create My Quote Cards' : (type==='faceless' ? '⚡ Create My Video' : (type==='productad' ? '⚡ Create My Product Ad' : (type==='talkingphoto' ? '⚡ Bring My Photo to Life' : '⚡ Generate Script'))));
@@ -2911,8 +2914,24 @@ function selectVtype(type, el){
     var tpc = document.getElementById('talkingphoto-config-section'); if(tpc) tpc.style.display='block';
     var vw5 = document.getElementById('voiceSelectorWrap'); if(vw5) vw5.style.display='none';
     var tpb = document.getElementById('scriptBtn'); if(tpb) tpb.textContent='⚡ Bring My Photo to Life';
+    spokesMode=false;
+    var tpTitle=document.getElementById('tpConfigTitle'); if(tpTitle) tpTitle.textContent='🗣️ Talking Photo Setup';
+    var tpModeRow=document.getElementById('tpModeRow'); if(tpModeRow) tpModeRow.style.display='flex';
     try{ loadTpVoices(); }catch(e){}
     toast('🗣️ Talking Photo selected — upload a photo and describe what it should say');
+  } else if(type === 'spokesperson'){
+    if(avatarSection) avatarSection.style.display = 'none';
+    if(cinematicSection) cinematicSection.style.display = 'block';
+    var spc = document.getElementById('talkingphoto-config-section'); if(spc) spc.style.display='block';
+    var vw6 = document.getElementById('voiceSelectorWrap'); if(vw6) vw6.style.display='none';
+    var spb = document.getElementById('scriptBtn'); if(spb) spb.textContent='⚡ Bring My Character to Life';
+    spokesMode=true;
+    // spokesperson uses upload only (animate any image) — hide the AI-character toggle
+    selectTpMode('upload');
+    var tpModeRow2=document.getElementById('tpModeRow'); if(tpModeRow2) tpModeRow2.style.display='none';
+    var tpTitle2=document.getElementById('tpConfigTitle'); if(tpTitle2) tpTitle2.textContent='🤖 Spokesperson Setup';
+    try{ loadTpVoices(); }catch(e){}
+    toast('🤖 Spokesperson selected — upload your character (e.g. Enzo) and describe what it should say');
   } else {
     if(avatarSection) avatarSection.style.display = 'none';
     if(cinematicSection) cinematicSection.style.display = 'block';
@@ -4122,6 +4141,7 @@ async function renderProductAd(){
 // ===== TALKING PHOTO (Avatar IV — flagship premium) =====
 var tpImage = null, tpGender = 'female', tpAspect = 'landscape';
 var tpMode = 'upload', tpCharUrl = null, tpStyle = 'realistic';
+var spokesMode = false;
 var TP_STYLE_GUIDE = {
   realistic: 'Photorealistic real-looking human, natural lighting, professional headshot quality. ',
   cartoon:   'Polished 3D Pixar-style cartoon character, friendly and expressive, clean studio background. ',
@@ -4208,14 +4228,24 @@ function selectTpGender(g, el){
 }
 
 // ── Talking Photo voice picker (HeyGen voices with previews) ──
-var tpVoices = null, tpVoiceId = '', tpVoiceName = '';
+var tpVoices = null, tpVoiceId = '', tpVoiceName = '', tpVoicesMode = '';
 async function loadTpVoices(){
-  if(tpVoices) { renderTpVoices(); return; }
+  var wantMode = spokesMode ? 'eleven' : 'heygen';
+  if(tpVoices && tpVoicesMode===wantMode) { renderTpVoices(); return; }
+  tpVoicesMode = wantMode;
+  tpVoiceId=''; tpVoiceName='';
   var list=document.getElementById('tpVoiceList');
+  if(list) list.innerHTML='<div style="font-size:12px;color:var(--tm);padding:10px;text-align:center;">Loading voices…</div>';
   try{
-    var r=await fetch(BACKEND+'/api/heygen/voices');
-    var d=await r.json();
-    tpVoices=(d&&d.voices)?d.voices:[];
+    if(wantMode==='eleven'){
+      var r=await fetch(BACKEND+'/api/voice/list');
+      var d=await r.json();
+      tpVoices=((d&&d.voices)?d.voices:[]).map(function(v){ return {voice_id:v.voice_id,name:v.name,gender:((v.labels&&v.labels.gender)||'').toLowerCase(),preview:v.preview_url||'',tags:((v.labels&&(v.labels.descriptive||v.labels.accent))||'')}; });
+    } else {
+      var r2=await fetch(BACKEND+'/api/heygen/voices');
+      var d2=await r2.json();
+      tpVoices=(d2&&d2.voices)?d2.voices:[];
+    }
   }catch(e){ tpVoices=[]; }
   if(!tpVoices.length && list){ list.innerHTML='<div style="font-size:12px;color:var(--tm);padding:10px;text-align:center;">Voices unavailable — a default voice will be used.</div>'; return; }
   renderTpVoices();
@@ -4343,6 +4373,101 @@ async function _generateTalkingPhotoInner(){
   }catch(e){
     stopClimb(); clearprog('slidesRenderPbar');
     showerr('Talking Photo failed: '+e.message);
+  }finally{
+    document.getElementById('scriptBtn').disabled=false;
+  }
+}
+
+// ===== SPOKESPERSON (Enzo & mascots): script -> Runway animate -> ElevenLabs VO =====
+async function generateSpokesperson(){
+  try { await _generateSpokespersonInner(); }
+  catch(e){ stopClimb(); clearprog('slidesRenderPbar'); document.getElementById('scriptBtn').disabled=false; showerr('Spokesperson error: '+(e&&e.message?e.message:e)); }
+}
+async function _generateSpokespersonInner(){
+  var prompt=document.getElementById('prompt').value.trim();
+  if(!prompt){ showerr('Please describe what your character should say.'); return; }
+  if(!tpImage){ showerr('Please upload your character image first (e.g. Enzo).'); return; }
+  clearerr();
+  document.getElementById('scriptBtn').disabled=true;
+  document.getElementById('slidesStep').classList.remove('on');
+  document.getElementById('slidesResultCard').style.display='block';
+  document.getElementById('slidesVideo').style.display='none';
+  document.getElementById('slidesDlBtn').disabled=true;
+  var rNum=document.getElementById('slidesResultNum'); if(rNum) rNum.textContent='🤖';
+  var rTit=document.getElementById('slidesResultTitle'); if(rTit) rTit.textContent='Your Spokesperson Video';
+  function sdbg(msg){ var s=document.getElementById('slidesResultSub'); if(s) s.textContent='⏳ '+msg; var eb=document.getElementById('errbox'); if(eb){ eb.textContent='⏳ '+msg; eb.classList.add('on'); eb.style.background='rgba(99,102,241,0.1)'; eb.style.borderColor='var(--ba)'; eb.style.color='var(--ac)'; } }
+  sdbg('Starting…');
+  document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
+  var dur=parseInt(document.getElementById('dsel').value||'20');
+  var lang=document.getElementById('lsel')?document.getElementById('lsel').value:'English';
+  var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
+  var maxWords=Math.floor(dur*2.3);
+  var ratioMap={vertical:'720:1280',square:'960:960',landscape:'1280:720'};
+  var ratio=ratioMap[tpAspect]||'1280:720';
+  function ftimeout(url,opts,ms){ return new Promise(function(resolve,reject){ var c=new AbortController(); var t=setTimeout(function(){c.abort();reject(new Error('Timed out (server waking up — try again)'));},ms); fetch(url,Object.assign({},opts,{signal:c.signal})).then(function(r){clearTimeout(t);resolve(r);}).catch(function(e){clearTimeout(t);reject(e);}); }); }
+  startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Writing the script…',6,28);
+  try{
+    // 1) script (spoken)
+    sdbg('Writing the script…');
+    var sys='You write natural spoken scripts for a brand spokesperson character. Output ONLY the spoken words — no stage directions, no labels.';
+    var user='Write a '+dur+'-second spoken script in '+lang+' for the brand "'+brand+'" delivered by a friendly mascot spokesperson. The character should say: '+prompt+'. Maximum '+maxWords+' words. Warm, friendly, engaging. Only the spoken words.' + brandContextBlock();
+    var sr=await ftimeout(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})},90000);
+    if(!sr.ok) throw new Error('Script writing failed ('+sr.status+')');
+    var sd=await sr.json();
+    var script=(sd.text||'').trim().replace(/\*\*/g,'');
+    var words=script.split(/\s+/).filter(Boolean);
+    if(words.length>maxWords){ script=words.slice(0,maxWords).join(' '); var lp=script.lastIndexOf('.'); if(lp>script.length*0.6) script=script.slice(0,lp+1); }
+    if(!script) throw new Error('Empty script');
+
+    // 2) animate the character image with Runway
+    startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Animating your character…',30,70);
+    sdbg('Animating your character with AI motion…');
+    var motionPrompt='A friendly animated mascot character gently comes to life: subtle head movement, expressive glowing eye, slight body bob, scarf and details softly moving, looking at the camera as if speaking warmly. Keep the character sharp and centered, clean background, premium 3D animation look.';
+    var gr=await ftimeout(BACKEND+'/api/runway/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:motionPrompt,imageUrl:tpImage,ratio:ratio,duration:5})},90000);
+    var gd=await gr.json();
+    if(!gr.ok || !gd.id) throw new Error((gd&&gd.error)?(''+gd.error).slice(0,200):'Animation failed to start');
+    sdbg('AI is animating your character — about 1–3 minutes…');
+
+    // 3) poll Runway
+    var taskId=gd.id, vurl=null, tries=0;
+    while(!vurl && tries<90){
+      await new Promise(function(r){ setTimeout(r,4000); });
+      tries++;
+      var pd; try{ var pr=await ftimeout(BACKEND+'/api/runway/status/'+encodeURIComponent(taskId),{},40000); pd=await pr.json(); }
+      catch(pe){ sdbg('Still animating… '+(tries*4)+'s'); continue; }
+      var st=(pd.status||'').toUpperCase();
+      sdbg('Animating your character… '+(tries*4)+'s ('+st.toLowerCase()+')');
+      if(st==='SUCCEEDED' && pd.output && pd.output[0]){ vurl=pd.output[0]; break; }
+      if(st==='FAILED') throw new Error('Animation failed — try a different image');
+    }
+    if(!vurl) throw new Error('Animation took too long. Your Runway credits were used; try again.');
+
+    // 4) finalize: add the spoken voiceover (ElevenLabs)
+    startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Adding the voiceover…',72,95);
+    sdbg('Adding the voiceover…');
+    var fbody={videoUrl:vurl,script:script,aspect:tpAspect};
+    if(tpVoiceId) fbody.voiceId=tpVoiceId;
+    var fr=await ftimeout(BACKEND+'/api/spokesperson/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(fbody)},150000);
+    var fd=await fr.json();
+    if(!fr.ok || !fd.videoId) throw new Error((fd&&fd.error)?(''+fd.error).slice(0,200):'Voiceover/finalize failed');
+
+    finishClimb('slidesRenderPfill','slidesRenderPtxt','Ready!');
+    var inlineData=fd.videoData||null;
+    var url=inlineData||(BACKEND+'/api/video/'+fd.videoId);
+    var vid=document.getElementById('slidesVideo'); vid.src=url; vid.style.display='block';
+    setTimeout(function(){ clearprog('slidesRenderPbar'); }, 800);
+    var dl=document.getElementById('slidesDlBtn'); dl.disabled=false;
+    dl.onclick=function(){ downloadSlidesVideo(fd.videoId, inlineData); };
+    try{ downloadSlidesVideo(fd.videoId, inlineData); }catch(_ad){}
+    var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
+    var rSub2=document.getElementById('slidesResultSub'); if(rSub2) rSub2.textContent='✅ Done! Your spokesperson video is ready below — downloading and saved to Library.';
+    var eb2=document.getElementById('errbox'); if(eb2){ eb2.textContent='✅ Spokesperson video ready! Downloading now and saved to your Library.'; eb2.classList.add('on'); eb2.style.background='rgba(52,211,153,0.1)'; eb2.style.borderColor='rgba(52,211,153,0.3)'; eb2.style.color='var(--gr)'; }
+    try{ saveToLibrary(activeBrand, dur+'s', 'Spokesperson', url, fd.videoId, 'Spokesperson', tpAspect); }catch(_e){}
+    document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
+    toast('✅ Spokesperson video ready — downloading!');
+  }catch(e){
+    stopClimb(); clearprog('slidesRenderPbar');
+    showerr('Spokesperson failed: '+e.message);
   }finally{
     document.getElementById('scriptBtn').disabled=false;
   }
