@@ -1542,7 +1542,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.72.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.73.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1568,7 +1568,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.72.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.73.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -2065,11 +2065,23 @@ async function generateScript(){
     // Start new photo session ID for this generation run
     startPhotoSession();
     // Set up scene prompts
-    // Use whiteboard ink prompts for whiteboard mode, cinematic for others
+    // Use whiteboard ink prompts for whiteboard mode; otherwise generate
+    // brand-relevant cinematic scene prompts from the actual brief (NOT a solar template).
     if(activeVtype === 'whiteboard'){
       scenePrompts=whiteboardPrompts.slice(0,numClips);
     } else {
-      scenePrompts=solarPrompts.slice(0,numClips);
+      try {
+        scenePrompts = await generateScenePrompts(brand, goal, prompt, numClips);
+      } catch(e) {
+        scenePrompts = [];
+      }
+      if(!scenePrompts || !scenePrompts.length){
+        scenePrompts = [];
+        for(var _s=0; _s<numClips; _s++){
+          scenePrompts.push('Cinematic, premium, photorealistic scene for '+brand+' — '+(prompt||goal)+'. Smooth camera motion, film-grade lighting, shallow depth of field. Scene '+(_s+1)+' of '+numClips+'.');
+        }
+      }
+      scenePrompts = scenePrompts.slice(0, numClips);
     }
 
   }catch(e){
@@ -2186,6 +2198,19 @@ async function generateOneSvg(prompt, idx){
   sceneSvgs[idx] = svg;
   // preview as data URI so the existing scene cards display it
   return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+}
+
+// Generate cinematic scene IMAGE prompts from the actual brief + brand (replaces hardcoded solar prompts)
+async function generateScenePrompts(brand, goal, brief, numClips){
+  var sys='You are a cinematic director. Output ONLY a JSON array of '+numClips+' strings — no preamble, no markdown. Each string is a vivid, photorealistic IMAGE prompt for one scene of a brand film, in shot order telling a coherent story. Each prompt must describe shot type, subject, setting, mood, lighting and camera motion, ending with "cinematic, photorealistic, film-grade, shallow depth of field". Do NOT include any on-screen text or words in the scenes. Make every scene specifically about the brand described.';
+  var user='Brand: '+brand+'\nGoal: '+(goal||'brand film')+'\nBrief for the video: '+brief+'\n'+brandContextBlock()+'\nWrite exactly '+numClips+' scene image prompts as a JSON array of strings, in story order.';
+  var r=await fetch(BACKEND+'/api/claude/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:user,system:sys})});
+  if(!r.ok) throw new Error('scene prompts failed');
+  var d=await r.json();
+  var txt=(d.text||'').trim().replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
+  var arr=JSON.parse(txt);
+  if(!Array.isArray(arr)) throw new Error('bad scene prompts');
+  return arr.map(function(x){ return String(x); });
 }
 
 async function generateOneImage(prompt, idx){
@@ -2710,7 +2735,7 @@ async function generateVideoClips(imageUrls){
       var r=await fetch(BACKEND+'/api/runway/generate',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({prompt:scenePrompts[i]||solarPrompts[i%solarPrompts.length],imageUrl:imageUrls[i]})
+        body:JSON.stringify({prompt:scenePrompts[i]||('Cinematic photorealistic scene, smooth camera motion, film-grade lighting'),imageUrl:imageUrls[i]})
       });
       var d=await r.json();
       if(d.id){
