@@ -176,62 +176,100 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 .wb-stage.active{background:rgba(124,106,255,0.15);color:var(--ac);border-color:var(--p);animation:pulse-stage 1.5s infinite;}
 @keyframes pulse-stage{0%,100%{opacity:1;}50%{opacity:0.6;}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<!-- ════ PILOT ONBOARDING (fresh-member experience, no payment) ════ -->
+<!-- ════ AUTH + ONBOARDING (real accounts via Supabase) ════ -->
 <div id="onboard" style="position:fixed;inset:0;z-index:100000;background:linear-gradient(135deg,#0a0c10,#11151c);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;font-family:'DM Sans',sans-serif;">
   <div style="width:100%;max-width:440px;">
+
     <!-- STEP 1: WELCOME -->
     <div id="ob-step1" class="ob-step">
       <div style="text-align:center;margin-bottom:1.5rem;">
         <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#fff;">EnerStudio<span style="color:var(--gr,#34d399)">.</span><span style="font-size:18px;font-weight:400;color:var(--ts,#cbd5e1)">io</span></div>
-        <div style="font-size:14px;color:var(--ac,#a5b4fc);margin-top:4px;font-weight:600;">&#10022; Founding Member Preview</div>
+        <div style="font-size:14px;color:var(--ac,#a5b4fc);margin-top:4px;font-weight:600;">Studio-quality video. In a sentence.</div>
       </div>
       <div style="background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.75rem;">
         <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:10px;">Create studio-quality AI videos in minutes 🎬</div>
-        <div style="font-size:13.5px;color:var(--ts,#cbd5e1);line-height:1.7;margin-bottom:1.25rem;">You've been invited to test EnerStudio as a founding member. Describe a video in plain words — our AI writes, designs, and produces it for you. Talking avatars, product ads, faceless shorts, animated slides and more.</div>
+        <div style="font-size:13.5px;color:var(--ts,#cbd5e1);line-height:1.7;margin-bottom:1.25rem;">Describe a video in plain words — our AI writes, designs, and produces it for you. Talking avatars, product ads, faceless shorts, cinematic films and more — all in one platform.</div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem;">
-          <div style="font-size:12.5px;color:var(--ts,#cbd5e1);">✅ Full access to all video types</div>
-          <div style="font-size:12.5px;color:var(--ts,#cbd5e1);">✅ Credits on us — nothing to pay</div>
-          <div style="font-size:12.5px;color:var(--ts,#cbd5e1);">✅ Your honest feedback shapes the platform</div>
+          <div style="font-size:12.5px;color:var(--ts,#cbd5e1);">✅ Start free — no credit card to begin</div>
+          <div style="font-size:12.5px;color:var(--ts,#cbd5e1);">✅ All video types, one simple platform</div>
+          <div style="font-size:12.5px;color:var(--ts,#cbd5e1);">✅ Replace ~$1,000/mo of separate AI tools</div>
         </div>
-        <button onclick="obNext(2)" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Get Started →</button>
+        <button onclick="obNext(2)" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Start Free Trial →</button>
+        <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--tm,#94a3b8);">Already have an account? <span onclick="obShowLogin()" style="color:var(--ac,#a5b4fc);cursor:pointer;font-weight:600;">Log in</span></div>
       </div>
     </div>
-    <!-- STEP 2: ACCOUNT -->
+
+    <!-- STEP 2: SIGN UP -->
     <div id="ob-step2" class="ob-step" style="display:none;">
       <div style="background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.75rem;">
         <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:4px;">Create your account</div>
-        <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1.25rem;">Step 1 of 2</div>
+        <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1.25rem;">Step 1 of 2 · Free trial, no card needed</div>
+        <label style="font-size:12px;color:var(--tm,#94a3b8);">Email *</label>
+        <input id="ob-email" type="email" placeholder="you@company.com" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
+        <label style="font-size:12px;color:var(--tm,#94a3b8);">Password *</label>
+        <input id="ob-pass" type="password" placeholder="At least 6 characters" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
         <label style="font-size:12px;color:var(--tm,#94a3b8);">Your name</label>
         <input id="ob-name" type="text" placeholder="Jane Smith" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
-        <label style="font-size:12px;color:var(--tm,#94a3b8);">Email</label>
-        <input id="ob-email" type="email" placeholder="you@company.com" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
-        <label style="font-size:12px;color:var(--tm,#94a3b8);">Company / brand (optional)</label>
-        <input id="ob-company" type="text" placeholder="Acme Inc." style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 18px;box-sizing:border-box;">
-        <button onclick="obCreateAccount()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Continue →</button>
+        <label style="font-size:12px;color:var(--tm,#94a3b8);">Company / brand</label>
+        <input id="ob-company" type="text" placeholder="Acme Inc." style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
+        <label style="font-size:12px;color:var(--tm,#94a3b8);">Phone (for support &amp; updates)</label>
+        <input id="ob-phone" type="tel" placeholder="(555) 123-4567" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 18px;box-sizing:border-box;">
+        <button id="ob-signup-btn" onclick="obCreateAccount()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Continue →</button>
         <div id="ob-err" style="display:none;font-size:12px;color:var(--re,#f87171);margin-top:10px;text-align:center;"></div>
+        <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--tm,#94a3b8);">Already have an account? <span onclick="obShowLogin()" style="color:var(--ac,#a5b4fc);cursor:pointer;font-weight:600;">Log in</span></div>
       </div>
     </div>
-    <!-- STEP 3: PLAN (no payment) -->
+
+    <!-- STEP 3: PLAN SELECTION (free trial) -->
     <div id="ob-step3" class="ob-step" style="display:none;">
-      <div style="background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.75rem;">
-        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:4px;">Your Founding Member plan</div>
-        <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1.25rem;">Step 2 of 2</div>
-        <div style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(52,211,153,0.06));border:1.5px solid var(--p,#6366f1);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem;position:relative;">
-          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--gr,#34d399);color:#0a0c10;font-size:10px;font-weight:800;padding:3px 12px;border-radius:12px;">FOUNDING MEMBER — FREE</div>
-          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#fff;margin-top:6px;">Full Access Pilot</div>
-          <div style="font-size:13px;color:var(--ts,#cbd5e1);margin-top:8px;line-height:1.7;">• All 8 video types unlocked<br>• Generous credit allowance (on us)<br>• Priority feedback channel</div>
-          <div style="margin-top:12px;font-size:22px;font-weight:800;color:#fff;">$0 <span style="font-size:13px;font-weight:400;color:var(--tm,#94a3b8);text-decoration:line-through;">$99/mo</span></div>
-          <div style="font-size:11px;color:var(--gr,#34d399);margin-top:2px;">Payment skipped for pilot testers</div>
+      <div style="background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.5rem;">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:4px;">Choose your plan</div>
+        <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1.1rem;">Step 2 of 2 · Try it free, pay when you're ready</div>
+        <div id="planCards" style="display:flex;flex-direction:column;gap:10px;margin-bottom:1.1rem;">
+          <div class="plan-card" data-plan="starter" onclick="obSelectPlan('starter',this)" style="border:1.5px solid var(--bdr,#2a2f3a);border-radius:12px;padding:1rem;cursor:pointer;">
+            <div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff;">Starter</div><div style="font-size:18px;font-weight:800;color:#fff;">$49<span style="font-size:11px;font-weight:400;color:var(--tm,#94a3b8);">/mo</span></div></div>
+            <div style="font-size:11.5px;color:var(--ts,#cbd5e1);margin-top:6px;line-height:1.6;">Great to get started · social shorts, quotes, slides, product ads + a few premium videos</div>
+          </div>
+          <div class="plan-card" data-plan="pro" onclick="obSelectPlan('pro',this)" style="border:1.5px solid var(--p,#6366f1);border-radius:12px;padding:1rem;cursor:pointer;position:relative;">
+            <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--p,#6366f1);color:#fff;font-size:9px;font-weight:800;padding:2px 10px;border-radius:10px;">MOST POPULAR</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff;">Pro</div><div style="font-size:18px;font-weight:800;color:#fff;">$99<span style="font-size:11px;font-weight:400;color:var(--tm,#94a3b8);">/mo</span></div></div>
+            <div style="font-size:11.5px;color:var(--ts,#cbd5e1);margin-top:6px;line-height:1.6;">For regular content · more cinematic &amp; talking-avatar videos, higher limits across the board</div>
+          </div>
+          <div class="plan-card" data-plan="business" onclick="obSelectPlan('business',this)" style="border:1.5px solid var(--bdr,#2a2f3a);border-radius:12px;padding:1rem;cursor:pointer;">
+            <div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff;">Business</div><div style="font-size:18px;font-weight:800;color:#fff;">$199<span style="font-size:11px;font-weight:400;color:var(--tm,#94a3b8);">/mo</span></div></div>
+            <div style="font-size:11.5px;color:var(--ts,#cbd5e1);margin-top:6px;line-height:1.6;">For agencies &amp; heavy use · the highest limits on every video type</div>
+          </div>
         </div>
-        <button onclick="obFinish()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Activate &amp; Enter Studio →</button>
-        <div style="font-size:10.5px;color:var(--tm,#94a3b8);text-align:center;margin-top:10px;">No credit card required during the pilot.</div>
+        <button onclick="obFinish()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Start My Free Trial →</button>
+        <div style="font-size:10.5px;color:var(--tm,#94a3b8);text-align:center;margin-top:10px;">No credit card required to start your trial.</div>
       </div>
     </div>
+
+    <!-- LOGIN -->
+    <div id="ob-login" class="ob-step" style="display:none;">
+      <div style="text-align:center;margin-bottom:1.25rem;">
+        <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff;">EnerStudio<span style="color:var(--gr,#34d399)">.</span><span style="font-size:16px;font-weight:400;color:var(--ts,#cbd5e1)">io</span></div>
+      </div>
+      <div style="background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.75rem;">
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:1.1rem;">Welcome back</div>
+        <label style="font-size:12px;color:var(--tm,#94a3b8);">Email</label>
+        <input id="lg-email" type="email" placeholder="you@company.com" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
+        <label style="font-size:12px;color:var(--tm,#94a3b8);">Password</label>
+        <input id="lg-pass" type="password" placeholder="Your password" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 16px;box-sizing:border-box;">
+        <button id="lg-btn" onclick="obLogin()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Log In →</button>
+        <div id="lg-err" style="display:none;font-size:12px;color:var(--re,#f87171);margin-top:10px;text-align:center;"></div>
+        <div style="text-align:center;margin-top:10px;font-size:13px;"><span onclick="obForgot()" style="color:var(--tm,#94a3b8);cursor:pointer;">Forgot password?</span></div>
+        <div style="text-align:center;margin-top:8px;font-size:13px;color:var(--tm,#94a3b8);">New here? <span onclick="obNext(2)" style="color:var(--ac,#a5b4fc);cursor:pointer;font-weight:600;">Create an account</span></div>
+      </div>
+    </div>
+
   </div>
 </div>
+
 
 <!-- ════ ADD / EDIT BRAND MODAL ════ -->
 <div id="brandModal" style="display:none;position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:20px;font-family:'DM Sans',sans-serif;">
@@ -260,7 +298,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="pill"><div class="pdot"></div>Live</div>
-    <span id="pilotWho" style="font-size:12px;color:var(--ac);cursor:pointer;" onclick="pilotReset()" title="Start fresh as a new tester"></span>
+    <span id="pilotWho" style="font-size:12px;color:var(--ac);cursor:pointer;" onclick="pilotReset()" title="Log out"></span>
     <span style="font-size:12px;color:var(--tm)">EnerStudio.io — Beta</span>
   </div>
 </div>
@@ -1542,7 +1580,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.73.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.74.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1568,7 +1606,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.73.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.74.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1623,64 +1661,166 @@ var BACKEND = 'https://enerstudio-backend.onrender.com';
 // so by the time the user generates, it's already awake — and ping every 10 min.
 function warmBackend(){ try{ fetch(BACKEND+'/api/ping',{cache:'no-store'}).catch(function(){}); }catch(e){} }
 
-// ── PILOT ONBOARDING ──
-var pilotUser = null;
-try { pilotUser = JSON.parse(localStorage.getItem('enerstudio_pilot_user') || 'null'); } catch(e){}
+// ── AUTH (Supabase: real accounts + lead capture) ──
+var SUPABASE_URL = 'https://xksxgvzozmivpigwcecw.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhrc3hndnpvem1pdnBpZ3djZWN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NTcyODMsImV4cCI6MjA5ODMzMzI4M30.7IKJruPqAKoiLGHrNzaVK7xRJd5JqeMIRYvQbGoipiw';
+var sb = null;
+try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON); } catch(e){ console.warn('Supabase init failed', e); }
+
+var pilotUser = null;          // { name, email, company, phone, plan }
+var obSelectedPlan = 'pro';    // default selected plan
+
 function obNext(step){
-  ['ob-step1','ob-step2','ob-step3'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display='none'; });
+  ['ob-step1','ob-step2','ob-step3','ob-login'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display='none'; });
   var s=document.getElementById('ob-step'+step); if(s) s.style.display='block';
 }
-function obCreateAccount(){
-  var name=(document.getElementById('ob-name').value||'').trim();
-  var email=(document.getElementById('ob-email').value||'').trim();
-  var company=(document.getElementById('ob-company').value||'').trim();
-  var err=document.getElementById('ob-err');
-  if(!name){ err.textContent='Please enter your name.'; err.style.display='block'; return; }
-  if(!email || email.indexOf('@')<1 || email.indexOf('.')<0){ err.textContent='Please enter a valid email.'; err.style.display='block'; return; }
-  err.style.display='none';
-  pilotUser = { name:name, email:email, company:company, joined:new Date().toISOString() };
-  obNext(3);
+function obShowLogin(){
+  ['ob-step1','ob-step2','ob-step3'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display='none'; });
+  var l=document.getElementById('ob-login'); if(l) l.style.display='block';
 }
-function obFinish(){
-  try { localStorage.setItem('enerstudio_pilot_user', JSON.stringify(pilotUser)); } catch(e){}
-  // capture the signup to the backend (fire-and-forget — never blocks the tester)
-  try { fetch(BACKEND+'/api/pilot/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pilotUser)}).catch(function(){}); } catch(e){}
-  // email the signup to EnerStudio.IO@Gmail.com via Web3Forms (fire-and-forget)
+function obSelectPlan(plan, el){
+  obSelectedPlan = plan;
+  document.querySelectorAll('.plan-card').forEach(function(c){
+    var on = c.getAttribute('data-plan')===plan;
+    c.style.borderColor = on ? 'var(--gr,#34d399)' : (c.getAttribute('data-plan')==='pro' ? 'var(--p,#6366f1)' : 'var(--bdr,#2a2f3a)');
+    c.style.background = on ? 'rgba(52,211,153,0.08)' : 'transparent';
+  });
+}
+
+// Step 1: create the account (Supabase Auth), then go to plan selection
+async function obCreateAccount(){
+  var email=(document.getElementById('ob-email').value||'').trim();
+  var pass=(document.getElementById('ob-pass').value||'');
+  var name=(document.getElementById('ob-name').value||'').trim();
+  var company=(document.getElementById('ob-company').value||'').trim();
+  var phone=(document.getElementById('ob-phone').value||'').trim();
+  var err=document.getElementById('ob-err');
+  if(!email || email.indexOf('@')<1 || email.indexOf('.')<0){ err.textContent='Please enter a valid email.'; err.style.display='block'; return; }
+  if(pass.length<6){ err.textContent='Password must be at least 6 characters.'; err.style.display='block'; return; }
+  err.style.display='none';
+  var btn=document.getElementById('ob-signup-btn'); btn.disabled=true; btn.textContent='Creating account…';
+  try{
+    if(!sb) throw new Error('Auth not available — please refresh.');
+    var res = await sb.auth.signUp({ email:email, password:pass, options:{ data:{ name:name, company:company, phone:phone } } });
+    if(res.error) throw res.error;
+    pilotUser = { name:name, email:email, company:company, phone:phone, plan:obSelectedPlan, joined:new Date().toISOString(), uid:(res.data&&res.data.user?res.data.user.id:null) };
+    obSelectPlan('pro', null); // preselect popular
+    obNext(3);
+  }catch(e){
+    err.textContent = (e&&e.message) ? e.message : 'Could not create account.';
+    err.style.display='block';
+  }finally{
+    btn.disabled=false; btn.textContent='Continue →';
+  }
+}
+
+// Step 2: confirm plan, write profile row, capture lead, enter app
+async function obFinish(){
+  if(!pilotUser) { obNext(2); return; }
+  pilotUser.plan = obSelectedPlan;
+  // 1) write profile row to Supabase (durable lead capture)
+  try{
+    if(sb && pilotUser.uid){
+      await sb.from('profiles').upsert({
+        id: pilotUser.uid, email: pilotUser.email, name: pilotUser.name,
+        company: pilotUser.company, phone: pilotUser.phone, plan: pilotUser.plan
+      });
+    }
+  }catch(e){ console.warn('profile save', e); }
+  // 2) email the lead to EnerStudio.IO@Gmail.com via Web3Forms (fire-and-forget)
   try {
     fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({
       access_key:'ced1c211-512d-4741-ae20-9dafed09c37f',
-      subject:'New EnerStudio Pilot Signup: '+(pilotUser&&pilotUser.name?pilotUser.name:'Unknown'),
-      from_name:'EnerStudio Pilot',
-      name:(pilotUser&&pilotUser.name)||'',
-      email:(pilotUser&&pilotUser.email)||'',
-      company:(pilotUser&&pilotUser.company)||'(not provided)',
-      signed_up_at:(pilotUser&&pilotUser.joined)||new Date().toISOString()
+      subject:'New EnerStudio Signup ('+pilotUser.plan+'): '+(pilotUser.name||pilotUser.email),
+      from_name:'EnerStudio Signups',
+      name:pilotUser.name||'', email:pilotUser.email||'', company:pilotUser.company||'(not provided)',
+      phone:pilotUser.phone||'(not provided)', plan:pilotUser.plan, signed_up_at:pilotUser.joined
     })}).catch(function(){});
   } catch(e){}
-  // if the tester gave a company name and has no brands yet, prefill it as their first brand
+  // 3) prefill their company as first brand
   try {
-    if(pilotUser && pilotUser.company && (!userBrands || !userBrands.length)){
-      userBrands.push({name:pilotUser.company, site:''});
-      persistBrands();
-      setBrand(0, pilotUser.company, '');
+    if(pilotUser.company && (!userBrands || !userBrands.length)){
+      userBrands.push({name:pilotUser.company, site:''}); persistBrands(); setBrand(0, pilotUser.company, '');
     }
   } catch(e){}
+  try { localStorage.setItem('enerstudio_pilot_user', JSON.stringify(pilotUser)); } catch(e){}
   renderBrandList();
   var ov=document.getElementById('onboard'); if(ov) ov.style.display='none';
-  applyPilotUser();
+  applyAuthUser();
 }
-function applyPilotUser(){
+
+// Login for returning users
+async function obLogin(){
+  var email=(document.getElementById('lg-email').value||'').trim();
+  var pass=(document.getElementById('lg-pass').value||'');
+  var err=document.getElementById('lg-err');
+  err.style.display='none';
+  var btn=document.getElementById('lg-btn'); btn.disabled=true; btn.textContent='Logging in…';
+  try{
+    if(!sb) throw new Error('Auth not available — please refresh.');
+    var res = await sb.auth.signInWithPassword({ email:email, password:pass });
+    if(res.error) throw res.error;
+    await loadSessionIntoApp();
+    var ov=document.getElementById('onboard'); if(ov) ov.style.display='none';
+  }catch(e){
+    err.textContent = (e&&e.message) ? e.message : 'Login failed.';
+    err.style.display='block';
+  }finally{
+    btn.disabled=false; btn.textContent='Log In →';
+  }
+}
+
+async function obForgot(){
+  var email=(document.getElementById('lg-email').value||'').trim();
+  if(!email){ var err=document.getElementById('lg-err'); err.textContent='Enter your email above first, then click Forgot password.'; err.style.display='block'; return; }
+  try{ await sb.auth.resetPasswordForEmail(email); toast('Password reset email sent to '+email); }catch(e){ toast('Could not send reset email.'); }
+}
+
+// Pull the logged-in user's profile into the app
+async function loadSessionIntoApp(){
+  try{
+    if(!sb) return false;
+    var s = await sb.auth.getSession();
+    var session = s && s.data ? s.data.session : null;
+    if(!session || !session.user) return false;
+    var uid = session.user.id;
+    var email = session.user.email;
+    var prof = null;
+    try{
+      var pr = await sb.from('profiles').select('*').eq('id', uid).single();
+      prof = pr.data || null;
+    }catch(e){}
+    pilotUser = {
+      uid: uid, email: email,
+      name: (prof&&prof.name) || (session.user.user_metadata&&session.user.user_metadata.name) || '',
+      company: (prof&&prof.company) || (session.user.user_metadata&&session.user.user_metadata.company) || '',
+      phone: (prof&&prof.phone) || '',
+      plan: (prof&&prof.plan) || 'pro'
+    };
+    try { localStorage.setItem('enerstudio_pilot_user', JSON.stringify(pilotUser)); } catch(e){}
+    try {
+      if(pilotUser.company && (!userBrands || !userBrands.length)){ userBrands.push({name:pilotUser.company, site:''}); persistBrands(); setBrand(0, pilotUser.company, ''); }
+    } catch(e){}
+    renderBrandList();
+    applyAuthUser();
+    return true;
+  }catch(e){ return false; }
+}
+
+function applyAuthUser(){
   if(!pilotUser) return;
   try{
-    var firstName=(pilotUser.name||'').split(' ')[0];
+    var firstName=(pilotUser.name||pilotUser.email||'').split(' ')[0].split('@')[0];
     var who=document.getElementById('pilotWho');
-    if(who) who.textContent='👤 '+firstName+' · New tester?';
+    if(who) who.textContent='👤 '+firstName+' · Log out';
     var an=document.getElementById('acctName'); if(an) an.textContent=pilotUser.name||'—';
     var ac=document.getElementById('acctCompany'); if(ac) ac.textContent=pilotUser.company||'—';
   }catch(e){}
 }
-function pilotReset(){
-  if(!confirm('Start fresh as a new tester?\n\nThis clears the current tester\u2019s session (account, library and brand settings on this browser) so the next person can sign up clean.')) return;
+
+async function pilotReset(){
+  if(!confirm('Log out of EnerStudio on this browser?')) return;
+  try{ if(sb) await sb.auth.signOut(); }catch(e){}
   try{
     localStorage.removeItem('enerstudio_pilot_user');
     localStorage.removeItem('enerstudio_library');
@@ -1690,14 +1830,17 @@ function pilotReset(){
   }catch(e){}
   location.reload();
 }
-function obShowIfNeeded(){
+
+// On load: if a real session exists, go straight in; otherwise show the auth overlay
+async function obShowIfNeeded(){
   var ov=document.getElementById('onboard');
   if(!ov) return;
-  if(pilotUser){ ov.style.display='none'; applyPilotUser(); }
-  else { ov.style.display='flex'; }
+  var hasSession = await loadSessionIntoApp();
+  if(hasSession){ ov.style.display='none'; }
+  else { ov.style.display='flex'; obNext(1); }
 }
 obShowIfNeeded();
-// initialize brand UI from saved user brands (blank for fresh testers)
+// initialize brand UI from saved user brands
 try {
   renderBrandList();
   if(userBrands.length){ setBrand(0, userBrands[0].name, userBrands[0].site||''); }
