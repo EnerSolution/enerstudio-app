@@ -5109,6 +5109,9 @@ async function loadCloudLibrary(){
   try{
     var q = await sb.from('library').select('*').eq('user_id', pilotUser.uid).order('created_at', { ascending:false }).limit(300);
     if(q.error || !q.data) return;
+    // SAFETY: if the cloud has nothing but this browser still shows items (e.g. an upload
+    // failed or older local-only videos exist), keep the local view — never blank a member's library.
+    if(q.data.length === 0 && (videoLibrary.length > 0 || photoLibrary.length > 0)) return;
     var vids = [], photoRows = [];
     q.data.forEach(function(r){ (r.kind === 'photo' ? photoRows : vids).push(r); });
     videoLibrary = vids.map(function(r){
