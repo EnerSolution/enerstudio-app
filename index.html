@@ -1468,7 +1468,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.77.0 — Build June 18</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);">8.78.0 — Build June 18</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1494,7 +1494,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.77.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.78.0</span>
     </div>
 
     <!-- ADMIN SECTION - hidden until passcode entered -->
@@ -1746,6 +1746,7 @@ async function loadSessionIntoApp(){
     } catch(e){}
     renderBrandList();
     applyAuthUser();
+    try{ loadCloudLibrary(); }catch(e){}   // pull the member's permanent library
     return true;
   }catch(e){ return false; }
 }
@@ -5038,6 +5039,106 @@ var videoLibrary = JSON.parse(localStorage.getItem('enerstudio_library') || '[]'
 var photoLibrary = JSON.parse(localStorage.getItem('enerstudio_photos') || '[]');
 var _currentPhotoSessionId = Date.now();
 
+// ══════════════════════════════════════════════════════════════
+// CLOUD LIBRARY (Supabase) — permanent, per-account, any device
+// ══════════════════════════════════════════════════════════════
+async function cloudUploadFile(srcUrl, kind){
+  // Fetch the file (backend URL or data:) and upload to Supabase Storage. Returns {url, path} or null.
+  if(!sb || !pilotUser || !pilotUser.uid || !srcUrl) return null;
+  try{
+    var resp = await fetch(srcUrl);
+    var blob = await resp.blob();
+    var isPhoto = (kind === 'photo');
+    var ext = isPhoto ? ((blob.type||'').indexOf('png')>=0 ? 'png' : 'jpg') : 'mp4';
+    var ct = blob.type || (isPhoto ? 'image/jpeg' : 'video/mp4');
+    var path = pilotUser.uid + '/' + Date.now() + '_' + Math.random().toString(36).slice(2,8) + '.' + ext;
+    var up = await sb.storage.from('library').upload(path, blob, { contentType: ct, upsert: false });
+    if(up.error) throw up.error;
+    var pub = sb.storage.from('library').getPublicUrl(path);
+    var url = pub && pub.data ? pub.data.publicUrl : null;
+    return url ? { url: url, path: path } : null;
+  }catch(e){ console.warn('cloud upload:', e && e.message); return null; }
+}
+
+function persistLibraryCache(){
+  try{
+    var light = videoLibrary.slice(0,50).map(function(v){
+      var c = Object.assign({}, v);
+      if(c.isInline && c.videoId){ c.videoUrl = BACKEND+'/api/video/'+c.videoId; }
+      return c;
+    });
+    localStorage.setItem('enerstudio_library', JSON.stringify(light));
+  }catch(e){}
+}
+
+async function cloudSaveVideo(entry){
+  if(!sb || !pilotUser || !pilotUser.uid || !entry) return;
+  try{
+    var up = await cloudUploadFile(entry.videoUrl, 'video');
+    var url = up ? up.url : (entry.isPermanent ? entry.videoUrl : null);
+    if(!url) return; // nothing durable to store
+    if(up){ entry.videoUrl = up.url; entry.isPermanent = true; entry.storagePath = up.path; }
+    entry.cloud = true;
+    var ins = await sb.from('library').insert({
+      user_id: pilotUser.uid, brand: entry.brand || '', kind: 'video',
+      title: (entry.videoType || 'Video') + (entry.goal ? (' · ' + entry.goal) : ''),
+      url: url, storage_path: (up ? up.path : ''),
+      meta: { duration: entry.duration||'', goal: entry.goal||'', videoType: entry.videoType||'', aspect: entry.aspect||'landscape' }
+    }).select('id').single();
+    if(!ins.error && ins.data){ entry.cloudId = ins.data.id; }
+    persistLibraryCache();
+    renderLibrary();
+  }catch(e){ console.warn('cloud save video:', e && e.message); }
+}
+
+async function cloudSavePhoto(brand, imageUrl, videoType, sessionKey){
+  if(!sb || !pilotUser || !pilotUser.uid || !imageUrl) return;
+  try{
+    var up = await cloudUploadFile(imageUrl, 'photo');
+    if(!up) return;
+    await sb.from('library').insert({
+      user_id: pilotUser.uid, brand: brand || '', kind: 'photo',
+      title: videoType || 'Photo', url: up.url, storage_path: up.path,
+      meta: { sessionId: sessionKey || '', videoType: videoType || '' }
+    });
+  }catch(e){ console.warn('cloud save photo:', e && e.message); }
+}
+
+async function loadCloudLibrary(){
+  if(!sb || !pilotUser || !pilotUser.uid) return;
+  try{
+    var q = await sb.from('library').select('*').eq('user_id', pilotUser.uid).order('created_at', { ascending:false }).limit(300);
+    if(q.error || !q.data) return;
+    var vids = [], photoRows = [];
+    q.data.forEach(function(r){ (r.kind === 'photo' ? photoRows : vids).push(r); });
+    videoLibrary = vids.map(function(r){
+      var m = r.meta || {};
+      var d = new Date(r.created_at);
+      return {
+        id: d.getTime(), cloudId: r.id, storagePath: r.storage_path || '',
+        brand: r.brand || '', duration: m.duration || '', goal: m.goal || '',
+        videoType: m.videoType || 'Video', aspect: m.aspect || 'landscape',
+        videoUrl: r.url, videoId: null, isInline: false, isPermanent: true, cloud: true,
+        date: d.toLocaleDateString(), time: d.toLocaleTimeString()
+      };
+    });
+    var bySession = {};
+    photoRows.forEach(function(r){
+      var m = r.meta || {}; var key = m.sessionId || ('row_' + r.id);
+      var d = new Date(r.created_at);
+      if(!bySession[key]) bySession[key] = { id: d.getTime(), sessionId: key, brand: r.brand || '', videoType: m.videoType || 'Video', images: [], cloudRows: [], date: d.toLocaleDateString(), time: d.toLocaleTimeString() };
+      bySession[key].images.push(r.url);
+      bySession[key].cloudRows.push(r.id);
+    });
+    photoLibrary = Object.keys(bySession).map(function(k){ return bySession[k]; });
+    persistLibraryCache();
+    try{ localStorage.setItem('enerstudio_photos', JSON.stringify(photoLibrary.slice(0,300))); }catch(e){}
+    renderLibrary();
+    try{ renderPhotoLibrary(currentPhotoFilter); }catch(e){}
+    try{ updateAnalytics(); }catch(e){}
+  }catch(e){ console.warn('cloud library load:', e && e.message); }
+}
+
 function saveToLibrary(brand, duration, goal, videoUrl, videoId, videoType, aspect){
   var isInline = videoUrl && videoUrl.indexOf('data:') === 0;
   var entry = {
@@ -5065,6 +5166,7 @@ function saveToLibrary(brand, duration, goal, videoUrl, videoId, videoType, aspe
     localStorage.setItem('enerstudio_library', JSON.stringify(light));
   }catch(e){ /* quota or serialization issue — library still works in-memory this session */ }
   renderLibrary();
+  try{ cloudSaveVideo(entry); }catch(e){}   // permanent per-account copy (Supabase)
 }
 
 function renderLibrary(){
@@ -5167,6 +5269,7 @@ function saveOnePhotoToLibrary(brand, imageUrl, sceneNumber, videoType) {
     photoLibrary.unshift(entry);
   }
   try { localStorage.setItem('enerstudio_photos', JSON.stringify(photoLibrary.slice(0, 300))); } catch(e) {}
+  try { cloudSavePhoto(brand, imageUrl, videoType, sessionKey); } catch(e) {}   // permanent copy
   // Re-render photo library if it's visible
   var photoPanel = document.getElementById('lib-panel-photo');
   if (photoPanel && photoPanel.style.display !== 'none') {
@@ -5192,6 +5295,7 @@ function savePhotosToLibrary(brand, imageUrls, videoType) {
   };
   photoLibrary.unshift(entry);
   try { localStorage.setItem('enerstudio_photos', JSON.stringify(photoLibrary.slice(0, 200))); } catch(e) {}
+  try { entry.images.forEach(function(u){ cloudSavePhoto(entry.brand, u, videoType, 'batch_' + entry.id); }); } catch(e) {}
   renderPhotoLibrary('__all__');
 }
 
@@ -5469,8 +5573,16 @@ function downloadVideo(url, brand){
 
 function deleteFromLibrary(i){
   if(!confirm('Delete this video from library?')) return;
+  var v = videoLibrary[i];
   videoLibrary.splice(i, 1);
   try{ localStorage.setItem('enerstudio_library', JSON.stringify(videoLibrary)); }catch(e){}
+  // also remove the permanent cloud copy
+  try{
+    if(v && sb && pilotUser && pilotUser.uid){
+      if(v.cloudId){ sb.from('library').delete().eq('id', v.cloudId).then(function(){}); }
+      if(v.storagePath){ sb.storage.from('library').remove([v.storagePath]).then(function(){}); }
+    }
+  }catch(e){}
   renderLibrary();
 }
 
