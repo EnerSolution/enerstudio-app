@@ -165,7 +165,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 .logo-remove-btn{padding:5px 10px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--re);cursor:pointer;display:none;}
 .logo-remove-btn.on{display:block;}
 .scene-btn.text{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.3);color:var(--ac);}
-
 /* VIDEO PRODUCTION PROGRESS BAR */
 .wb-progress-wrap{margin:14px 0 6px;background:var(--bdr2,rgba(255,255,255,0.07));border-radius:100px;height:10px;overflow:hidden;display:none;}
 .wb-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--p),var(--ac));border-radius:100px;transition:width 0.4s ease;}
@@ -180,11 +179,9 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-
 <!-- ════ AUTH + ONBOARDING (real accounts via Supabase) ════ -->
 <div id="onboard" style="position:fixed;inset:0;z-index:100000;background:linear-gradient(135deg,#0a0c10,#11151c);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;font-family:'DM Sans',sans-serif;">
   <div style="width:100%;max-width:440px;">
-
     <!-- STEP 1: WELCOME -->
     <div id="ob-step1" class="ob-step">
       <div style="text-align:center;margin-bottom:1.5rem;">
@@ -203,7 +200,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--tm,#94a3b8);">Already have an account? <span onclick="obShowLogin()" style="color:var(--ac,#a5b4fc);cursor:pointer;font-weight:600;">Log in</span></div>
       </div>
     </div>
-
     <!-- STEP 2: SIGN UP -->
     <div id="ob-step2" class="ob-step" style="display:none;">
       <div style="background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.75rem;">
@@ -224,7 +220,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--tm,#94a3b8);">Already have an account? <span onclick="obShowLogin()" style="color:var(--ac,#a5b4fc);cursor:pointer;font-weight:600;">Log in</span></div>
       </div>
     </div>
-
     <!-- STEP 3: PLAN SELECTION (free trial) -->
     <div id="ob-step3" class="ob-step" style="display:none;">
       <div style="background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.5rem;">
@@ -254,7 +249,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div id="ob-pay-err" style="display:none;font-size:12px;color:var(--re,#f87171);margin-top:8px;text-align:center;"></div>
       </div>
     </div>
-
     <!-- LOGIN -->
     <div id="ob-login" class="ob-step" style="display:none;">
       <div style="text-align:center;margin-bottom:1.25rem;">
@@ -272,11 +266,8 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div style="text-align:center;margin-top:8px;font-size:13px;color:var(--tm,#94a3b8);">New here? <span onclick="obNext(2)" style="color:var(--ac,#a5b4fc);cursor:pointer;font-weight:600;">Create an account</span></div>
       </div>
     </div>
-
   </div>
 </div>
-
-
 <!-- ════ ADD / EDIT BRAND MODAL ════ -->
 <div id="brandModal" style="display:none;position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:20px;font-family:'DM Sans',sans-serif;">
   <div style="width:100%;max-width:460px;background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.6rem;max-height:90vh;overflow-y:auto;">
@@ -296,7 +287,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
   </div>
 </div>
-
 <div class="topbar">
   <div style="display:flex;align-items:center;gap:10px;">
     <div id="mobileMenuBtn" onclick="toggleSidebar()" style="display:none;font-size:22px;cursor:pointer;line-height:1;color:var(--ts);">☰</div>
@@ -344,9 +334,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <div class="sc"><div class="slb">Videos Created</div><div class="sv" id="statVids">0</div><div class="ss up">This session</div></div>
       <div class="sc"><div class="slb">Membership</div><div class="sv" style="font-size:15px;padding-top:4px" id="statPlan">Starter</div><div class="ss up" id="statPlanSub">✓ Active · Annual</div></div>
     </div>
-
     <!-- BRAND LOGO MANAGER -->
-
     <!-- VIDEO TYPE SELECTOR -->
     <div class="card">
       <div class="ch"><div class="ct">🎯 Video Type</div><div class="csub">Choose your production style</div></div>
@@ -434,10 +422,8 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
     <!-- CINEMATIC CONFIG (shown by default) -->
     <div id="cinematic-config-section" style="display:block;"></div>
-
     <!-- ANIMATED SLIDES CONFIG (shown when Animated Slides is selected) -->
     <div id="slides-config-section" style="display:none;">
       <div class="card">
@@ -458,7 +444,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div style="margin-top:10px;padding:8px 10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;font-size:11px;color:var(--tm);">
           🎨 Slide colors are pulled from your brand logo automatically. Add or change your logo in <strong style="color:var(--ac);">Settings → Brand Logos</strong>.
         </div>
-
         <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:16px 0 8px;">Audio</div>
         <div style="display:flex;gap:10px;margin-bottom:10px;">
           <div id="aud-music" onclick="selectSlidesAudio('music',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
@@ -470,7 +455,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
             <div style="font-size:12px;font-weight:600;color:var(--ts);margin-top:3px;">Voiceover (synced text)</div>
           </div>
         </div>
-
         <!-- MUSIC OPTIONS -->
         <div id="slidesMusicOptions">
           <div style="font-size:11px;color:var(--tm);margin-bottom:6px;">Choose a track or upload your own (text appears slide-by-slide):</div>
@@ -488,7 +472,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           </div>
           <audio id="slidesMusicPreview" controls style="display:none;width:100%;margin-top:8px;height:34px;"></audio>
         </div>
-
         <!-- VOICE OPTIONS -->
         <div id="slidesVoiceOptions" style="display:none;">
           <div style="font-size:11px;color:var(--tm);margin-bottom:6px;">AI reads your script; each slide's text appears exactly when it's spoken.</div>
@@ -502,7 +485,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
     <!-- QUOTE / SOCIAL CONFIG (shown when Quote / Social is selected) -->
     <div id="quote-config-section" style="display:none;">
       <div class="card">
@@ -556,7 +538,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
     <!-- FACELESS / LISTICLE CONFIG -->
     <div id="faceless-config-section" style="display:none;">
       <div class="card">
@@ -609,7 +590,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
     <!-- PRODUCT ADS CONFIG SECTION -->
     <div id="productad-config-section" style="display:none;">
       <div class="card">
@@ -657,7 +637,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
     <!-- TALKING PHOTO CONFIG SECTION -->
     <div id="talkingphoto-config-section" style="display:none;">
       <div class="card">
@@ -717,7 +696,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
     <!-- AVATAR CONFIG SECTION (shown when AI Avatar is selected) -->
     <div id="avatar-config-section" style="display:none;">
       <div class="card">
@@ -725,7 +703,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div class="ct">🎤 AI Avatar Configuration</div>
           <div class="csub">Choose your presenter style</div>
         </div>
-
         <!-- Avatar Style Selection -->
         <div style="margin-bottom:1.25rem;">
           <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Presenter Style</div>
@@ -752,7 +729,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
             </div>
           </div>
         </div>
-
         <!-- Avatar Gender -->
         <div style="margin-bottom:1.25rem;">
           <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Presenter Gender</div>
@@ -767,7 +743,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
             </div>
           </div>
         </div>
-
         <!-- Background -->
         <div style="margin-bottom:1.25rem;">
           <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Background</div>
@@ -790,7 +765,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
             </div>
           </div>
         </div>
-
         <!-- Custom Background Upload (shown when custom selected) -->
         <div id="custom-bg-upload" style="display:none;margin-bottom:1.25rem;">
           <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Upload Custom Background</div>
@@ -803,14 +777,12 @@ video{width:100%;border-radius:10px;margin-top:10px;}
             <img id="customBgImg" style="width:100%;max-height:80px;object-fit:cover;border-radius:6px;border:1px solid var(--bdr);">
           </div>
         </div>
-
         <!-- Avatar Config Summary -->
         <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;margin-bottom:1.25rem;">
           <div style="font-size:12px;color:var(--tm);margin-bottom:4px;">Selected Configuration</div>
           <div style="font-size:13px;color:var(--tx);font-weight:500;" id="avatarConfigSummary">Professional · Female · Office background</div>
           <div style="font-size:11px;color:var(--tm);margin-top:4px;">Powered by EnerStudio Avatar Engine · Uses your Premium video credits</div>
         </div>
-
         <!-- AVATAR SELECTION GRID WITH PHOTOS -->
         <div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -829,7 +801,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
     <!-- STEP 1: DESCRIBE -->
     <div class="card">
       <div class="ch"><div class="ct">✍️ Step 1 — Describe Your Video</div><div class="csub">EnerStudio AI writes your script</div></div>
@@ -898,7 +869,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <div class="pbar" id="scriptPbar"><div class="ptrack"><div class="pfill" id="scriptPfill"></div></div><div class="ptxt" id="scriptPtxt">Generating script...</div></div>
       <div class="errbox" id="errbox"></div>
     </div>
-
     <!-- STEP 2: REVIEW SCRIPT -->
     <div class="step-section" id="step2">
       <div class="card">
@@ -915,7 +885,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
     <!-- STEP 3: REVIEW IMAGES -->
     <div class="step-section" id="step3">
       <div class="card">
@@ -932,7 +901,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
     <!-- STEP 4: VIDEO GENERATION -->
     <div class="step-section" id="step4">
       <div class="card">
@@ -951,7 +919,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           </div>
           <div class="progress-ring" id="clipDots"></div>
           <div class="ptxt" style="margin-top:8px" id="statusMsg">Preparing video generation...</div>
-
           <!-- PRODUCTION PROGRESS BAR -->
           <div id="prodProgressWrap" class="wb-progress-wrap">
             <div id="prodProgressFill" class="wb-progress-fill"></div>
@@ -972,7 +939,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
     <!-- ANIMATED SLIDES: PREVIEW & RENDER -->
     <div class="step-section" id="slidesStep">
       <div class="card">
@@ -1001,9 +967,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
   </div>
-
   <!-- ANALYTICS PAGE -->
   <div id="page-analytics" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
     <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">📊 Analytics</div>
@@ -1035,18 +999,15 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <div id="brandStats" style="display:flex;flex-direction:column;gap:10px;"></div>
     </div>
   </div>
-
   <!-- VIDEO LIBRARY PAGE -->
 <div id="page-library" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
   <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">📁 Library</div>
   <div style="font-size:14px;color:var(--ts);margin-bottom:1.5rem;">All videos and scene images produced across your brands</div>
-
   <!-- LIBRARY TABS -->
   <div style="display:flex;gap:8px;margin-bottom:1.5rem;border-bottom:1px solid var(--bdr);padding-bottom:0;">
     <button id="lib-tab-video" onclick="switchLibTab('video')" style="background:var(--p);color:#fff;border:none;border-radius:8px 8px 0 0;padding:9px 22px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:-1px;">🎬 Video Library</button>
     <button id="lib-tab-photo" onclick="switchLibTab('photo')" style="background:var(--card);color:var(--ts);border:1px solid var(--bdr);border-bottom:none;border-radius:8px 8px 0 0;padding:9px 22px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:-1px;">🖼️ Photo Library</button>
   </div>
-
   <!-- VIDEO LIBRARY PANEL -->
   <div id="lib-panel-video">
     <div id="libraryEmpty" style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:3rem;text-align:center;">
@@ -1057,7 +1018,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <div id="libraryGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"></div>
   </div>
-
   <!-- PHOTO LIBRARY PANEL -->
   <div id="lib-panel-photo" style="display:none;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap;">
@@ -1072,22 +1032,17 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <div id="photoLibraryGrid"></div>
   </div>
-
 </div>
-
 <!-- AUTO-PILOT PAGE -->
 <div id="page-autopilot" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
   <div style="max-width:900px;">
     <div class="ptitle" style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--tx);">🤖 Auto-Pilot Content Engine</div>
     <div class="psub" style="color:var(--tm);margin-bottom:1.5rem;">Set it once. EnerStudio creates fresh on-brand videos on your schedule, writes the caption, and notifies you to review &amp; post — hands-off content, your approval before anything goes live.</div>
-
     <!-- CREATE SCHEDULE -->
     <div class="card" style="margin-bottom:1.5rem;">
       <div class="ch"><div class="ct">➕ New Auto-Pilot Schedule</div><div class="csub">Pick what to create, how often, and where it'll be posted.</div></div>
-
       <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:6px 0 8px;">Brand</div>
       <select id="ap-brand" style="width:100%;margin-bottom:14px;"></select>
-
       <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:6px 0 8px;">Video type</div>
       <select id="ap-vtype" style="width:100%;margin-bottom:14px;">
         <option value="faceless">Faceless / Listicle</option>
@@ -1097,17 +1052,14 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <option value="cinematic">Cinematic AI</option>
         <option value="spokesperson">Spokesperson (Enzo / mascot)</option>
       </select>
-
       <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:6px 0 8px;">Topic / theme (what should the videos be about?)</div>
       <textarea id="ap-theme" rows="2" placeholder="e.g. Tips for homeowners considering solar, seasonal promos, common myths about heat pumps..." style="width:100%;margin-bottom:14px;"></textarea>
-
       <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:6px 0 8px;">Aspect ratio</div>
       <div style="display:flex;gap:8px;margin-bottom:14px;">
         <div class="ap-ar on" data-ar="vertical" onclick="apSelAspect('vertical',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:#fff;">📱 Vertical</div></div>
         <div class="ap-ar" data-ar="square" onclick="apSelAspect('square',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:var(--ts);">⬜ Square</div></div>
         <div class="ap-ar" data-ar="landscape" onclick="apSelAspect('landscape',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:var(--ts);">🖥️ Landscape</div></div>
       </div>
-
       <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:6px 0 8px;">How often?</div>
       <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
         <div class="ap-fr on" data-fr="daily" onclick="apSelFreq('daily',this)" style="flex:1;min-width:90px;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:#fff;">Daily</div></div>
@@ -1115,7 +1067,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div class="ap-fr" data-fr="weekly" onclick="apSelFreq('weekly',this)" style="flex:1;min-width:90px;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:var(--ts);">Weekly</div></div>
         <div class="ap-fr" data-fr="monthly" onclick="apSelFreq('monthly',this)" style="flex:1;min-width:90px;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:9px;text-align:center;cursor:pointer;"><div style="font-size:12px;font-weight:600;color:var(--ts);">Monthly</div></div>
       </div>
-
       <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:6px 0 8px;">Post to (select one or more)</div>
       <div id="ap-platforms" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
         <div class="ap-pf" data-pf="YouTube" onclick="apTogglePlatform(this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:20px;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--ts);">▶️ YouTube</div>
@@ -1124,21 +1075,17 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div class="ap-pf" data-pf="LinkedIn" onclick="apTogglePlatform(this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:20px;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--ts);">💼 LinkedIn</div>
         <div class="ap-pf" data-pf="Facebook" onclick="apTogglePlatform(this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:20px;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--ts);">👍 Facebook</div>
       </div>
-
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:13px;color:var(--ts);cursor:pointer;">
         <input type="checkbox" id="ap-startnow" style="width:16px;height:16px;"> Create the first one right now (to test)
       </label>
-
       <button onclick="apCreateSchedule()" id="ap-save-btn" style="width:100%;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">⚡ Activate Auto-Pilot</button>
       <div style="font-size:11px;color:var(--tm);text-align:center;margin-top:10px;">You'll review &amp; approve every video before it's posted. Nothing goes live without you.</div>
     </div>
-
     <!-- ACTIVE SCHEDULES -->
     <div class="card" style="margin-bottom:1.5rem;">
       <div class="ch" style="display:flex;justify-content:space-between;align-items:center;"><div class="ct">📅 Your Schedules</div><button onclick="apClearAll()" style="background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:6px 12px;font-size:11px;color:var(--re);cursor:pointer;">🗑️ Clear all</button></div>
       <div id="ap-schedule-list"><div style="font-size:13px;color:var(--tm);padding:8px;">No schedules yet. Create one above to start.</div></div>
     </div>
-
     <!-- CONTENT QUEUE -->
     <div class="card">
       <div class="ch"><div class="ct">📥 Content Queue</div><div class="csub">Videos waiting for you to create, review, approve, and post.</div></div>
@@ -1146,13 +1093,11 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
   </div>
 </div>
-
 <!-- MEMBERSHIP PAGE -->
 <div id="page-membership" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
   <div style="max-width:1000px;">
   <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">👥 Membership &amp; Billing</div>
   <div style="font-size:14px;color:var(--ts);margin-bottom:1.25rem;">Your current plan, usage, and billing.</div>
-
   <!-- CURRENT PLAN BANNER -->
   <div style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(52,211,153,0.06));border:1px solid var(--p);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
     <div>
@@ -1162,14 +1107,12 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <button onclick="openBillingPortal()" style="background:var(--pg);border:1px solid var(--ba);border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;color:var(--ac);cursor:pointer;">Manage billing</button>
   </div>
-
   <!-- USAGE CAPS -->
   <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;">
     <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:1rem;color:var(--ac);">📊 Your Monthly Video Allowance</div>
     <div id="memCapsGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"></div>
     <div style="font-size:11px;color:var(--tm);text-align:center;margin-top:12px;">Need more before next month? Use Plan Refresh below, or buy extra credits.</div>
   </div>
-
   <!-- BILLING TOGGLE -->
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;">
     <span style="font-size:13px;font-weight:500;color:var(--tm);" id="mem-lbl-m">Monthly</span>
@@ -1179,10 +1122,8 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <span style="font-size:13px;font-weight:600;color:var(--tx);" id="mem-lbl-a">Annual</span>
     <span id="mem-save-badge" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:var(--gr);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">Save 20%</span>
   </div>
-
   <!-- PLAN CARDS -->
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:1.5rem;" id="memPlanCards">
-
     <!-- STARTER -->
     <div class="memplan" style="background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:1.5rem;">
       <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;">Starter</div>
@@ -1201,7 +1142,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       </div>
       <button id="planbtn-starter" onclick="changePlan('starter')" style="width:100%;padding:11px;border-radius:10px;background:transparent;border:1px solid var(--bdr);color:var(--tx);font-size:13px;font-weight:600;cursor:pointer;">Choose Starter</button>
     </div>
-
     <!-- PRO -->
     <div class="memplan" style="background:var(--card);border:1.5px solid var(--p);border-radius:16px;padding:1.5rem;position:relative;">
       <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--p);color:#fff;font-size:9px;font-weight:800;padding:3px 12px;border-radius:12px;">MOST POPULAR</div>
@@ -1221,7 +1161,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       </div>
       <button id="planbtn-pro" onclick="changePlan('pro')" style="width:100%;padding:11px;border-radius:10px;background:linear-gradient(135deg,var(--p),var(--pd));border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Choose Pro</button>
     </div>
-
     <!-- BUSINESS -->
     <div class="memplan" style="background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:1.5rem;">
       <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;">Business</div>
@@ -1241,7 +1180,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <button id="planbtn-business" onclick="changePlan('business')" style="width:100%;padding:11px;border-radius:10px;background:transparent;border:1px solid var(--bdr);color:var(--tx);font-size:13px;font-weight:600;cursor:pointer;">Choose Business</button>
     </div>
   </div>
-
   <!-- PLAN REFRESH -->
   <div style="background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(99,102,241,0.05));border:1px solid rgba(251,191,36,0.25);border-radius:14px;padding:1.5rem;">
     <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;">🔄 Plan Refresh — Use More Anytime</div>
@@ -1249,14 +1187,11 @@ video{width:100%;border-radius:10px;margin-top:10px;}
   </div>
   </div>
 </div>
-
-
 <!-- SETTINGS PAGE -->
   <!-- SUPPORT PAGE -->
   <div id="page-support" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
     <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">💬 Support & Help</div>
     <div style="font-size:14px;color:var(--ts);margin-bottom:2rem;">Get help, learn the platform, and chat with our AI support agent</div>
-
     <!-- AI CHAT AGENT -->
     <div style="background:var(--card);border:1px solid var(--p);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
       <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px;">🤖 AI Support Agent</div>
@@ -1287,7 +1222,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <button onclick="escalateToTeam()" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:20px;padding:4px 12px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--re);cursor:pointer;">🚨 Escalate to Team</button>
       </div>
     </div>
-
     <!-- HOW TO USE GUIDE -->
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
       <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">📖 How to Use EnerStudio</div>
@@ -1392,7 +1326,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
     <!-- FAQ -->
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
       <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">❓ Frequently Asked Questions</div>
@@ -1434,7 +1367,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
-
     <!-- CONTACT -->
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;">
       <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:1rem;">📧 Contact Technical Team</div>
@@ -1458,7 +1390,6 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       </div>
     </div>
   </div>
-
   <div id="page-settings" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
     <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">⚙️ Settings</div>
     <div style="font-size:14px;color:var(--ts);margin-bottom:2rem;">Platform preferences, brand logos, and configuration</div>
@@ -1468,14 +1399,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.79.0</div>
-<script>
-try{
-  var _vl = document.getElementById('appVersionLabel');
-  var _d = new Date(document.lastModified);
-  if(_vl && !isNaN(_d)) _vl.textContent = _vl.textContent + ' — Build ' + _d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-}catch(e){}
-</script>/div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.79.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1498,12 +1422,10 @@ try{
       <button onclick="checkServerStatus()" style="background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--ac);cursor:pointer;">🔄 Check Server Status</button>
       <div id="serverStatusResult" style="margin-top:8px;font-size:12px;color:var(--ts);"></div>
     </div>
-
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.78.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.79.0</span>
     </div>
-
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
       <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px;">🔐 Admin — API Credits</div>
@@ -1543,25 +1465,19 @@ try{
       </div>
     </div>
   </div>
-
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
 var BACKEND = 'https://enerstudio-backend.onrender.com';
-
 // ── KEEP-ALIVE: warm the backend the moment the app opens, and keep it warm ──
 // Render free tier sleeps after 15 min idle (≈50s cold start). We warm it on load
 // so by the time the user generates, it's already awake — and ping every 10 min.
 function warmBackend(){ try{ fetch(BACKEND+'/api/ping',{cache:'no-store'}).catch(function(){}); }catch(e){} }
-
 // ── AUTH (Supabase: real accounts + lead capture) ──
 var SUPABASE_URL = 'https://xksxgvzozmivpigwcecw.supabase.co';
 var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhrc3hndnpvem1pdnBpZ3djZWN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NTcyODMsImV4cCI6MjA5ODMzMzI4M30.7IKJruPqAKoiLGHrNzaVK7xRJd5JqeMIRYvQbGoipiw';
 var sb = null;
 try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON); } catch(e){ console.warn('Supabase init failed', e); }
-
 var pilotUser = null;          // { name, email, company, phone, plan }
 var obSelectedPlan = 'pro';    // default selected plan
 var obCycle = 'annual';        // 'annual' | 'monthly'
@@ -1584,7 +1500,6 @@ function obSetCycle(cycle){
     if(note) note.textContent = (cycle==='annual') ? ('billed '+yr[p]) : '';
   });
 }
-
 function obNext(step){
   ['ob-step1','ob-step2','ob-step3','ob-login'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display='none'; });
   var s=document.getElementById('ob-step'+step); if(s) s.style.display='block';
@@ -1601,7 +1516,6 @@ function obSelectPlan(plan, el){
     c.style.background = on ? 'rgba(52,211,153,0.08)' : 'transparent';
   });
 }
-
 // Step 1: create the account (Supabase Auth), then go to plan selection
 async function obCreateAccount(){
   var email=(document.getElementById('ob-email').value||'').trim();
@@ -1628,7 +1542,6 @@ async function obCreateAccount(){
     btn.disabled=false; btn.textContent='Continue →';
   }
 }
-
 // Step 2: confirm plan, write profile row, capture lead, enter app
 async function obFinish(){
   if(!pilotUser) { obNext(2); return; }
@@ -1655,7 +1568,6 @@ async function obFinish(){
     })}).catch(function(){});
   } catch(e){}
   try { localStorage.setItem('enerstudio_pilot_user', JSON.stringify(pilotUser)); } catch(e){}
-
   // 3) Card-up-front trial: send them to Stripe Checkout. On return (success), they enter the app.
   var btn=event&&event.target?event.target:null; if(btn){ btn.disabled=true; btn.textContent='Opening secure checkout…'; }
   try{
@@ -1678,7 +1590,6 @@ async function obFinish(){
     applyAuthUser();
   }
 }
-
 // After returning from Stripe checkout (success), finish entering the app
 function obHandleCheckoutReturn(){
   try{
@@ -1698,7 +1609,6 @@ function obHandleCheckoutReturn(){
     }
   }catch(e){}
 }
-
 // Login for returning users
 async function obLogin(){
   var email=(document.getElementById('lg-email').value||'').trim();
@@ -1719,13 +1629,11 @@ async function obLogin(){
     btn.disabled=false; btn.textContent='Log In →';
   }
 }
-
 async function obForgot(){
   var email=(document.getElementById('lg-email').value||'').trim();
   if(!email){ var err=document.getElementById('lg-err'); err.textContent='Enter your email above first, then click Forgot password.'; err.style.display='block'; return; }
   try{ await sb.auth.resetPasswordForEmail(email); toast('Password reset email sent to '+email); }catch(e){ toast('Could not send reset email.'); }
 }
-
 // Pull the logged-in user's profile into the app
 async function loadSessionIntoApp(){
   try{
@@ -1757,7 +1665,6 @@ async function loadSessionIntoApp(){
     return true;
   }catch(e){ return false; }
 }
-
 function applyAuthUser(){
   if(!pilotUser) return;
   try{
@@ -1772,7 +1679,6 @@ function applyAuthUser(){
     var pb2=document.getElementById('memCurrentPlan'); if(pb2) pb2.textContent=planName;
   }catch(e){}
 }
-
 async function pilotReset(){
   if(!confirm('Log out of EnerStudio on this browser?')) return;
   try{ if(sb) await sb.auth.signOut(); }catch(e){}
@@ -1785,7 +1691,6 @@ async function pilotReset(){
   }catch(e){}
   location.reload();
 }
-
 // On load: if a real session exists, go straight in; otherwise show the auth overlay
 async function obShowIfNeeded(){
   var ov=document.getElementById('onboard');
@@ -1821,8 +1726,6 @@ try {
   if(userBrands.length){ setBrand(0, userBrands[0].name, userBrands[0].site||''); }
   else { setBrand(-1,'',''); }
 } catch(e){}
-
-
 // ── VIDEO TYPE INFO POPOVERS ──
 var VT_INFO = {
   avatar:{ icon:'🎤', name:'AI Avatar', what:'A realistic AI presenter speaks your script on camera — no filming, no actor, no studio.', use:'Perfect for explainers, course intros, announcements, spokesperson and welcome videos.', tip:'Pick a presenter, type your topic, and AI writes the script and delivers a talking-presenter video.' },
@@ -1860,11 +1763,9 @@ function hideVtInfo(){ if(_vtPopEl) _vtPopEl.style.display='none'; }
 // close on outside click or scroll
 document.addEventListener('click', function(e){ if(_vtPopEl && _vtPopEl.style.display==='block' && !_vtPopEl.contains(e.target) && !(e.target&&e.target.classList&&e.target.classList.contains('vinfo'))) hideVtInfo(); });
 window.addEventListener('scroll', hideVtInfo, true);
-
 warmBackend();
 setInterval(warmBackend, 10*60*1000);
 document.addEventListener('visibilitychange', function(){ if(!document.hidden) warmBackend(); });
-
 // ── BUTTON WATCHDOG: never leave a primary action button stuck disabled ──
 // If a flow throws before its re-enable line runs, a button can hang forever.
 // This safety net re-enables key buttons when no render/progress is actually running.
@@ -1882,7 +1783,6 @@ setInterval(function(){
     });
   }catch(e){}
 }, 4000);
-
 var userBrands = [];
 try { userBrands = JSON.parse(localStorage.getItem('enerstudio_brands') || '[]'); } catch(e){ userBrands = []; }
 var activeBrand = userBrands.length ? userBrands[0].name : '';
@@ -1896,7 +1796,6 @@ var clipTaskIds = [];
 var clipUrls = [];
 var statusInterval = null;
 var vidCount = 0;
-
 // Solar-specific scene prompts by position
 var solarPrompts = [
   'Cinematic aerial drone shot of solar panels on Canadian residential rooftops at golden hour sunrise, smooth rising camera movement, photorealistic 4K',
@@ -1912,7 +1811,6 @@ var solarPrompts = [
   'Cinematic close up of smiling family in bright home knowing their energy is solar powered, warm lifestyle scene',
   'Cinematic end shot of a laptop showing your website, clear call to action'
 ];
-
 // Whiteboard-specific scene prompts — NO TEXT IN IMAGES (causes Runway hallucination)
 var whiteboardPrompts = [
   'Professional editorial ink illustration, person standing at a road fork junction, one road sign arrow left one road sign arrow right, sunrise on horizon, clean black linework on pure white background, absolutely no text no letters no words no signs with writing',
@@ -1927,9 +1825,6 @@ var whiteboardPrompts = [
   'Professional editorial ink illustration, entrepreneur standing proudly in front of their new company office building, solar panels on roof, briefcase in hand, growth chart in background, clean black linework on white background, absolutely no text no letters no words no writing',
   'Professional editorial ink illustration, happy family standing in front of their house with solar panels on roof, sunshine overhead, piggy bank and coin symbols nearby, clean black linework on white background, absolutely no text no letters no words no writing',
 ];
-
-
-
 // BRAND
 function getBrandBrief(){
   var b=userBrands.filter(function(x){return x.name===activeBrand;})[0];
@@ -1974,7 +1869,6 @@ function renderBrandList(){
   // populate brand-logo manager if present
   if(typeof renderBrandLogos==='function'){ try{ renderBrandLogos(); }catch(e){} }
 }
-
 function setBrandByIndex(i){
   var b=userBrands[i]; if(!b) return;
   setBrand(i, b.name, b.site||'');
@@ -2046,14 +1940,12 @@ function removeBrand(i){
   }
   renderBrandList();
 }
-
 function setprog(barId,fillId,txtId,pct,msg){
   document.getElementById(barId).classList.add('on');
   document.getElementById(fillId).style.width=pct+'%';
   document.getElementById(txtId).textContent=msg;
 }
 function clearprog(barId){document.getElementById(barId).classList.remove('on');}
-
 // Animated percentage climber for render progress (used by Slides/Quote/Faceless)
 var _climbTimer=null, _climbVal=0;
 function startClimb(barId,fillId,txtId,baseMsg,startPct,capPct){
@@ -2082,20 +1974,16 @@ function finishClimb(fillId,txtId,msg){
   if(txt) txt.textContent=(msg||'Done!')+' 100%';
 }
 function stopClimb(){ if(_climbTimer){ clearInterval(_climbTimer); _climbTimer=null; } }
-
 function showerr(m){var e=document.getElementById('errbox');e.textContent=m;e.classList.add('on');}
 function clearerr(){document.getElementById('errbox').classList.remove('on');}
-
 function toast(m){
   var t=document.getElementById('toast');
   t.textContent=m;t.classList.add('on');
   setTimeout(function(){t.classList.remove('on');},2500);
 }
-
 function copyScript(){
   navigator.clipboard.writeText(document.getElementById('scriptEdit').value).then(function(){toast('Script copied!');});
 }
-
 // LOAD RUNWAY BALANCE
 async function loadBalance(){
   try{
@@ -2108,7 +1996,6 @@ async function loadBalance(){
     updateCreditDisplay();
   }
 }
-
 // STEP 1: GENERATE SCRIPT
 async function generateScript(){
   if(activeVtype === 'slides'){ return generateSlides(false); }
@@ -2125,20 +2012,15 @@ async function generateScript(){
   document.getElementById('step2').classList.remove('on');
   document.getElementById('step3').classList.remove('on');
   document.getElementById('step4').classList.remove('on');
-
   var brand=document.getElementById('bsel').value;
   var dur=document.getElementById('dsel').value;
   var lang=document.getElementById('lsel').value;
   var goal=document.getElementById('gsel').value;
   var numClips=Math.floor(parseInt(dur)/5);
-
   setprog('scriptPbar','scriptPfill','scriptPtxt',30,'Connecting to Claude AI...');
-
   var sysPrompt='You are a professional video voiceover script writer. Write ONLY the spoken words that a narrator will say out loud. NEVER include stage directions, scene descriptions, camera directions, or visual notes. NEVER use words like: Open with, Show, Cut to, Aerial, Cinematic, Scene, Visual, HOOK, CTA, PROBLEM, SOLUTION. Write natural flowing spoken sentences only. Always write Nabcep as one word never as individual letters N-A-B-C-E-P.';
-
   var maxWords = Math.floor(parseInt(dur) * 2.3);
   var userPrompt = 'Write a '+dur+'-second video voiceover script for '+brand+'. Goal: '+goal+'. Language: '+lang+'. Brief: '+prompt+'. CRITICAL: Maximum '+maxWords+' words total. Write ONLY natural spoken words. No stage directions. No scene labels. No headings. Just what the narrator says out loud. End with call to action to visit the website. Count every word — stay under '+maxWords+' words.';
-
   try{
     setprog('scriptPbar','scriptPfill','scriptPtxt',60,'Generating script...');
     var r=await fetch(BACKEND+'/api/claude/generate',{
@@ -2149,7 +2031,6 @@ async function generateScript(){
     if(!r.ok)throw new Error('AI Script Writing failed ('+r.status+')');
     var d=await r.json();
     if(!d.text)throw new Error('Empty response: '+JSON.stringify(d));
-
     // Remove any word count or meta text Claude adds
     var cleanScript = d.text.trim()
       .replace(/\*\*Word count:.*?\*\*/gi, '')
@@ -2158,7 +2039,6 @@ async function generateScript(){
       .replace(/\(\d+ words\)/gi, '')
       .replace(/Note:.*$/gim, '')
       .trim();
-
     // Auto-trim to word limit if over
     var limit = getWordLimit();
     var words = cleanScript.split(/\s+/).filter(Boolean);
@@ -2170,7 +2050,6 @@ async function generateScript(){
         cleanScript = cleanScript.substring(0, lastPeriod + 1);
       }
     }
-
     scriptText = cleanScript;
     document.getElementById('scriptEdit').value = cleanScript;
     updateWordCount();
@@ -2179,7 +2058,6 @@ async function generateScript(){
     document.getElementById('scriptBtn').disabled=false;
     document.getElementById('scriptEdit').scrollIntoView({behavior:'smooth'});
     toast('Script generated! Review and edit before approving.');
-
     // Start new photo session ID for this generation run
     startPhotoSession();
     // Set up scene prompts
@@ -2201,14 +2079,12 @@ async function generateScript(){
       }
       scenePrompts = scenePrompts.slice(0, numClips);
     }
-
   }catch(e){
     clearprog('scriptPbar');
     showerr('Error: '+e.message);
     document.getElementById('scriptBtn').disabled=false;
   }
 }
-
 // STEP 2: APPROVE SCRIPT AND GENERATE IMAGES
 async function approveScript(){
   var rawScript = document.getElementById('scriptEdit').value
@@ -2217,7 +2093,6 @@ async function approveScript(){
     .replace(/\*\*.*?\*\*/gi,'')
     .trim();
   if(!rawScript){showerr('Script is empty. Please generate a script first.');return;}
-
   // Final word count check
   var words = rawScript.split(/\s+/).filter(Boolean);
   var limit = getWordLimit();
@@ -2235,18 +2110,15 @@ async function approveScript(){
     document.getElementById('approveScriptBtn').disabled=false;
   }
 }
-
 // GENERATE SCENE IMAGES
 async function generateSceneImages(){
   var numClips=scenePrompts.length;
   sceneImageUrls=new Array(numClips).fill(null);
   sceneSvgs=new Array(numClips).fill(null);
   sceneApproved=new Array(numClips).fill(false);
-
   setprog('imagePbar','imagePfill','imagePtxt',5,'Generating scene images — please wait...');
   renderSceneGrid();
   document.getElementById('approveImagesBtn').disabled=true;
-
   for(var i=0;i<numClips;i++){
     setprog('imagePbar','imagePfill','imagePtxt',Math.round((i/numClips)*90)+5,'Generating image '+(i+1)+' of '+numClips+'...');
     try{
@@ -2263,7 +2135,6 @@ async function generateSceneImages(){
     }
     await new Promise(function(r){setTimeout(r,500);});
   }
-
   clearprog('imagePbar');
   var allApproved=sceneApproved.every(function(a){return a;});
   document.getElementById('approveImagesBtn').disabled=!allApproved;
@@ -2273,9 +2144,7 @@ async function generateSceneImages(){
     toast('Some images failed to generate. Click regenerate on failed scenes.');
   }
 }
-
 var sceneSvgs = []; // raw SVG code per whiteboard scene (sent to the draw-on animator)
-
 async function generateOneSvg(prompt, idx){
   // Claude draws the scene as crisp vector line-art — animated stroke-by-stroke by the backend
   var sys = "You are a whiteboard illustration artist. You output ONLY raw SVG code — no explanations, no markdown fences, nothing before <svg or after </svg>.";
@@ -2317,7 +2186,6 @@ async function generateOneSvg(prompt, idx){
   // preview as data URI so the existing scene cards display it
   return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
 }
-
 // Generate cinematic scene IMAGE prompts from the actual brief + brand (replaces hardcoded solar prompts)
 async function generateScenePrompts(brand, goal, brief, numClips){
   var sys='You are a cinematic director. Output ONLY a JSON array of '+numClips+' strings — no preamble, no markdown. Each string is a vivid, photorealistic IMAGE prompt for one scene of a brand film, in shot order telling a coherent story. Each prompt must describe shot type, subject, setting, mood, lighting and camera motion, ending with "cinematic, photorealistic, film-grade, shallow depth of field". Do NOT include any on-screen text or words in the scenes. Make every scene specifically about the brand described.';
@@ -2330,7 +2198,6 @@ async function generateScenePrompts(brand, goal, brief, numClips){
   if(!Array.isArray(arr)) throw new Error('bad scene prompts');
   return arr.map(function(x){ return String(x); });
 }
-
 async function generateOneImage(prompt, idx){
   // Whiteboard: Claude draws vector scenes (no Runway credits, crisp line art)
   if(activeVtype === 'whiteboard'){
@@ -2358,7 +2225,6 @@ async function generateOneImage(prompt, idx){
   var d=await r.json();
   return d.imageUrl;
 }
-
 function renderSceneGrid(){
   var grid=document.getElementById('sceneGrid');
   grid.innerHTML='';
@@ -2366,21 +2232,18 @@ function renderSceneGrid(){
     renderSceneCard(i);
   }
 }
-
 function renderSceneCard(i){
   var grid=document.getElementById('sceneGrid');
   var existing=document.getElementById('scene-card-'+i);
   var card=document.createElement('div');
   card.className='scene-card'+(sceneApproved[i]?' approved':'');
   card.id='scene-card-'+i;
-
   var imgHtml='';
   if(sceneImageUrls[i]){
     imgHtml='<img class="scene-img" src="'+sceneImageUrls[i]+'" alt="Scene '+(i+1)+'" onerror="this.style.display=\'none\'">';
   }else{
     imgHtml='<div class="scene-img-placeholder">⏳</div>';
   }
-
   card.innerHTML=imgHtml+
     '<div class="scene-info">'+
     '<div class="scene-num">SCENE '+(i+1)+'</div>'+
@@ -2423,14 +2286,12 @@ function renderSceneCard(i){
     '</div>'+
     '<div class="scene-status '+(sceneApproved[i]?'ok':'pending')+'">'+(sceneApproved[i]?'✅ Ready':'⏳ Generating...')+'</div>'+
     '</div>';
-
   if(existing){
     grid.replaceChild(card,existing);
   }else{
     grid.appendChild(card);
   }
 }
-
 async function replaceScene(i){
   var newPrompt=prompt('Edit scene '+(i+1)+' description:',scenePrompts[i]);
   if(!newPrompt)return;
@@ -2449,7 +2310,6 @@ async function replaceScene(i){
     toast('Failed to generate replacement image: '+e.message);
   }
 }
-
 function removeScene(i){
   if(scenePrompts.length<=1){toast('Cannot remove last scene.');return;}
   scenePrompts.splice(i,1);
@@ -2459,19 +2319,15 @@ function removeScene(i){
   checkAllApproved();
   toast('Scene '+(i+1)+' removed.');
 }
-
 async function regenerateAllImages(){
   await generateSceneImages();
 }
-
 // Word limits per duration
 var WORD_LIMITS = {'20':46,'30':69,'60':138,'90':207,'120':276};
-
 function getWordLimit(){
   var dur = document.getElementById('dsel').value;
   return WORD_LIMITS[dur] || Math.floor(parseInt(dur) * 2.3);
 }
-
 // TEXT OVERLAY FUNCTIONS
 function toggleTextOverlay(i){
   var panel = document.getElementById('tov-'+i);
@@ -2481,7 +2337,6 @@ function toggleTextOverlay(i){
     renderTextOverlay(i);
   }
 }
-
 function renderTextOverlay(i){
   var canvas = document.getElementById('tov-canvas-'+i);
   if(!canvas) return;
@@ -2489,22 +2344,18 @@ function renderTextOverlay(i){
   img.crossOrigin = 'anonymous';
   var src = sceneImageUrls[i];
   if(!src){ canvas.style.display='none'; return; }
-
   // Update size display
   var sizeEl = document.getElementById('tov-size-val-'+i);
   var sizeInput = document.getElementById('tov-size-'+i);
   if(sizeEl && sizeInput) sizeEl.textContent = sizeInput.value + 'px';
-
   img.onload = function(){
     canvas.width = img.width || 1280;
     canvas.height = img.height || 720;
     canvas.style.display = 'block';
     var ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
     var text = (document.getElementById('tov-text-'+i)||{}).value || '';
     if(!text.trim()) return;
-
     var fontSize = parseInt((document.getElementById('tov-size-'+i)||{}).value || 36);
     var color = (document.getElementById('tov-color-'+i)||{}).value || '#ffffff';
     var pos = (document.getElementById('tov-pos-'+i)||{}).value || 'bottom';
@@ -2512,19 +2363,15 @@ function renderTextOverlay(i){
     var bold = (document.getElementById('tov-bold-'+i)||{}).checked !== false;
     var shadow = (document.getElementById('tov-shadow-'+i)||{}).checked !== false;
     var hasBg = (document.getElementById('tov-bg-'+i)||{}).checked;
-
     ctx.font = (bold ? 'bold ' : '') + fontSize + 'px DM Sans, Arial, sans-serif';
     ctx.textAlign = align;
     ctx.textBaseline = 'middle';
-
     // Calculate position
     var x = align === 'center' ? canvas.width/2 : align === 'left' ? fontSize : canvas.width - fontSize;
     var y = pos === 'top' ? fontSize * 1.5 : pos === 'middle' ? canvas.height/2 : canvas.height - fontSize * 1.5;
-
     var metrics = ctx.measureText(text);
     var textW = metrics.width;
     var padX = 20, padY = 12;
-
     // Background box
     if(hasBg){
       var bx = align === 'center' ? x - textW/2 - padX : align === 'left' ? x - padX : x - textW - padX;
@@ -2533,7 +2380,6 @@ function renderTextOverlay(i){
       ctx.roundRect(bx, y - fontSize/2 - padY, textW + padX*2, fontSize + padY*2, 6);
       ctx.fill();
     }
-
     // Shadow
     if(shadow){
       ctx.shadowColor = 'rgba(0,0,0,0.8)';
@@ -2541,29 +2387,24 @@ function renderTextOverlay(i){
       ctx.shadowOffsetX = 2;
       ctx.shadowOffsetY = 2;
     }
-
     // Text
     ctx.fillStyle = color;
     ctx.fillText(text, x, y);
     ctx.shadowColor = 'transparent';
     ctx.shadowBlur = 0;
-
     // Apply brand logo watermark top-left
     applyLogoWatermark(ctx, canvas.width, canvas.height);
   };
-
   img.onerror = function(){
     // For data URLs just set src directly
     canvas.style.display='none';
   };
-
   if(src.startsWith('data:') || src.startsWith('blob:')){
     img.src = src;
   } else {
     img.src = src + (src.includes('?') ? '&' : '?') + 'cb=' + Date.now();
   }
 }
-
 function applyTextOverlay(i){
   var canvas = document.getElementById('tov-canvas-'+i);
   if(!canvas || canvas.style.display === 'none'){
@@ -2595,24 +2436,19 @@ function applyTextOverlay(i){
   var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
   sceneImageUrls[i] = dataUrl;
   sceneApproved[i] = true;
-
   // Update the image in scene card
   var cardImg = document.querySelector('#scene-card-'+i+' .scene-img');
   if(cardImg) cardImg.src = dataUrl;
-
   // Hide panel
   var panel = document.getElementById('tov-'+i);
   if(panel) panel.classList.remove('on');
-
   checkAllApproved();
   toast('Text overlay applied to Scene '+(i+1)+'!');
 }
-
 // UPLOAD IMAGE FOR SCENE
 function uploadSceneImage(i){
   document.getElementById('upload-'+i).click();
 }
-
 function handleImageUpload(i, input){
   if(!input.files || !input.files[0]) return;
   var file = input.files[0];
@@ -2658,7 +2494,6 @@ function handleImageUpload(i, input){
   };
   reader.readAsDataURL(file);
 }
-
 function updateWordCount(){
   var txt = document.getElementById('scriptEdit').value
     .replace(/\*\*Word count:.*?\*\*/gi,'')
@@ -2671,13 +2506,11 @@ function updateWordCount(){
   var approveBtn = document.getElementById('approveScriptBtn');
   var banner = document.getElementById('wordCountBanner');
   var display = document.getElementById('wordCountDisplay');
-
   if(count === 0){
     if(banner) banner.style.display='none';
     if(display) display.textContent='';
     return;
   }
-
   if(count <= limit){
     // GOOD
     if(display){
@@ -2708,29 +2541,23 @@ function updateWordCount(){
     if(approveBtn) approveBtn.disabled=true;
   }
 }
-
 function checkAllApproved(){
   var all=sceneApproved.length>0&&sceneApproved.every(function(a){return a;});
   document.getElementById('approveImagesBtn').disabled=!all;
 }
-
 // STEP 3: APPROVE IMAGES AND GENERATE VIDEO
 async function approveImages(){
   var readyUrls=sceneImageUrls.filter(Boolean);
   if(readyUrls.length===0){toast('No scene images ready.');return;}
-
   document.getElementById('step4').classList.add('on');
   document.getElementById('step4').scrollIntoView({behavior:'smooth'});
   document.getElementById('approveImagesBtn').disabled=true;
-
   if(activeVtype === 'whiteboard'){
     await whiteboardStitch(readyUrls);
   } else {
     await generateVideoClips(readyUrls);
   }
 }
-
-
 // ── FETCH AND DELIVER VIDEO BY ID (bypasses Render 30s timeout) ──────────
 async function fetchAndDeliverVideo(videoId, filename, duration, goal, photos, videoType) {
   try {
@@ -2781,7 +2608,6 @@ async function fetchAndDeliverVideo(videoId, filename, duration, goal, photos, v
     document.getElementById('approveImagesBtn').disabled = false;
   }
 }
-
 // WHITEBOARD RASTER REVEAL: sends Runway images to backend raster engine
 async function whiteboardStitch(imageUrls){
   document.getElementById('overallStatus').textContent='Animating...';
@@ -2822,13 +2648,11 @@ async function whiteboardStitch(imageUrls){
     document.getElementById('approveImagesBtn').disabled=false;
   }
 }
-
 // STEP 4: GENERATE VIDEO CLIPS
 async function generateVideoClips(imageUrls){
   clipTaskIds=[];
   clipUrls=new Array(imageUrls.length).fill(null);
   startProductionProgress(imageUrls.length, activeVtype||'cinematic');
-
   // Build clip dots
   var dots=document.getElementById('clipDots');
   dots.innerHTML='';
@@ -2838,13 +2662,11 @@ async function generateVideoClips(imageUrls){
     d.id='dot-'+i;
     dots.appendChild(d);
   });
-
   document.getElementById('overallStatus').textContent='Rendering...';
   document.getElementById('overallStatus').className='status-val pending';
   document.getElementById('clipsComplete').textContent='0 / '+imageUrls.length;
   document.getElementById('statusMsg').textContent='Sending clips to Runway AI...';
   document.getElementById('checkBtn').disabled=false;
-
   // Queue all clips
   for(var i=0;i<imageUrls.length;i++){
     document.getElementById('statusMsg').textContent='Queuing clip '+(i+1)+' of '+imageUrls.length+'...';
@@ -2870,16 +2692,13 @@ async function generateVideoClips(imageUrls){
     }
     await new Promise(function(r){setTimeout(r,1000);});
   }
-
   var valid=clipTaskIds.filter(Boolean).length;
   document.getElementById('statusMsg').textContent=valid+' of '+imageUrls.length+' clips queued. Auto-checking every 15 seconds...';
-
   // Start auto check
   if(statusInterval)clearInterval(statusInterval);
   statusInterval=setInterval(checkAllClips,15000);
   setTimeout(checkAllClips,10000);
 }
-
 async function checkAllClips(){
   var total=clipTaskIds.length;
   var done=0;
@@ -2900,17 +2719,14 @@ async function checkAllClips(){
   }
   document.getElementById('clipsComplete').textContent=done+' / '+total;
   document.getElementById('statusMsg').textContent=done+' of '+total+' clips ready. '+(done<total?'Still rendering...':'All done! Stitching video...');
-
   if(done>=clipTaskIds.filter(Boolean).length&&done>0){
     clearInterval(statusInterval);
     await stitchVideo();
   }
 }
-
 async function stitchVideo(){
   document.getElementById('overallStatus').textContent='Stitching...';
   document.getElementById('statusMsg').textContent='Combining clips and adding ElevenLabs voiceover...';
-
   var validUrls=clipUrls.filter(Boolean);
   try{
     var r=await fetch(BACKEND+'/api/runway/stitch',{
@@ -2924,7 +2740,6 @@ async function stitchVideo(){
         voiceId:selectedVoiceId
       })
     });
-
     if(r.ok){
       var d=await r.json();
       if(d.videoId){
@@ -2946,11 +2761,9 @@ async function stitchVideo(){
     document.getElementById('statusMsg').textContent='Stitch error: '+e.message;
   }
 }
-
 // LOAD VOICES
 var selectedVoiceId = '';
 var allVoices = [];
-
 async function loadVoices(){
   document.getElementById('voiceSel').innerHTML='<option value="">Loading voices...</option>';
   try{
@@ -2988,7 +2801,6 @@ async function loadVoices(){
   }
 }
 var voiceRetries = 0;
-
 function previewVoice(){
   var sel = document.getElementById('voiceSel');
   if(!sel.value && (!allVoices || allVoices.length === 0)){
@@ -3012,7 +2824,6 @@ function previewVoice(){
     toast('No preview clip for this voice — it will still work in your video');
   }
 }
-
 // BRAND DROPDOWN
 function toggleBrandDropdown(){
   var dd = document.getElementById('brandDropdown');
@@ -3035,7 +2846,6 @@ function closeSidebarMobile(){
   if(sb) sb.classList.remove('open');
   if(bd) bd.classList.remove('show');
 }
-
 // VIDEO TYPE
 var activeVtype = 'cinematic';
 var SOON_TYPES = ['slideshow','cartoon','motion'];
@@ -3067,11 +2877,9 @@ function selectVtype(type, el){
       card.querySelectorAll('div').forEach(function(d,i){ if(d.style && i===0) d.style.color='var(--ts)'; });
     }
   });
-
   // Show/hide type-specific sections
   var avatarSection = document.getElementById('avatar-config-section');
   var cinematicSection = document.getElementById('cinematic-config-section');
-
   // Reset shared controls to default state
   var isSlidesLike = (type==='slides' || type==='quote' || type==='faceless');
   var _vw = document.getElementById('voiceSelectorWrap'); if(_vw) _vw.style.display = isSlidesLike ? 'none' : 'block';
@@ -3083,7 +2891,6 @@ function selectVtype(type, el){
   var _sb = document.getElementById('scriptBtn');
   if(_sb){ _sb.disabled=false; }
   if(_sb) _sb.textContent = (type==='slides') ? '⚡ Design My Slides' : (type==='quote' ? '⚡ Create My Quote Cards' : (type==='faceless' ? '⚡ Create My Video' : (type==='productad' ? '⚡ Create My Product Ad' : (type==='talkingphoto' ? '⚡ Bring My Photo to Life' : '⚡ Generate Script'))));
-
   if(type === 'avatar'){
     if(avatarSection) avatarSection.style.display = 'block';
     if(cinematicSection) cinematicSection.style.display = 'none';
@@ -3156,7 +2963,6 @@ function selectVtype(type, el){
     comingSoon(type.charAt(0).toUpperCase()+type.slice(1));
   }
 }
-
 // ANIMATED SLIDES configuration
 var slidesAspect = 'landscape';
 var slidesData = [];      // AI-designed slide specs
@@ -3164,7 +2970,6 @@ var slidesPalette = null; // extracted brand palette
 var slidesAudioMode = 'music';   // 'music' | 'voice'
 var slidesMusicUpload = null;    // base64 of uploaded track
 var slidesVoiceId = '';
-
 function selectSlidesAudio(mode, el){
   slidesAudioMode = mode;
   var m = document.getElementById('aud-music'), v = document.getElementById('aud-voice');
@@ -3177,7 +2982,6 @@ function selectSlidesAudio(mode, el){
   // populate voice dropdown from the same list used elsewhere
   if(!on){ populateSlidesVoices(); }
 }
-
 function populateSlidesVoices(){
   var src = document.getElementById('voiceSel');
   var dst = document.getElementById('slidesVoiceSel');
@@ -3186,7 +2990,6 @@ function populateSlidesVoices(){
     dst.value = src.value;
   }
 }
-
 function previewSlidesVoice(){
   var sel = document.getElementById('slidesVoiceSel');
   if(!sel || sel.options.length<=1){ populateSlidesVoices(); toast('Loading voices — try again in a moment'); return; }
@@ -3200,7 +3003,6 @@ function previewSlidesVoice(){
     toast('No preview clip for this voice — it will still work in your video');
   }
 }
-
 function handleSlidesMusicUpload(input){
   if(!input.files || !input.files[0]) return;
   var f = input.files[0];
@@ -3215,7 +3017,6 @@ function handleSlidesMusicUpload(input){
   };
   reader.readAsDataURL(f);
 }
-
 function selectAspect(a, el){
   slidesAspect = a;
   ['landscape','vertical'].forEach(function(x){
@@ -3227,10 +3028,8 @@ function selectAspect(a, el){
     c.querySelectorAll('div').forEach(function(d,i){ if(d.style) d.style.color = on ? (i===0?'':'#fff') : (i===1?'var(--ts)':'var(--tm)'); });
   });
 }
-
 var PALETTE_SLOTS = ['bg_dark','bg_mid','accent','accent2','text','text_soft','ink'];
 var DEFAULT_PALETTE = {bg_dark:'#0B1F3A',bg_mid:'#10314F',accent:'#3B82F6',accent2:'#2563EB',text:'#FFFFFF',text_soft:'#BFD4EA',ink:'#0B1F3A'};
-
 // STEP 1 (slides): AI designs slide specs, extract brand palette, render preview
 async function generateSlides(isRegen){
   var prompt=document.getElementById('prompt').value.trim();
@@ -3241,14 +3040,11 @@ async function generateSlides(isRegen){
   document.getElementById('slidesResultCard').style.display='none';
   document.getElementById('renderSlidesBtn').disabled=true;
   document.getElementById('slidesPreview').innerHTML='';
-
   var brand=document.getElementById('bsel') ? document.getElementById('bsel').value : (activeBrand||'Brand');
   var dur=parseInt(document.getElementById('dsel').value||'20');
   var goal=document.getElementById('gsel') ? document.getElementById('gsel').value : 'Brand Awareness';
   var numSlides=Math.max(3, Math.min(8, Math.round(dur/5)));
-
   setprog('slidesPbar','slidesPfill','slidesPtxt',20,'Extracting your brand colors...');
-
   // 1) Extract brand palette from logo (fallback to default)
   slidesPalette = DEFAULT_PALETTE;
   try{
@@ -3261,9 +3057,7 @@ async function generateSlides(isRegen){
       if(pr.ok){ var pd=await pr.json(); if(pd.palette) slidesPalette=pd.palette; }
     }
   }catch(e){ /* keep default */ }
-
   setprog('slidesPbar','slidesPfill','slidesPtxt',55,'AI is designing your slides...');
-
   // 2) Ask Claude to design slide specs as JSON
   var sys='You are a professional motion-graphics slide designer. You output ONLY valid JSON, no markdown, no commentary. You design animated marketing slides.';
   var palHint=PALETTE_SLOTS.join(', ');
@@ -3286,7 +3080,6 @@ async function generateSlides(isRegen){
     +'NEVER place two text blocks at the same or nearly the same y position — they must be vertically separated by at least 0.12 so they never overlap. '
     +'CRITICAL — COMPLETE LISTS: if the brief names a list of audiences or items (e.g. beginners, electricians, HVAC technicians, energy advisors, entrepreneurs), you MUST include EVERY item — never drop or shorten the list. Put the full list as ONE text block with items separated by "  •  " (so it stays on one readable line and fits), and the voiceText for that slide must read out every item too. Do not summarize the list. '
     +'NO text longer than 6 words per block (lists joined with bullets are exempt). Output ONLY the JSON. (v:'+Math.random().toString(36).slice(2,7)+')';
-
   try{
     var r=await fetch(BACKEND+'/api/claude/generate',{
       method:'POST',headers:{'Content-Type':'application/json'},
@@ -3315,7 +3108,6 @@ async function generateSlides(isRegen){
     showerr('Slide design failed: '+e.message+'. Try regenerating.');
   }
 }
-
 // Live HTML preview of each slide (static, instant — what you approve is what renders)
 function renderSlidePreviews(){
   var pal=slidesPalette||DEFAULT_PALETTE;
@@ -3407,7 +3199,6 @@ function renderSlidePreviews(){
     grid.appendChild(wrap);
   });
 }
-
 // ---- Per-slide editing (#3) ----
 function editSlideText(idx){
   var s=slidesData[idx]; if(!s||!s.blocks) return;
@@ -3419,7 +3210,6 @@ function editSlideText(idx){
   renderSlidePreviews();
   toast('Slide '+(idx+1)+' text updated');
 }
-
 function editSlideColors(idx){
   var s=slidesData[idx]; if(!s) return;
   // cycle the background between palette options for quick recolor
@@ -3436,14 +3226,12 @@ function editSlideColors(idx){
   renderSlidePreviews();
   toast('Slide '+(idx+1)+' colors changed (tap again to cycle)');
 }
-
 function deleteSlide(idx){
   if(slidesData.length<=1){ toast('You need at least one slide'); return; }
   slidesData.splice(idx,1);
   renderSlidePreviews();
   toast('Slide removed');
 }
-
 async function regenerateOneSlide(idx){
   var s=slidesData[idx]; if(!s) return;
   toast('Redesigning slide '+(idx+1)+'...');
@@ -3465,8 +3253,6 @@ async function regenerateOneSlide(idx){
     toast('Slide '+(idx+1)+' redesigned');
   }catch(e){ showerr('Could not redesign slide: '+e.message); }
 }
-
-
 // STEP 2 (slides): render the actual animated MP4
 async function renderSlides(){
   if(!slidesData.length){ showerr('No slides to render.'); return; }
@@ -3515,7 +3301,6 @@ async function renderSlides(){
     showerr('Render failed: '+e.message);
   }
 }
-
 // Dedicated, self-contained download for slides (does NOT touch cinematic DOM)
 async function downloadSlidesVideo(videoId, inlineData){
   var fname = 'enerstudio-slides-'+(activeBrand||'video').replace(/\s/g,'-')+'.mp4';
@@ -3549,12 +3334,10 @@ async function downloadSlidesVideo(videoId, inlineData){
     toast('This video expired on the server. Please re-render to download it.');
   }
 }
-
 // ===== QUOTE / SOCIAL (reuses the Slides rendering engine) =====
 var quoteFormat = 'series';
 var quoteAspect = 'vertical';
 var quoteMusicUpload = null;
-
 function selectQuoteFormat(f, el){
   quoteFormat = f;
   var s=document.getElementById('qf-series'), g=document.getElementById('qf-single');
@@ -3586,7 +3369,6 @@ function handleQuoteMusicUpload(input){
   };
   reader.readAsDataURL(f);
 }
-
 async function generateQuotes(){
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){showerr('Please describe your topic first.');return;}
@@ -3600,10 +3382,8 @@ async function generateQuotes(){
   slidesAspect = quoteAspect;
   slidesAudioMode = 'music';
   slidesMusicUpload = quoteMusicUpload;
-
   var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
   var n = (quoteFormat==='single') ? 1 : parseInt(document.getElementById('quoteCount').value||'5');
-
   setprog('slidesPbar','slidesPfill','slidesPtxt',20,'Extracting your brand colors...');
   slidesPalette = DEFAULT_PALETTE;
   try{
@@ -3613,7 +3393,6 @@ async function generateQuotes(){
       if(pr.ok){ var pd=await pr.json(); if(pd.palette) slidesPalette=pd.palette; }
     }
   }catch(e){}
-
   setprog('slidesPbar','slidesPfill','slidesPtxt',55,'Writing your '+(n>1?n+' quote cards':'quote card')+'...');
   var palHint=PALETTE_SLOTS.join(', ');
   var sys='You are a viral social-media copywriter and designer. Output ONLY valid JSON, no markdown.';
@@ -3651,7 +3430,6 @@ async function generateQuotes(){
     showerr('Quote creation failed: '+e.message+'. Try again.');
   }
 }
-
 async function renderQuotes(){
   if(!slidesData.length){ showerr('No cards to render.'); return; }
   document.getElementById('renderSlidesBtn').disabled=true;
@@ -3688,11 +3466,9 @@ async function renderQuotes(){
     showerr('Render failed: '+e.message);
   }
 }
-
 // ===== FACELESS / LISTICLE (reuses the Slides rendering engine + optional stock footage) =====
 var facelessFormat='listicle';
 var facelessAspect='vertical';
-
 function selectFacelessFormat(f, el){
   facelessFormat=f;
   var l=document.getElementById('ff-listicle'), s=document.getElementById('ff-story');
@@ -3720,7 +3496,6 @@ document.addEventListener('change', function(e){
     if(e.target.value==='voice'){ populateFacelessVoices(); }
   }
 });
-
 function populateFacelessVoices(){
   var dst=document.getElementById('facelessVoiceId');
   var src=document.getElementById('voiceSel');
@@ -3742,7 +3517,6 @@ function populateFacelessVoices(){
     setTimeout(populateFacelessVoices, 3000);
   }
 }
-
 async function generateFaceless(){
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){showerr('Please describe your topic first.');return;}
@@ -3754,18 +3528,15 @@ async function generateFaceless(){
   document.getElementById('slidesPreview').innerHTML='';
   var _sr0=document.getElementById('stockReview'); if(_sr0){ _sr0.innerHTML=''; _sr0.style.display='none'; }
   slidesAspect=facelessAspect;
-
   var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
   var n=parseInt(document.getElementById('facelessCount').value||'5');
   var isListicle=(facelessFormat==='listicle');
-
   setprog('slidesPbar','slidesPfill','slidesPtxt',20,'Extracting your brand colors...');
   slidesPalette=DEFAULT_PALETTE;
   try{
     var logo=(typeof brandLogos!=='undefined')?brandLogos[brand]:null;
     if(logo){ var pr=await fetch(BACKEND+'/api/brand/extract-colors',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({logoBase64:logo})}); if(pr.ok){ var pd=await pr.json(); if(pd.palette) slidesPalette=pd.palette; } }
   }catch(e){}
-
   setprog('slidesPbar','slidesPfill','slidesPtxt',55,'Writing your '+(isListicle?'listicle':'story')+'...');
   var palHint=PALETTE_SLOTS.join(', ');
   var sys='You are a viral short-form video scriptwriter and designer. Output ONLY valid JSON, no markdown.';
@@ -3809,7 +3580,6 @@ async function generateFaceless(){
     showerr('Faceless creation failed: '+e.message+'. Try again.');
   }
 }
-
 async function renderFaceless(){
   if(!slidesData.length){ showerr('No scenes to render.'); return; }
   document.getElementById('renderSlidesBtn').disabled=true;
@@ -3847,10 +3617,8 @@ async function renderFaceless(){
     showerr('Render failed: '+e.message);
   }
 }
-
 // ===== STOCK FOOTAGE REVIEW: preview the clip chosen for each scene, allow replace =====
 var stockCandidates = []; // per scene: { query, candidates:[{id,thumb,fileUrl}], chosenIdx }
-
 async function loadStockPreviews(){
   var box=document.getElementById('stockReview');
   if(!box) return;
@@ -3871,7 +3639,6 @@ async function loadStockPreviews(){
     box.innerHTML='<div style="font-size:12px;color:var(--re);padding:10px;">Could not load stock previews: '+e.message+'. Scenes will still render with auto-selected footage.</div>';
   }
 }
-
 function renderStockReview(){
   var box=document.getElementById('stockReview');
   if(!box) return;
@@ -3915,7 +3682,6 @@ function renderStockReview(){
   });
   box.appendChild(grid);
 }
-
 function chooseStock(sceneIdx, candIdx){
   var sc=stockCandidates[sceneIdx]; if(!sc) return;
   sc.chosenIdx=candIdx;
@@ -3923,7 +3689,6 @@ function chooseStock(sceneIdx, candIdx){
   renderStockReview();
   toast('Scene '+(sceneIdx+1)+' footage updated');
 }
-
 async function researchScene(sceneIdx, newQuery){
   var sc=stockCandidates[sceneIdx]; if(!sc) return;
   newQuery=(newQuery||'').trim(); if(!newQuery) return;
@@ -3938,11 +3703,8 @@ async function researchScene(sceneIdx, newQuery){
     toast(got.length?('Found '+got.length+' clips'):'No clips found — try different words');
   }catch(e){ toast('Search failed: '+e.message); }
 }
-
-
 // AVATAR CONFIGURATION
 var avatarConfig = { style: 'professional', gender: 'female', background: 'office' };
-
 function selectAvatarStyle(style, el){
   avatarConfig.style = style;
   ['professional','casual','educator','news'].forEach(function(s){
@@ -3959,7 +3721,6 @@ function selectAvatarStyle(style, el){
   });
   updateAvatarSummary();
 }
-
 function selectAvatarGender(gender, el){
   avatarConfig.gender = gender;
   ['female','male'].forEach(function(g){
@@ -3976,7 +3737,6 @@ function selectAvatarGender(gender, el){
   });
   updateAvatarSummary();
 }
-
 function selectAvatarBg(bg, el){
   avatarConfig.background = bg;
   ['office','studio','outdoor','custom'].forEach(function(b){
@@ -3996,7 +3756,6 @@ function selectAvatarBg(bg, el){
   if(customUpload) customUpload.style.display = bg === 'custom' ? 'block' : 'none';
   updateAvatarSummary();
 }
-
 function handleCustomBg(input){
   if(!input.files || !input.files[0]) return;
   var file = input.files[0];
@@ -4013,11 +3772,9 @@ function handleCustomBg(input){
   };
   reader.readAsDataURL(file);
 }
-
 // ===== REAL HEYGEN AVATARS — loaded live from your HeyGen account =====
 var heygenAvatars = null; // cached after first load
 var heygenLoadError = null;
-
 var avatarRetries = 0;
 async function loadHeyGenAvatars(){
   var grid = document.getElementById('avatarGrid');
@@ -4060,14 +3817,12 @@ async function loadHeyGenAvatars(){
     }
   }
 }
-
 function renderAvatarGridError(msg){
   var grid = document.getElementById('avatarGrid');
   var count = document.getElementById('avatarCount');
   if(count) count.textContent = '';
   if(grid) grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--ts);padding:16px;text-align:center;background:var(--sur);border-radius:10px;line-height:1.7;">'+ (msg||'Avatar library is connecting — Please Wait...') +'<br><button onclick="avatarRetries=0;loadHeyGenAvatars()" style="margin-top:10px;background:var(--pg);border:1px solid var(--ba);border-radius:8px;padding:7px 16px;font-family:DM Sans,sans-serif;font-size:12px;font-weight:600;color:var(--ac);cursor:pointer;">🔄 Retry Now</button></div>';
 }
-
 function updateAvatarSummary(){
   var el = document.getElementById('avatarConfigSummary');
   if(el){
@@ -4082,7 +3837,6 @@ function updateAvatarSummary(){
     populateAvatarGrid();
   }
 }
-
 // Smart filtering: matches real HeyGen avatar names against your selections
 var STYLE_KEYWORDS = {
   professional: ['suit','blazer','business','formal','office','biztalk','professional','executive'],
@@ -4096,7 +3850,6 @@ var BG_KEYWORDS = {
   outdoor: ['outdoor','garden','street','park','beach','outside','balcony','terrace','city'],
   custom: [] // custom background = no filter, any avatar works
 };
-
 function nameMatches(name, keywords){
   if(!keywords || keywords.length === 0) return true;
   var n = (name||'').toLowerCase();
@@ -4105,7 +3858,6 @@ function nameMatches(name, keywords){
   }
   return false;
 }
-
 function getAvatarList(){
   if(!heygenAvatars) return [];
   var g = avatarConfig.gender;
@@ -4125,7 +3877,6 @@ function getAvatarList(){
   if(byStyle.length >= 3) return byStyle;
   return byGender;
 }
-
 function populateAvatarGrid(){
   var grid = document.getElementById('avatarGrid');
   var count = document.getElementById('avatarCount');
@@ -4156,7 +3907,6 @@ function populateAvatarGrid(){
   // Auto-select first
   selectAvatarCard(list[0]);
 }
-
 function selectAvatarCard(av){
   avatarConfig.selectedId = av.id;
   avatarConfig.selectedName = av.name;
@@ -4181,11 +3931,9 @@ function selectAvatarCard(av){
   if(name) name.textContent = av.name;
   if(desc) desc.textContent = (av.premium ? 'Premium avatar' : 'Standard avatar') + (av.previewVideo ? ' · video preview available' : '');
 }
-
 // ===== PRODUCT ADS: upload photo(s) -> AI ad copy -> Ken Burns motion video =====
 var productImages = [];        // array of data URLs
 var productAspect = 'vertical';
-
 function handleProductImages(ev){
   var files = ev.target.files;
   if(!files || !files.length) return;
@@ -4208,7 +3956,6 @@ function handleProductImages(ev){
   });
   ev.target.value='';
 }
-
 function selectProductAspect(a, el){
   productAspect=a;
   ['vertical','square','landscape'].forEach(function(k){
@@ -4218,12 +3965,10 @@ function selectProductAspect(a, el){
     else { c.style.background='var(--card)'; c.style.borderColor='var(--bdr)'; c.querySelectorAll('div').forEach(function(d,i){ if(i===1)d.style.color='var(--ts)'; if(i===2)d.style.color='var(--tm)'; }); }
   });
 }
-
 async function generateProductAd(){
   try { await _generateProductAdInner(); }
   catch(e){ stopClimb(); clearprog('slidesRenderPbar'); document.getElementById('scriptBtn').disabled=false; showerr('Product ad error: '+(e&&e.message?e.message:e)); }
 }
-
 // Product ad now uses Runway Gen-4 Turbo image-to-video (real AI motion) + caption overlay
 var productAdData = null; // { headline, sub, price, motionPrompt }
 async function _generateProductAdInner(){
@@ -4235,14 +3980,12 @@ async function _generateProductAdInner(){
   var price=(document.getElementById('productPrice').value||'').trim();
   var lang=document.getElementById('lsel')?document.getElementById('lsel').value:'English';
   var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
-
   document.getElementById('slidesStep').classList.add('on');
   document.getElementById('slidesPreview').innerHTML='';
   document.getElementById('slidesResultCard').style.display='none';
   var rt=document.getElementById('reviewTitle'); if(rt) rt.textContent='Your Product Ad';
   var rs=document.getElementById('reviewSub'); if(rs) rs.textContent='AI is writing your ad…';
   startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Writing your ad…',8,45);
-
   try{
     // AI writes: a punchy headline, a short benefit sub, and a CINEMATIC MOTION PROMPT for Runway
     var sceneStyle=(document.getElementById('productScene')||{}).value||'dynamic';
@@ -4268,7 +4011,6 @@ async function _generateProductAdInner(){
     if(!parsed) throw new Error('Could not parse ad copy');
     productAdData = { headline:parsed.headline||'', sub:parsed.sub||'', price:price, motionPrompt:parsed.motionPrompt||sceneDesc };
     if(!slidesPalette){ slidesPalette = {bg_dark:'#0B1F3A',bg_mid:'#16305A',accent:'#F4B400',accent2:'#3B82F6',text:'#FFFFFF',text_soft:'#FCD9A8',ink:'#0B1F3A'}; }
-
     // show a simple preview card of the ad copy + first product image
     finishClimb('slidesRenderPfill','slidesRenderPtxt','Ad ready!');
     setTimeout(function(){ clearprog('slidesRenderPbar'); }, 600);
@@ -4292,7 +4034,6 @@ async function _generateProductAdInner(){
     document.getElementById('scriptBtn').disabled=false;
   }
 }
-
 async function renderProductAd(){
   if(!productAdData){ showerr('Please generate the ad copy first.'); return; }
   document.getElementById('renderSlidesBtn').disabled=true;
@@ -4312,7 +4053,6 @@ async function renderProductAd(){
     var gd=await gr.json();
     if(!gr.ok || !gd.id) throw new Error((gd&&gd.error)?(''+gd.error).slice(0,200):'AI video failed to start');
     pdbg('AI is animating your product — this takes 1–3 minutes…');
-
     // 2) poll Runway status
     var taskId=gd.id, vurl=null, tries=0;
     while(!vurl && tries<90){
@@ -4326,14 +4066,12 @@ async function renderProductAd(){
       if(st==='FAILED') throw new Error('AI video generation failed — try a different photo or description');
     }
     if(!vurl) throw new Error('AI video took too long. Your Runway credits were used; try again in a moment.');
-
     // 3) finalize: overlay captions + price + music
     pdbg('Adding your captions, price and music…');
     var music=document.getElementById('productMusic').value;
     var fr=await ftimeout(BACKEND+'/api/productad/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({videoUrl:vurl,headline:productAdData.headline,sub:productAdData.sub,price:productAdData.price,palette:slidesPalette,aspect:productAspect,musicTrack:music})},120000);
     var fd=await fr.json();
     if(!fr.ok || !fd.videoId) throw new Error((fd&&fd.error)?(''+fd.error).slice(0,200):'Finalizing failed');
-
     finishClimb('slidesRenderPfill','slidesRenderPtxt','Ready!');
     var inlineData=fd.videoData||null;
     var url=inlineData||(BACKEND+'/api/video/'+fd.videoId);
@@ -4354,7 +4092,6 @@ async function renderProductAd(){
     showerr('Product ad render failed: '+e.message);
   }
 }
-
 // ===== TALKING PHOTO (Avatar IV — flagship premium) =====
 var tpImage = null, tpGender = 'female', tpAspect = 'landscape';
 var tpMode = 'upload', tpCharUrl = null, tpStyle = 'realistic';
@@ -4374,7 +4111,6 @@ function selectTpStyle(s, el){
     else { c.style.background='var(--card)'; c.style.borderColor='var(--bdr)'; if(divs[1])divs[1].style.color='var(--ts)'; }
   });
 }
-
 function selectTpMode(mode, el){
   tpMode = mode;
   document.getElementById('tpmode-upload').style.background = mode==='upload'?'var(--p)':'var(--card)';
@@ -4386,7 +4122,6 @@ function selectTpMode(mode, el){
   document.getElementById('tpUploadMode').style.display = mode==='upload'?'block':'none';
   document.getElementById('tpAiMode').style.display = mode==='ai'?'block':'none';
 }
-
 async function generateTpCharacter(){
   var desc = (document.getElementById('tpCharDesc').value||'').trim();
   if(!desc){ showerr('Describe the character first (e.g. "a friendly female solar advisor in her 30s").'); return; }
@@ -4417,7 +4152,6 @@ async function generateTpCharacter(){
   }catch(e){ showerr('Character generation failed: '+e.message); }
   finally{ btn.disabled=false; btn.textContent='🎨 Generate Character Preview'; }
 }
-
 function handleTpImage(ev){
   var f = ev.target.files && ev.target.files[0];
   if(!f || f.type.indexOf('image/')!==0) return;
@@ -4443,7 +4177,6 @@ function selectTpGender(g, el){
     else { c.style.background='var(--card)'; c.style.borderColor='var(--bdr)'; c.querySelector('div').style.color='var(--ts)'; } });
   renderTpVoices();
 }
-
 // ── Talking Photo voice picker (HeyGen voices with previews) ──
 var tpVoices = null, tpVoiceId = '', tpVoiceName = '', tpVoicesMode = '';
 async function loadTpVoices(){
@@ -4509,7 +4242,6 @@ function selectTpAspect(a, el){
     if(k===a){ c.style.background='var(--p)'; c.style.borderColor='var(--p)'; if(divs[1])divs[1].style.color='#fff'; }
     else { c.style.background='var(--card)'; c.style.borderColor='var(--bdr)'; if(divs[1])divs[1].style.color='var(--ts)'; } });
 }
-
 async function generateTalkingPhoto(){
   try { await _generateTalkingPhotoInner(); }
   catch(e){ stopClimb(); clearprog('slidesRenderPbar'); document.getElementById('scriptBtn').disabled=false; showerr('Talking Photo error: '+(e&&e.message?e.message:e)); }
@@ -4548,7 +4280,6 @@ async function _generateTalkingPhotoInner(){
     var words=script.split(/\s+/).filter(Boolean);
     if(words.length>maxWords){ script=words.slice(0,maxWords).join(' '); var lp=script.lastIndexOf('.'); if(lp>script.length*0.6) script=script.slice(0,lp+1); }
     if(!script) throw new Error('Empty script');
-
     // 2) talking photo generate (Avatar IV)
     startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Bringing your photo to life (this takes a few minutes)…',32,93);
     tdbg('Uploading your photo and starting the AI (Avatar IV)…');
@@ -4559,7 +4290,6 @@ async function _generateTalkingPhotoInner(){
     var gd=await gr.json();
     if(!gr.ok || !gd.videoId) throw new Error((gd&&gd.error)?(''+gd.error).slice(0,200):'Talking Photo failed to start');
     tdbg('AI is animating your photo'+(gd.engine==='avatar_iv'?' with Avatar IV':'')+'…');
-
     // 3) poll (reuse heygen status)
     var hgId=gd.videoId, done=false, tries=0;
     while(!done && tries<150){
@@ -4594,7 +4324,6 @@ async function _generateTalkingPhotoInner(){
     document.getElementById('scriptBtn').disabled=false;
   }
 }
-
 // ===== SPOKESPERSON (Enzo & mascots): script -> Runway animate -> ElevenLabs VO =====
 async function generateSpokesperson(){
   try { await _generateSpokespersonInner(); }
@@ -4635,7 +4364,6 @@ async function _generateSpokespersonInner(){
     var words=script.split(/\s+/).filter(Boolean);
     if(words.length>maxWords){ script=words.slice(0,maxWords).join(' '); var lp=script.lastIndexOf('.'); if(lp>script.length*0.6) script=script.slice(0,lp+1); }
     if(!script) throw new Error('Empty script');
-
     // 2) animate the character image with Runway
     startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Animating your character…',30,70);
     sdbg('Animating your character with AI motion…');
@@ -4644,7 +4372,6 @@ async function _generateSpokespersonInner(){
     var gd=await gr.json();
     if(!gr.ok || !gd.id) throw new Error((gd&&gd.error)?(''+gd.error).slice(0,200):'Animation failed to start');
     sdbg('AI is animating your character — about 1–3 minutes…');
-
     // 3) poll Runway
     var taskId=gd.id, vurl=null, tries=0;
     while(!vurl && tries<90){
@@ -4658,7 +4385,6 @@ async function _generateSpokespersonInner(){
       if(st==='FAILED') throw new Error('Animation failed — try a different image');
     }
     if(!vurl) throw new Error('Animation took too long. Your Runway credits were used; try again.');
-
     // 4) finalize: add the spoken voiceover (ElevenLabs)
     startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Adding the voiceover…',72,95);
     sdbg('Adding the voiceover…');
@@ -4667,7 +4393,6 @@ async function _generateSpokespersonInner(){
     var fr=await ftimeout(BACKEND+'/api/spokesperson/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(fbody)},150000);
     var fd=await fr.json();
     if(!fr.ok || !fd.videoId) throw new Error((fd&&fd.error)?(''+fd.error).slice(0,200):'Voiceover/finalize failed');
-
     finishClimb('slidesRenderPfill','slidesRenderPtxt','Ready!');
     var inlineData=fd.videoData||null;
     var url=inlineData||(BACKEND+'/api/video/'+fd.videoId);
@@ -4689,7 +4414,6 @@ async function _generateSpokespersonInner(){
     document.getElementById('scriptBtn').disabled=false;
   }
 }
-
 // ===== TALKING AVATAR (Option A): script -> HeyGen -> poll -> deliver =====
 async function generateAvatarVideo(){
   try {
@@ -4719,7 +4443,6 @@ async function _generateAvatarVideoInner(){
   var rTit=document.getElementById('slidesResultTitle'); if(rTit) rTit.textContent='Your Avatar Video';
   dbg('Starting… (avatar: '+avatarConfig.selectedId+')');
   document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
-
   var brand=document.getElementById('bsel')?document.getElementById('bsel').value:(activeBrand||'Brand');
   var dur=parseInt(document.getElementById('dsel').value||'30');
   var lang=document.getElementById('lsel')?document.getElementById('lsel').value:'English';
@@ -4745,7 +4468,6 @@ async function _generateAvatarVideoInner(){
     if(words.length>maxWords){ script=words.slice(0,maxWords).join(' '); var lp=script.lastIndexOf('.'); if(lp>script.length*0.6) script=script.slice(0,lp+1); }
     if(!script) throw new Error('Empty script');
     dbg('Script ready ('+words.length+' words). Contacting HeyGen…');
-
     // 2) start HeyGen generation
     startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Generating your presenter (this can take a few minutes)…',32,93);
     dbg('Sending request to HeyGen…');
@@ -4753,7 +4475,6 @@ async function _generateAvatarVideoInner(){
     var gd=await gr.json();
     if(!gr.ok || !gd.videoId) throw new Error((gd && gd.error) ? gd.error : 'Avatar generation failed to start');
     dbg('HeyGen accepted the job. Rendering the presenter…');
-
     // 3) poll status
     var heygenId=gd.videoId;
     var done=false, tries=0;
@@ -4818,27 +4539,21 @@ async function _generateAvatarVideoInner(){
     var rgb=document.getElementById('regenBtn'); if(rgb) rgb.style.display='';
   }
 }
-
-
 function comingSoon(name){
   toast(name + ' is coming soon to EnerStudio!');
 }
-
 // PAGE NAVIGATION
 var mainContent = null;
-
 function showPage(pageId, navEl){
   try{ closeSidebarMobile(); }catch(e){}
   // Hide main content area
   var mainDiv = document.querySelector('.main');
   if(mainDiv) mainDiv.style.display = pageId === 'create' ? 'block' : 'none';
-
   // Hide all secondary pages
   ['library','membership','settings','analytics','support','autopilot'].forEach(function(p){
     var el = document.getElementById('page-'+p);
     if(el){ el.style.display = 'none'; el.style.flex = ''; }
   });
-
   // Show selected page
   if(pageId !== 'create'){
     var pg = document.getElementById('page-'+pageId);
@@ -4847,7 +4562,6 @@ function showPage(pageId, navEl){
       pg.style.flex = '1';
     }
   }
-
   // Update nav active state
   document.querySelectorAll('.nitem').forEach(function(n){ n.classList.remove('on'); });
   if(navEl) navEl.classList.add('on');
@@ -4856,18 +4570,15 @@ function showPage(pageId, navEl){
     var el = document.getElementById(navMap[pageId]);
     if(el) el.classList.add('on');
   }
-
   // Page-specific init
   if(pageId === 'analytics') updateAnalytics();
   if(pageId === 'library') renderLibrary();
   if(pageId === 'settings'){ renderLogoGrid(); loadAdminCredits(); }
   if(pageId === 'membership') updateMembershipCredits();
   if(pageId === 'autopilot'){ initAutopilot(); }
-
   // Scroll to top of page
   window.scrollTo(0,0);
 }
-
 // ════════ AUTO-PILOT CONTENT ENGINE (frontend) ════════
 var apAspect='vertical', apFreq='daily', apPlatforms=[];
 function apSelAspect(a, el){ apAspect=a; document.querySelectorAll('.ap-ar').forEach(function(c){ var on=c===el; c.style.background=on?'var(--p)':'var(--card)'; c.style.borderColor=on?'var(--p)':'var(--bdr)'; var dd=c.querySelector('div'); if(dd)dd.style.color=on?'#fff':'var(--ts)'; }); }
@@ -4879,7 +4590,6 @@ function apTogglePlatform(el){
   else { apPlatforms.push(pf); el.style.background='var(--p)'; el.style.borderColor='var(--p)'; el.style.color='#fff'; }
 }
 function apUserEmail(){ return (pilotUser&&pilotUser.email)?pilotUser.email:'pilot@enerstudio.io'; }
-
 function initAutopilot(){
   // reload brands from storage (defensive — ensures persisted brands always show)
   try { userBrands = JSON.parse(localStorage.getItem('enerstudio_brands') || '[]'); } catch(e){}
@@ -4892,7 +4602,6 @@ function initAutopilot(){
   apLoadSchedules();
   apLoadQueue();
 }
-
 async function apCreateSchedule(){
   var brand=document.getElementById('ap-brand').value;
   if(!brand){ toast('Add a brand first (left sidebar → Your Brands)'); return; }
@@ -4916,7 +4625,6 @@ async function apCreateSchedule(){
   }catch(e){ toast('Could not activate: '+e.message); }
   finally{ btn.disabled=false; btn.textContent='⚡ Activate Auto-Pilot'; }
 }
-
 var apFreqLabel={daily:'Daily',everyother:'Every other day',weekly:'Weekly',monthly:'Monthly'};
 async function apLoadSchedules(){
   var box=document.getElementById('ap-schedule-list'); if(!box) return;
@@ -4954,7 +4662,6 @@ async function apSchedAction(id, action){
   if(action==='runnow'){ await fetch(BACKEND+'/api/auto/cron?key=ener2026',{method:'POST'}).catch(function(){}); toast('Creating a new item…'); }
   apLoadSchedules(); apLoadQueue();
 }
-
 var apVtypeName={faceless:'Faceless',quote:'Quote',slides:'Slides',productad:'Product Ad',cinematic:'Cinematic',spokesperson:'Spokesperson'};
 async function apLoadQueue(){
   var box=document.getElementById('ap-queue-list'); if(!box) return;
@@ -5003,7 +4710,6 @@ async function apSaveCaption(id){
   var cap=document.getElementById('apcap-'+id).value;
   try{ await fetch(BACKEND+'/api/auto/queue/'+id+'/caption',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caption:cap})}); toast('Caption saved'); }catch(e){}
 }
-
 // Create the actual video: preset the Create page with this item's type/brand/theme, then send the member there to generate.
 async function apCreateVideo(id){
   var status=document.getElementById('apgen-'+id);
@@ -5022,7 +4728,6 @@ async function apCreateVideo(id){
     toast('✅ Set up on the Create page — click the generate button to produce this video, then post it from Auto-Pilot.');
   }catch(e){ if(status) status.textContent='Could not start: '+e.message; }
 }
-
 var apUploadUrls={
   YouTube:'https://www.youtube.com/upload',
   Instagram:'https://www.instagram.com/',
@@ -5040,12 +4745,10 @@ async function apPrepUpload(id, platform){
   window.open(url,'_blank');
   setTimeout(apLoadQueue, 1500);
 }
-
 // VIDEO LIBRARY
 var videoLibrary = JSON.parse(localStorage.getItem('enerstudio_library') || '[]');
 var photoLibrary = JSON.parse(localStorage.getItem('enerstudio_photos') || '[]');
 var _currentPhotoSessionId = Date.now();
-
 // ══════════════════════════════════════════════════════════════
 // CLOUD LIBRARY (Supabase) — permanent, per-account, any device
 // ══════════════════════════════════════════════════════════════
@@ -5066,7 +4769,6 @@ async function cloudUploadFile(srcUrl, kind){
     return url ? { url: url, path: path } : null;
   }catch(e){ console.warn('cloud upload:', e && e.message); return null; }
 }
-
 function persistLibraryCache(){
   try{
     var light = videoLibrary.slice(0,50).map(function(v){
@@ -5077,7 +4779,6 @@ function persistLibraryCache(){
     localStorage.setItem('enerstudio_library', JSON.stringify(light));
   }catch(e){}
 }
-
 async function cloudSaveVideo(entry){
   if(!sb || !pilotUser || !pilotUser.uid || !entry) return;
   try{
@@ -5097,7 +4798,6 @@ async function cloudSaveVideo(entry){
     renderLibrary();
   }catch(e){ console.warn('cloud save video:', e && e.message); }
 }
-
 async function cloudSavePhoto(brand, imageUrl, videoType, sessionKey){
   if(!sb || !pilotUser || !pilotUser.uid || !imageUrl) return;
   try{
@@ -5110,7 +4810,6 @@ async function cloudSavePhoto(brand, imageUrl, videoType, sessionKey){
     });
   }catch(e){ console.warn('cloud save photo:', e && e.message); }
 }
-
 async function loadCloudLibrary(){
   if(!sb || !pilotUser || !pilotUser.uid) return;
   try{
@@ -5148,7 +4847,6 @@ async function loadCloudLibrary(){
     try{ updateAnalytics(); }catch(e){}
   }catch(e){ console.warn('cloud library load:', e && e.message); }
 }
-
 function saveToLibrary(brand, duration, goal, videoUrl, videoId, videoType, aspect){
   var isInline = videoUrl && videoUrl.indexOf('data:') === 0;
   var entry = {
@@ -5178,7 +4876,6 @@ function saveToLibrary(brand, duration, goal, videoUrl, videoId, videoType, aspe
   renderLibrary();
   try{ cloudSaveVideo(entry); }catch(e){}   // permanent per-account copy (Supabase)
 }
-
 function renderLibrary(){
   var grid = document.getElementById('libraryGrid');
   var empty = document.getElementById('libraryEmpty');
@@ -5194,7 +4891,6 @@ function renderLibrary(){
   videoLibrary.forEach(function(v, i){
     var card = document.createElement('div');
     card.style.cssText = 'background:var(--card);border:1px solid var(--bdr);border-radius:12px;overflow:hidden;';
-
     var vid = document.createElement('video');
     vid.controls = true;
     vid.style.cssText = 'width:100%;height:140px;object-fit:cover;background:#000;display:block;';
@@ -5213,35 +4909,28 @@ function renderLibrary(){
       vid.src = v.videoUrl;
     }
     card.appendChild(vid);
-
     var info = document.createElement('div');
     info.style.padding = '12px';
-
     var title = document.createElement('div');
     title.style.cssText = 'font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px;display:flex;align-items:center;gap:6px;';
     title.innerHTML = v.brand + '<span style="font-size:9px;font-weight:600;background:var(--pg);color:var(--ac);border:1px solid var(--ba);padding:1px 6px;border-radius:10px;">'+(v.videoType||'Video')+'</span>';
     info.appendChild(title);
-
     var meta = document.createElement('div');
     meta.style.cssText = 'font-size:11px;color:var(--tm);';
     meta.textContent = (v.duration||'') + ' · ' + (v.goal||'') + ' · ' + v.date;
     info.appendChild(meta);
-
     var btns = document.createElement('div');
     btns.style.cssText = 'display:flex;gap:6px;margin-top:8px;';
-
     var dlBtn = document.createElement('button');
     dlBtn.style.cssText = 'flex:1;padding:7px;background:var(--pg);border:1px solid var(--ba);border-radius:6px;font-family:DM Sans,sans-serif;font-size:11px;font-weight:500;color:var(--ac);cursor:pointer;';
     dlBtn.textContent = '⬇️ Download';
     dlBtn.onclick = (function(url, brand){ return function(){ downloadVideo(url, brand); }; })(v.videoUrl, v.brand);
     btns.appendChild(dlBtn);
-
     var delBtn = document.createElement('button');
     delBtn.style.cssText = 'padding:7px 10px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:6px;font-family:DM Sans,sans-serif;font-size:11px;color:var(--re);cursor:pointer;';
     delBtn.textContent = '🗑️';
     delBtn.onclick = (function(idx){ return function(){ deleteFromLibrary(idx); }; })(i);
     btns.appendChild(delBtn);
-
     info.appendChild(btns);
     card.appendChild(info);
     grid.appendChild(card);
@@ -5250,8 +4939,6 @@ function renderLibrary(){
 // ============================================================
 // PHOTO LIBRARY — save and render scene images by brand
 // ============================================================
-
-
 // ── PHOTO LIBRARY: save one photo immediately when it generates ──────────
 function saveOnePhotoToLibrary(brand, imageUrl, sceneNumber, videoType) {
   if (!imageUrl) return;
@@ -5287,12 +4974,10 @@ function saveOnePhotoToLibrary(brand, imageUrl, sceneNumber, videoType) {
   }
   } catch(err) { console.log('Photo save error:', err.message); }
 }
-
 // Start a new photo session when image generation begins
 function startPhotoSession() {
   _currentPhotoSessionId = Date.now();
 }
-
 function savePhotosToLibrary(brand, imageUrls, videoType) {
   if (!imageUrls || !imageUrls.length) return;
   var entry = {
@@ -5308,9 +4993,7 @@ function savePhotosToLibrary(brand, imageUrls, videoType) {
   try { entry.images.forEach(function(u){ cloudSavePhoto(entry.brand, u, videoType, 'batch_' + entry.id); }); } catch(e) {}
   renderPhotoLibrary('__all__');
 }
-
 var currentPhotoFilter = '__all__';
-
 function filterPhotoLibrary(brand) {
   currentPhotoFilter = brand;
   // Update filter button styles
@@ -5322,13 +5005,11 @@ function filterPhotoLibrary(brand) {
   });
   renderPhotoLibrary(brand);
 }
-
 function renderPhotoLibrary(brandFilter) {
   var grid = document.getElementById('photoLibraryGrid');
   var empty = document.getElementById('photoLibraryEmpty');
   var filterBar = document.getElementById('photoBrandFilters');
   if (!grid) return;
-
   // Build brand filter buttons
   var brands = [];
   photoLibrary.forEach(function(e) { if (brands.indexOf(e.brand) === -1) brands.push(e.brand); });
@@ -5342,23 +5023,19 @@ function renderPhotoLibrary(brandFilter) {
     btn.onclick = function() { filterPhotoLibrary(b); };
     filterBar.appendChild(btn);
   });
-
   // Filter entries
   var entries = brandFilter === '__all__' ? photoLibrary : photoLibrary.filter(function(e) { return e.brand === brandFilter; });
-
   if (!entries.length || !photoLibrary.length) {
     empty.style.display = 'block'; grid.innerHTML = ''; return;
   }
   empty.style.display = 'none';
   grid.innerHTML = '';
-
   // Group remaining entries by brand
   var grouped = {};
   entries.forEach(function(e) {
     if (!grouped[e.brand]) grouped[e.brand] = [];
     grouped[e.brand].push(e);
   });
-
   Object.keys(grouped).forEach(function(brand) {
     // Brand header
     var header = document.createElement('div');
@@ -5366,7 +5043,6 @@ function renderPhotoLibrary(brandFilter) {
     header.innerHTML = '<span style="background:var(--p);color:#fff;border-radius:20px;padding:2px 12px;font-size:12px;">' + brand + '</span>' +
       '<span style="font-size:12px;font-weight:400;color:var(--ts);">' + grouped[brand].reduce(function(a,e){return a+e.images.length;},0) + ' photos</span>';
     grid.appendChild(header);
-
     // Photo grid for this brand
     var brandGrid = document.createElement('div');
     brandGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem;';
@@ -5408,7 +5084,6 @@ function renderPhotoLibrary(brandFilter) {
     grid.appendChild(brandGrid);
   });
 }
-
 // ============================================================
 // LIBRARY TAB SWITCHER
 // ============================================================
@@ -5428,14 +5103,12 @@ function switchLibTab(tab) {
     renderPhotoLibrary(currentPhotoFilter);
   }
 }
-
 // ============================================================
 // PRODUCTION PROGRESS BAR
 // ============================================================
 var prodProgressInterval = null;
 var prodProgressValue = 0;
 var prodStages = [];
-
 function startProductionProgress(sceneCount, videoType) {
   // Build stage list based on video type
   var isWhiteboard = videoType === 'whiteboard';
@@ -5457,13 +5130,11 @@ function startProductionProgress(sceneCount, videoType) {
     prodStages.push({ label: 'Stitching scenes together', pct: 90 });
     prodStages.push({ label: 'Finalizing video', pct: 97 });
   }
-
   prodProgressValue = 0;
   document.getElementById('prodProgressWrap').style.display = 'block';
   document.getElementById('prodProgressLabel').style.display = 'flex';
   document.getElementById('prodStageRow').style.display = 'flex';
   document.getElementById('prodWarning').style.display = 'block';
-
   // Build stage pills
   var row = document.getElementById('prodStageRow');
   row.innerHTML = '';
@@ -5474,11 +5145,9 @@ function startProductionProgress(sceneCount, videoType) {
     pill.textContent = st.label;
     row.appendChild(pill);
   });
-
   // Animate progress
   var stageIdx = 0;
   setProgress(0, 'Starting production...');
-
   var elapsedSeconds = 0;
   prodProgressInterval = setInterval(function() {
     elapsedSeconds++;
@@ -5486,7 +5155,6 @@ function startProductionProgress(sceneCount, videoType) {
     var target = prodStages[stageIdx].pct;
     var label = prodStages[stageIdx].label;
     var isFinalStage = (stageIdx === prodStages.length - 1);
-
     // Update stage pills
     for (var i = 0; i < prodStages.length; i++) {
       var pill = document.getElementById('prod-stage-' + i);
@@ -5495,7 +5163,6 @@ function startProductionProgress(sceneCount, videoType) {
       else if (i === stageIdx) { pill.className = 'wb-stage active'; }
       else { pill.className = 'wb-stage'; }
     }
-
     // Add elapsed time to final stage label
     if (isFinalStage) {
       var mins = Math.floor(elapsedSeconds / 60);
@@ -5510,7 +5177,6 @@ function startProductionProgress(sceneCount, videoType) {
       }
       return; // Never auto-advance past final stage — only completeProductionProgress() does that
     }
-
     // Normal stages: advance at normal speed
     if (prodProgressValue < target - 1) {
       prodProgressValue += 1;
@@ -5520,7 +5186,6 @@ function startProductionProgress(sceneCount, videoType) {
     }
   }, isWhiteboard ? 1500 : 1000);
 }
-
 function setProgress(pct, label) {
   var fill = document.getElementById('prodProgressFill');
   var pctEl = document.getElementById('prodProgressPct');
@@ -5530,7 +5195,6 @@ function setProgress(pct, label) {
   if (pctEl) pctEl.textContent = displayPct + '%';
   if (stageEl && label) stageEl.textContent = label;
 }
-
 function completeProductionProgress() {
   if (prodProgressInterval) { clearInterval(prodProgressInterval); prodProgressInterval = null; }
   setProgress(100, 'Video complete!');
@@ -5541,7 +5205,6 @@ function completeProductionProgress() {
   });
   document.getElementById('prodWarning').style.display = 'none';
 }
-
 function resetProductionProgress() {
   if (prodProgressInterval) { clearInterval(prodProgressInterval); prodProgressInterval = null; }
   prodProgressValue = 0;
@@ -5554,9 +5217,6 @@ function resetProductionProgress() {
   if (row) { row.style.display = 'none'; row.innerHTML = ''; }
   if (warn) warn.style.display = 'none';
 }
-
-
-
 function downloadVideo(url, brand){
   var filename = 'enerstudio-'+brand.replace(/\s/g,'-')+'-'+Date.now()+'.mp4';
   if(url && url.indexOf('blob:') === 0){
@@ -5580,7 +5240,6 @@ function downloadVideo(url, brand){
     });
   }
 }
-
 function deleteFromLibrary(i){
   if(!confirm('Delete this video from library?')) return;
   var v = videoLibrary[i];
@@ -5595,13 +5254,11 @@ function deleteFromLibrary(i){
   }catch(e){}
   renderLibrary();
 }
-
 function updateAnalytics(){
   // Update total videos
   var total = videoLibrary.length;
   var el = document.getElementById('stat-total-videos');
   if(el) el.textContent = total;
-
   // Update brand stats
   var brandCounts = {};
   videoLibrary.forEach(function(v){
@@ -5623,7 +5280,6 @@ function updateAnalytics(){
       }).join('');
     }
   }
-
   // Update balance
   fetch('https://enerstudio-backend.onrender.com/api/runway/balance')
     .then(function(r){ return r.json(); })
@@ -5638,7 +5294,6 @@ function updateAnalytics(){
       if(subEl){ subEl.textContent = '~' + Math.floor(bal/35) + ' clips remaining'; subEl.style.color='var(--gr)'; }
     }).catch(function(){});
 }
-
 function checkServerStatus(){
   var result = document.getElementById('serverStatusResult');
   result.textContent = 'Checking...';
@@ -5647,7 +5302,6 @@ function checkServerStatus(){
     .then(function(d){ result.textContent = '✅ Online — Version '+d.version+' — FFmpeg: '+d.ffmpeg; result.style.color='var(--gr)'; })
     .catch(function(e){ result.textContent = '❌ Offline or sleeping — '+e.message; result.style.color='var(--re)'; });
 }
-
 // BRAND LOGOS
 var brandLogos = {};
 // Restore saved logos so they persist across page loads/sessions
@@ -5658,10 +5312,8 @@ try {
 function persistBrandLogos(){
   try { localStorage.setItem('enerstudio_brandLogos', JSON.stringify(brandLogos)); } catch(e) {}
 }
-
 function getBrandNames(){ return userBrands.map(function(b){ return b.name; }); }
 function renderBrandLogos(){ if(typeof renderLogoGrid==='function'){ try{ renderLogoGrid(); }catch(e){} } }
-
 function toggleLogoManager(){
   var card = document.getElementById('logoManagerCard');
   if(!card){ showPage('settings'); return; }
@@ -5670,7 +5322,6 @@ function toggleLogoManager(){
   if(!isVisible) renderLogoGrid();
   if(!isVisible) card.scrollIntoView({behavior:'smooth'});
 }
-
 function renderLogoGrid(){
   var grid = document.getElementById('logoGrid');
   if(!grid) return;
@@ -5685,13 +5336,11 @@ function renderLogoGrid(){
     row.className = 'logo-row';
     var hasLogo = !!brandLogos[brand];
     var safeBrand = brand.replace(/\s/g, '-');
-
     // Brand name
     var nameDiv = document.createElement('div');
     nameDiv.className = 'logo-brand-name';
     nameDiv.textContent = brand;
     row.appendChild(nameDiv);
-
     // Logo preview or placeholder
     if(hasLogo){
       var img = document.createElement('img');
@@ -5707,7 +5356,6 @@ function renderLogoGrid(){
       ph.onclick = (function(b){ return function(){ triggerLogoUpload(b); }; })(brand);
       row.appendChild(ph);
     }
-
     // Hidden file input
     var inp = document.createElement('input');
     inp.type = 'file';
@@ -5716,14 +5364,12 @@ function renderLogoGrid(){
     inp.style.display = 'none';
     inp.onchange = (function(b){ return function(){ handleLogoUpload(b, this); }; })(brand);
     row.appendChild(inp);
-
     // Upload button
     var upBtn = document.createElement('button');
     upBtn.className = 'logo-upload-btn';
     upBtn.textContent = hasLogo ? 'Change Logo' : 'Upload Logo';
     upBtn.onclick = (function(b){ return function(){ triggerLogoUpload(b); }; })(brand);
     row.appendChild(upBtn);
-
     // Remove button
     var remBtn = document.createElement('button');
     remBtn.className = 'logo-remove-btn' + (hasLogo ? ' on' : '');
@@ -5731,15 +5377,12 @@ function renderLogoGrid(){
     remBtn.textContent = 'Remove';
     remBtn.onclick = (function(b){ return function(){ removeLogo(b); }; })(brand);
     row.appendChild(remBtn);
-
     grid.appendChild(row);
   });
 }
-
 function triggerLogoUpload(brand){
   document.getElementById('logo-input-'+brand.replace(/\s/g,'-')).click();
 }
-
 function handleLogoUpload(brand, input){
   if(!input.files || !input.files[0]) return;
   var reader = new FileReader();
@@ -5753,14 +5396,12 @@ function handleLogoUpload(brand, input){
   };
   reader.readAsDataURL(input.files[0]);
 }
-
 function removeLogo(brand){
   brandLogos[brand] = null;
   persistBrandLogos();
   renderLogoGrid();
   toast(brand+' logo removed.');
 }
-
 function applyLogosToAllScenes(){
   // Apply active brand logo to all scene images
   var logo = brandLogos[activeBrand];
@@ -5768,7 +5409,6 @@ function applyLogosToAllScenes(){
   // Logo is applied during renderTextOverlay and applyTextOverlay
   toast('Logo will appear on all scenes for '+activeBrand);
 }
-
 // Apply brand logo watermark to a canvas
 function applyLogoWatermark(ctx, canvasW, canvasH){
   var logo = brandLogos[activeBrand];
@@ -5788,42 +5428,33 @@ function applyLogoWatermark(ctx, canvasW, canvasH){
   };
   logoImg.src = logo;
 }
-
 // SUPPORT PAGE FUNCTIONS
 function toggleTutorial(i){
   var el = document.getElementById('tutorial-'+i);
   if(el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
-
 function toggleFaq(i){
   var el = document.getElementById('faq-'+i);
   if(el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
-
 function quickQuestion(q){
   document.getElementById('chatInput').value = q;
   sendSupportMessage();
 }
-
 var chatHistory = [];
-
 async function sendSupportMessage(){
   var input = document.getElementById('chatInput');
   var msg = input.value.trim();
   if(!msg) return;
   input.value = '';
-
   // Add user message
   addChatMessage('user', msg);
   chatHistory.push({role:'user', content: msg});
-
   // Show typing indicator
   var typingId = 'typing-'+Date.now();
   addChatMessage('bot', '...', typingId);
-
   try {
     var systemPrompt = 'You are the EnerStudio.io AI Support Agent. EnerStudio is an AI video production platform built by Ali Amiri of EnerSolution Inc. The platform uses Claude AI for scripts, ElevenLabs for voiceover, and Runway ML for cinematic video generation. Key facts: Videos cost ~33 Runway credits per 5-second clip. 30-second video = 6 clips = ~198 credits. Backend at enerstudio-backend.onrender.com on Render free tier (sleeps after inactivity). Word limit for 30s video = 69 words. Answer support questions helpfully and concisely. If the issue needs technical escalation say so and suggest using the Submit Support Ticket form below.';
-
     var r = await fetch('https://enerstudio-backend.onrender.com/api/claude/generate', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -5834,7 +5465,6 @@ async function sendSupportMessage(){
     });
     var d = await r.json();
     var reply = d.text || 'I could not process that. Please try again or use the support ticket form below.';
-
     // Remove typing indicator and add real response
     var typingEl = document.getElementById(typingId);
     if(typingEl) typingEl.parentElement.remove();
@@ -5846,7 +5476,6 @@ async function sendSupportMessage(){
     addChatMessage('bot', 'I am having trouble connecting right now. The server may be waking up — please wait 30 seconds and try again, or use the Submit Support Ticket form below.');
   }
 }
-
 function addChatMessage(role, text, id){
   var container = document.getElementById('chatMessages');
   if(!container) return;
@@ -5865,21 +5494,18 @@ function addChatMessage(role, text, id){
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
 }
-
 function escalateToTeam(){
   addChatMessage('bot', 'I will escalate your case to the EnerStudio technical team. Please fill in the Support Ticket form below with your name, email, issue type, and a detailed description. The team will respond within 24 hours.');
   // Scroll to ticket form
   var ticket = document.getElementById('ticketName');
   if(ticket) ticket.scrollIntoView({behavior:'smooth'});
 }
-
 function submitTicket(){
   var name = document.getElementById('ticketName').value.trim();
   var email = document.getElementById('ticketEmail').value.trim();
   var type = document.getElementById('ticketType').value;
   var desc = document.getElementById('ticketDesc').value.trim();
   var result = document.getElementById('ticketResult');
-
   if(!name || !email || !type || !desc){
     result.style.display = 'block';
     result.style.background = 'rgba(248,113,113,0.1)';
@@ -5888,21 +5514,18 @@ function submitTicket(){
     result.textContent = 'Please fill in all fields before submitting.';
     return;
   }
-
   // Simulate ticket submission
   result.style.display = 'block';
   result.style.background = 'rgba(52,211,153,0.1)';
   result.style.border = '1px solid rgba(52,211,153,0.3)';
   result.style.color = 'var(--gr)';
   result.textContent = '✅ Ticket submitted successfully! The EnerStudio team will respond to '+email+' within 24 hours. Ticket reference: #ES-'+Date.now().toString().slice(-6);
-
   // Clear form
   document.getElementById('ticketName').value = '';
   document.getElementById('ticketEmail').value = '';
   document.getElementById('ticketType').value = '';
   document.getElementById('ticketDesc').value = '';
 }
-
 // Update showPage to include support and settings logo init
 // MEMBERSHIP BILLING TOGGLE
 var memIsAnnual = true; // default to annual
@@ -5916,7 +5539,6 @@ function toggleMemBilling(){
   if(lblM){ lblM.style.color = memIsAnnual ? 'var(--tm)' : 'var(--tx)'; lblM.style.fontWeight = memIsAnnual ? '500' : '700'; }
   if(lblA){ lblA.style.color = memIsAnnual ? 'var(--tx)' : 'var(--tm)'; lblA.style.fontWeight = memIsAnnual ? '700' : '500'; }
   if(badge) badge.style.display = memIsAnnual ? 'inline-block' : 'none';
-
   document.querySelectorAll('.mem-price').forEach(function(el){
     el.textContent = memIsAnnual ? el.getAttribute('data-a') : el.getAttribute('data-m');
   });
@@ -5925,7 +5547,6 @@ function toggleMemBilling(){
     el.textContent = memIsAnnual && yr ? ('billed $'+Number(yr).toLocaleString()+'/year') : '';
   });
 }
-
 // Per-type monthly caps (the profitable limits, Avatar IV separated)
 var PLAN_CAPS = {
   starter:  { avatarMin:2, cinematic:4,  productad:10, spokesperson:5,  faceless:20,  quote:40,  name:'Starter',  price:49 },
@@ -5939,7 +5560,6 @@ var PLAN_POOLS = {
   pro:     { premium: 600, standard: 1200, motion: 3600, name: 'Pro', price: 99 },
   business:{ premium: 1350, standard: 2700, motion: 8100, name: 'Business', price: 199 }
 };
-
 // Video type to pool mapping
 var TYPE_POOL = {
   'cinematic': 'premium',
@@ -5949,7 +5569,6 @@ var TYPE_POOL = {
   'cartoon': 'standard',
   'motion': 'motion'
 };
-
 // Current session credits (in real app this would be from backend)
 var memberCredits = {
   plan: 'starter',
@@ -5958,11 +5577,9 @@ var memberCredits = {
   motionRemaining: 1800,
   resetDate: new Date(new Date().getFullYear(), new Date().getMonth()+1, 1).toLocaleDateString()
 };
-
 function getVideosFromSeconds(seconds, durSeconds){
   return Math.floor(seconds / durSeconds);
 }
-
 // ── BUY EXTRA CREDITS (Stripe-ready; charging wired when Stripe is integrated) ──
 var CREDIT_PACKS = {
   mini:  { credits: 300,  price: 19, label: 'Mini Pack' },
@@ -5981,7 +5598,6 @@ function buyCredits(packKey){
   // NOTE for integration: on Stripe success, call:
   //   memberCredits.premiumRemaining += pack.credits; updateCreditDisplay();
 }
-
 function deductCredits(videoType, durationSeconds){
   var pool = TYPE_POOL[videoType] || 'premium';
   var key = pool + 'Remaining';
@@ -5992,7 +5608,6 @@ function deductCredits(videoType, durationSeconds){
   updateCreditDisplay();
   return { success: true, remaining: getVideosFromSeconds(memberCredits[key], durationSeconds) };
 }
-
 function updateCreditDisplay(){
   var dur = parseInt(document.getElementById('dsel').value) || 30;
   var premVids = getVideosFromSeconds(memberCredits.premiumRemaining, dur);
@@ -6004,7 +5619,6 @@ function updateCreditDisplay(){
   var sub = document.getElementById('statCredSub');
   if(sub) sub.textContent = 'videos left at '+dur+'s';
 }
-
 // ADMIN UNLOCK — passcode protected, invisible to customers
 function unlockAdmin(){
   var code = prompt('Admin access code:');
@@ -6015,7 +5629,6 @@ function unlockAdmin(){
     toast('Incorrect code');
   }
 }
-
 // UPDATE / CHANGE PLAN — launches Stripe checkout for the chosen plan + current billing cycle
 async function changePlan(plan){
   var cap = PLAN_CAPS[plan]; if(!cap) return;
@@ -6036,12 +5649,10 @@ async function changePlan(plan){
     window.location.href=d.url;
   }catch(e){ toast('Checkout error: '+e.message); }
 }
-
 // Stripe billing portal (manage/cancel) — placeholder until portal endpoint is wired
 function openBillingPortal(){
   toast('Billing management opens in Stripe — connecting the customer portal next.');
 }
-
 function changePlan_legacy_unused(plan){
   if(plan === memberCredits.plan){
     toast('You are already on the '+PLAN_POOLS[plan].name+' plan');
@@ -6063,7 +5674,6 @@ function changePlan_legacy_unused(plan){
   updatePlanButtons();
   toast('✓ '+action+'d to '+pool.name+' — your new allocation is active');
 }
-
 function updatePlanButtons(){
   PLAN_ORDER.forEach(function(p){
     var btn = document.getElementById('planbtn-'+p);
@@ -6081,7 +5691,6 @@ function updatePlanButtons(){
     }
   });
 }
-
 // ADMIN CREDITS LOADER
 async function loadAdminCredits(){
   var el = document.getElementById('adminRunwayCredits');
@@ -6102,7 +5711,6 @@ async function loadAdminCredits(){
     if(sub){ sub.textContent = 'Check server connection'; }
   }
 }
-
 // UPDATE MEMBERSHIP DISPLAY — fills the caps grid + marks current plan
 function updateMembershipCredits(){
   var plan = (pilotUser && pilotUser.plan) || 'pro';
@@ -6133,7 +5741,6 @@ function updateMembershipCredits(){
     else { btn.textContent='Switch to '+PLAN_CAPS[p].name; btn.style.opacity='1'; }
   });
 }
-
 // INIT
 loadBalance();
 loadVoices();
@@ -6146,6 +5753,12 @@ updatePlanButtons();
 // Initialize the default video type so the highlighted tile and its config section match on load
 try { selectVtype('avatar', document.getElementById('vt-avatar')); } catch(e){}
 
+// ── Auto build-date on the version label (updates itself on every deploy) ──
+try{
+  var _vl = document.getElementById('appVersionLabel');
+  var _bd = new Date(document.lastModified);
+  if(_vl && !isNaN(_bd)) _vl.textContent = _vl.textContent + ' \u2014 Build ' + _bd.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}catch(e){}
 </script>
 </body>
 </html>
