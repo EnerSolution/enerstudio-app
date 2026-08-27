@@ -224,7 +224,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <div id="ob-step3" class="ob-step" style="display:none;">
       <div style="background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:16px;padding:1.5rem;">
         <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:4px;">Choose your plan</div>
-        <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:0.9rem;">Step 2 of 2 · 7-day free trial · cancel anytime</div>
+        <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:0.9rem;">Step 2 of 2 · start free, no credit card · upgrade anytime</div>
         <div style="display:flex;gap:6px;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:10px;padding:4px;margin-bottom:1rem;">
           <div id="cyc-annual" onclick="obSetCycle('annual')" style="flex:1;text-align:center;padding:8px;border-radius:7px;cursor:pointer;background:var(--p,#6366f1);color:#fff;font-size:12.5px;font-weight:700;">Annual <span style="font-size:10px;opacity:0.85;">· save 20%</span></div>
           <div id="cyc-monthly" onclick="obSetCycle('monthly')" style="flex:1;text-align:center;padding:8px;border-radius:7px;cursor:pointer;background:transparent;color:var(--ts,#cbd5e1);font-size:12.5px;font-weight:700;">Monthly</div>
@@ -244,8 +244,8 @@ video{width:100%;border-radius:10px;margin-top:10px;}
             <div style="font-size:11.5px;color:var(--ts,#cbd5e1);margin-top:6px;line-height:1.6;">For agencies &amp; heavy use · the highest limits on every video type</div>
           </div>
         </div>
-        <button onclick="obFinish()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Start 7-Day Free Trial →</button>
-        <div style="font-size:10.5px;color:var(--tm,#94a3b8);text-align:center;margin-top:10px;">Card required to start your trial. You won't be charged until day 7 — cancel anytime before then.</div>
+        <button onclick="obFinish()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">🎁 Start Free — No Card Needed →</button>
+        <div style="font-size:10.5px;color:var(--tm,#94a3b8);text-align:center;margin-top:10px;">Your first 3 videos are FREE — no credit card required. Upgrade anytime to unlock your full plan (7-day free trial included).</div>
         <div id="ob-pay-err" style="display:none;font-size:12px;color:var(--re,#f87171);margin-top:8px;text-align:center;"></div>
       </div>
     </div>
@@ -1399,7 +1399,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.79.0</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.81.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1424,7 +1424,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.79.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.81.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -1553,7 +1553,8 @@ async function obFinish(){
     if(sb && pilotUser.uid){
       await sb.from('profiles').upsert({
         id: pilotUser.uid, email: pilotUser.email, name: pilotUser.name,
-        company: pilotUser.company, phone: pilotUser.phone, plan: pilotUser.plan
+        company: pilotUser.company, phone: pilotUser.phone, plan: pilotUser.plan,
+        sub_status: 'free'
       });
     }
   }catch(e){ console.warn('profile save', e); }
@@ -1567,28 +1568,17 @@ async function obFinish(){
       phone:pilotUser.phone||'(not provided)', plan:pilotUser.plan, cycle:pilotUser.cycle, signed_up_at:pilotUser.joined
     })}).catch(function(){});
   } catch(e){}
+  pilotUser.sub_status = 'free';
   try { localStorage.setItem('enerstudio_pilot_user', JSON.stringify(pilotUser)); } catch(e){}
-  // 3) Card-up-front trial: send them to Stripe Checkout. On return (success), they enter the app.
-  var btn=event&&event.target?event.target:null; if(btn){ btn.disabled=true; btn.textContent='Opening secure checkout…'; }
-  try{
-    var r=await fetch(BACKEND+'/api/stripe/create-checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      plan:pilotUser.plan, cycle:pilotUser.cycle, email:pilotUser.email, uid:pilotUser.uid,
-      successUrl: location.origin+'/?checkout=success', cancelUrl: location.origin+'/?checkout=cancel'
-    })});
-    var d=await r.json();
-    if(!r.ok || !d.url) throw new Error((d&&d.error) || 'Could not start checkout');
-    window.location.href = d.url;   // redirect to Stripe's secure card page
-  }catch(e){
-    if(perr){ perr.textContent = e.message + ' — you can still explore; we saved your info.'; perr.style.display='block'; }
-    if(btn){ btn.disabled=false; btn.textContent='Start 7-Day Free Trial →'; }
-    // graceful fallback: let them into the app even if Stripe isn't live yet, so the flow isn't blocked during setup
-    try {
-      if(pilotUser.company && (!userBrands || !userBrands.length)){ userBrands.push({name:pilotUser.company, site:''}); persistBrands(); setBrand(0, pilotUser.company, ''); }
-    } catch(e2){}
-    renderBrandList();
-    var ov=document.getElementById('onboard'); if(ov) ov.style.display='none';
-    applyAuthUser();
-  }
+  // 3) NO-CARD FREE START: enter the app immediately — 3 free videos, no checkout.
+  // The card only comes out when they upgrade (changePlan → Stripe Checkout with 7-day trial).
+  try {
+    if(pilotUser.company && (!userBrands || !userBrands.length)){ userBrands.push({name:pilotUser.company, site:''}); persistBrands(); setBrand(0, pilotUser.company, ''); }
+  } catch(e2){}
+  renderBrandList();
+  var ov=document.getElementById('onboard'); if(ov) ov.style.display='none';
+  applyAuthUser();
+  toast('🎁 Welcome! Your first 3 videos are free — no card needed.');
 }
 // After returning from Stripe checkout (success), finish entering the app
 function obHandleCheckoutReturn(){
@@ -1596,6 +1586,7 @@ function obHandleCheckoutReturn(){
     var qs=new URLSearchParams(location.search);
     var co=qs.get('checkout');
     if(co==='success'){
+      if(pilotUser){ pilotUser.sub_status = 'trialing'; try{ localStorage.setItem('enerstudio_pilot_user', JSON.stringify(pilotUser)); }catch(e){} }
       toast('🎉 Trial started! Welcome to EnerStudio.');
       try {
         if(pilotUser && pilotUser.company && (!userBrands || !userBrands.length)){ userBrands.push({name:pilotUser.company, site:''}); persistBrands(); setBrand(0, pilotUser.company, ''); }
@@ -1653,7 +1644,8 @@ async function loadSessionIntoApp(){
       name: (prof&&prof.name) || (session.user.user_metadata&&session.user.user_metadata.name) || '',
       company: (prof&&prof.company) || (session.user.user_metadata&&session.user.user_metadata.company) || '',
       phone: (prof&&prof.phone) || '',
-      plan: (prof&&prof.plan) || 'pro'
+      plan: (prof&&prof.plan) || 'pro',
+      sub_status: (prof&&prof.sub_status) || 'free'
     };
     try { localStorage.setItem('enerstudio_pilot_user', JSON.stringify(pilotUser)); } catch(e){}
     try {
@@ -1707,6 +1699,7 @@ async function obShowIfNeeded(){
         await sb.from('profiles').update({ plan: pilotUser.plan||'pro', trial_start:new Date().toISOString() }).eq('id', pilotUser.uid);
       }
     }catch(e){}
+    if(pilotUser){ pilotUser.sub_status = 'trialing'; try{ localStorage.setItem('enerstudio_pilot_user', JSON.stringify(pilotUser)); }catch(e){} }
     toast('🎉 Trial started! Welcome to EnerStudio.');
     history.replaceState({}, '', location.pathname);
     ov.style.display='none';
@@ -1997,7 +1990,25 @@ async function loadBalance(){
   }
 }
 // STEP 1: GENERATE SCRIPT
+// ── FREE TIER (no-card signup): 3 free videos, then upgrade ──
+function isPaidMember(){
+  var s = pilotUser && pilotUser.sub_status;
+  return s === 'trialing' || s === 'active' || s === 'past_due';
+}
+function freeTierBlocked(){
+  if(isPaidMember()) return false;
+  var used = videoLibrary.length;
+  if(used < 3){
+    toast('🎁 Free plan: creating video ' + (used + 1) + ' of 3');
+    return false;
+  }
+  if(confirm('🎬 You’ve used all 3 free videos — nice work!\n\nUpgrade to keep creating: plans start at $49/mo and include a 7-day free trial.\n\nOpen secure checkout now?')){
+    changePlan((pilotUser && pilotUser.plan) || 'starter');
+  }
+  return true;
+}
 async function generateScript(){
+  if(freeTierBlocked()) return;
   if(activeVtype === 'slides'){ return generateSlides(false); }
   if(activeVtype === 'quote'){ return generateQuotes(false); }
   if(activeVtype === 'faceless'){ return generateFaceless(false); }
@@ -5649,9 +5660,17 @@ async function changePlan(plan){
     window.location.href=d.url;
   }catch(e){ toast('Checkout error: '+e.message); }
 }
-// Stripe billing portal (manage/cancel) — placeholder until portal endpoint is wired
-function openBillingPortal(){
-  toast('Billing management opens in Stripe — connecting the customer portal next.');
+// Stripe billing portal (manage card, invoices, cancel) — wired to backend v8.80+
+async function openBillingPortal(){
+  try{
+    toast('Opening your billing portal…');
+    var r = await fetch(BACKEND+'/api/stripe/portal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      uid:(pilotUser&&pilotUser.uid)||'', email:(pilotUser&&pilotUser.email)||'', returnUrl: location.origin
+    })});
+    var d = await r.json();
+    if(!r.ok || !d.url) throw new Error((d&&d.error)||'Portal unavailable');
+    window.location.href = d.url;
+  }catch(e){ toast('Billing portal: ' + e.message); }
 }
 function changePlan_legacy_unused(plan){
   if(plan === memberCredits.plan){
