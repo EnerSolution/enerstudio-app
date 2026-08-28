@@ -1407,7 +1407,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.82.0</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.83.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1432,7 +1432,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.82.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.83.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -2639,6 +2639,7 @@ async function whiteboardStitch(imageUrls){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
+        freeTier: !isPaidMember(),
         imageUrls: imageUrls,
         voiceoverText: scriptText,
         voiceId: selectedVoiceId,
@@ -2752,6 +2753,7 @@ async function stitchVideo(){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
+        freeTier: !isPaidMember(),
         clipUrls:validUrls,
         voiceoverText:scriptText,
         brandName:activeBrand,
@@ -3291,7 +3293,7 @@ async function renderSlides(){
   }
   startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Rendering your slides…',10,95);
   try{
-    var body=Object.assign({slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:slidesAspect,audioMode:slidesAudioMode},audioPayload);
+    var body=Object.assign({freeTier:!isPaidMember(),slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:slidesAspect,audioMode:slidesAudioMode},audioPayload);
     var r=await fetch(BACKEND+'/api/slides/animate',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify(body)
@@ -3459,7 +3461,7 @@ async function renderQuotes(){
   var perCard=3.5; var dur=Math.round(slidesData.length*perCard);
   startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Rendering your cards…',10,95);
   try{
-    var body={slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:quoteAspect,audioMode:'music'};
+    var body={freeTier:!isPaidMember(),slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:quoteAspect,audioMode:'music'};
     var msel=document.getElementById('quoteMusicSel');
     if(quoteMusicUpload) body.musicBase64=quoteMusicUpload;
     else if(msel && msel.value) body.musicTrack=msel.value;
@@ -3610,7 +3612,7 @@ async function renderFaceless(){
   var bgMode=document.getElementById('facelessBgMode').value;
   startClimb('slidesRenderPbar','slidesRenderPfill','slidesRenderPtxt','Creating your video (fetching footage)…',8,95);
   try{
-    var body={slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:facelessAspect,videoType:'faceless',stockMode:bgMode};
+    var body={freeTier:!isPaidMember(),slides:slidesData,palette:slidesPalette,durationSecs:dur,aspect:facelessAspect,videoType:'faceless',stockMode:bgMode};
     if(audioSel==='voice'){ body.audioMode='voice'; body.voiceId=document.getElementById('facelessVoiceId').value||(typeof allVoices!=='undefined'&&allVoices[0]?allVoices[0].voice_id:''); }
     else if(audioSel.indexOf('music_')===0){ body.audioMode='music'; body.musicTrack=audioSel.replace('music_',''); }
     else { body.audioMode='music'; }
@@ -4088,7 +4090,7 @@ async function renderProductAd(){
     // 3) finalize: overlay captions + price + music
     pdbg('Adding your captions, price and music…');
     var music=document.getElementById('productMusic').value;
-    var fr=await ftimeout(BACKEND+'/api/productad/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({videoUrl:vurl,headline:productAdData.headline,sub:productAdData.sub,price:productAdData.price,palette:slidesPalette,aspect:productAspect,musicTrack:music})},120000);
+    var fr=await ftimeout(BACKEND+'/api/productad/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({freeTier:!isPaidMember(),videoUrl:vurl,headline:productAdData.headline,sub:productAdData.sub,price:productAdData.price,palette:slidesPalette,aspect:productAspect,musicTrack:music})},120000);
     var fd=await fr.json();
     if(!fr.ok || !fd.videoId) throw new Error((fd&&fd.error)?(''+fd.error).slice(0,200):'Finalizing failed');
     finishClimb('slidesRenderPfill','slidesRenderPtxt','Ready!');
@@ -4409,6 +4411,7 @@ async function _generateSpokespersonInner(){
     sdbg('Adding the voiceover…');
     var fbody={videoUrl:vurl,script:script,aspect:tpAspect};
     if(tpVoiceId) fbody.voiceId=tpVoiceId;
+    try{ fbody.freeTier = !isPaidMember(); }catch(e){}
     var fr=await ftimeout(BACKEND+'/api/spokesperson/finalize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(fbody)},150000);
     var fd=await fr.json();
     if(!fr.ok || !fd.videoId) throw new Error((fd&&fd.error)?(''+fd.error).slice(0,200):'Voiceover/finalize failed');
