@@ -214,6 +214,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:4px;">Create your account</div>
         <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1.25rem;">Step 1 of 2 · Free trial, no card needed</div>
         <label style="font-size:12px;color:var(--tm,#94a3b8);">Email *</label>
+        <input id="ob-website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;">
         <input id="ob-email" type="email" placeholder="you@company.com" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
         <label style="font-size:12px;color:var(--tm,#94a3b8);">Password *</label>
         <input id="ob-pass" type="password" placeholder="At least 6 characters" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
@@ -1407,7 +1408,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.83.0</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.85.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1432,7 +1433,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.83.0</span>
+      <span onclick="unlockAdmin()" style="font-size:10px;color:var(--tm);cursor:pointer;opacity:0.5;">EnerStudio v8.85.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -1486,6 +1487,29 @@ var SUPABASE_URL = 'https://xksxgvzozmivpigwcecw.supabase.co';
 var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhrc3hndnpvem1pdnBpZ3djZWN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NTcyODMsImV4cCI6MjA5ODMzMzI4M30.7IKJruPqAKoiLGHrNzaVK7xRJd5JqeMIRYvQbGoipiw';
 var sb = null;
 try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON); } catch(e){ console.warn('Supabase init failed', e); }
+// ── SECURITY: auto-attach the logged-in member's token to every backend call ──
+// So the server can verify who is calling and reject strangers trying to burn API credits.
+(function(){
+  if (!window.fetch || window.__enerFetchPatched) return;
+  window.__enerFetchPatched = true;
+  var _origFetch = window.fetch.bind(window);
+  window.fetch = async function(url, opts){
+    try{
+      var u = (typeof url === 'string') ? url : (url && url.url) || '';
+      if (typeof BACKEND !== 'undefined' && BACKEND && u.indexOf(BACKEND) === 0 && typeof sb !== 'undefined' && sb){
+        opts = opts || {};
+        var headers = new Headers(opts.headers || {});
+        if (!headers.has('Authorization')){
+          var s = await sb.auth.getSession();
+          var tok = (s && s.data && s.data.session) ? s.data.session.access_token : '';
+          if (tok) headers.set('Authorization', 'Bearer ' + tok);
+        }
+        opts.headers = headers;
+      }
+    }catch(e){}
+    return _origFetch(url, opts);
+  };
+})();
 var pilotUser = null;          // { name, email, company, phone, plan }
 var obSelectedPlan = 'pro';    // default selected plan
 var obCycle = 'annual';        // 'annual' | 'monthly'
@@ -1526,6 +1550,9 @@ function obSelectPlan(plan, el){
 }
 // Step 1: create the account (Supabase Auth), then go to plan selection
 async function obCreateAccount(){
+  // Honeypot: real people never see or fill #ob-website. Bots fill every field → silently reject.
+  var _hp=(document.getElementById('ob-website')||{}).value||'';
+  if(_hp){ console.warn('signup blocked (honeypot)'); return; }
   var email=(document.getElementById('ob-email').value||'').trim();
   var pass=(document.getElementById('ob-pass').value||'');
   var name=(document.getElementById('ob-name').value||'').trim();
@@ -1631,7 +1658,7 @@ async function obLogin(){
 async function obForgot(){
   var email=(document.getElementById('lg-email').value||'').trim();
   if(!email){ var err=document.getElementById('lg-err'); err.textContent='Enter your email above first, then click Forgot password.'; err.style.display='block'; return; }
-  try{ await sb.auth.resetPasswordForEmail(email); toast('Password reset email sent to '+email); }catch(e){ toast('Could not send reset email.'); }
+  try{ await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin }); toast('Password reset email sent to '+email+' — check your inbox (and spam folder).'); }catch(e){ toast('Could not send reset email.'); }
 }
 // Pull the logged-in user's profile into the app
 async function loadSessionIntoApp(){
@@ -1691,6 +1718,25 @@ async function pilotReset(){
   }catch(e){}
   location.reload();
 }
+// ── PASSWORD RECOVERY HANDLER ──
+// When a member clicks the reset link in their email, Supabase brings them back here
+// with a recovery session. This asks for the new password and saves it.
+try {
+  if (sb) sb.auth.onAuthStateChange(function(event, session){
+    if (event === 'PASSWORD_RECOVERY') {
+      setTimeout(async function(){
+        var np = prompt('🔐 Set your new EnerStudio password (at least 6 characters):');
+        if (np === null) return; // user cancelled
+        if (np.length < 6) { alert('Password must be at least 6 characters. Click the email link again to retry.'); return; }
+        try {
+          var res = await sb.auth.updateUser({ password: np });
+          if (res.error) { alert('Could not set the new password: ' + res.error.message); }
+          else { alert('✅ Password updated! You are now logged in.'); try{ history.replaceState({}, '', location.pathname); }catch(e){} location.reload(); }
+        } catch(e) { alert('Could not set the new password: ' + (e && e.message)); }
+      }, 400);
+    }
+  });
+} catch(e){}
 // On load: if a real session exists, go straight in; otherwise show the auth overlay
 async function obShowIfNeeded(){
   var ov=document.getElementById('onboard');
@@ -4642,7 +4688,7 @@ async function apCreateSchedule(){
     if(!r.ok||!d.ok) throw new Error((d&&d.error)||'Failed');
     toast('✅ Auto-Pilot activated for '+brand);
     document.getElementById('ap-theme').value='';
-    if(startNow){ await fetch(BACKEND+'/api/auto/cron?key=ener2026',{method:'POST'}).catch(function(){}); }
+    if(startNow){ await fetch(BACKEND+'/api/auto/cron',{method:'POST'}).catch(function(){}); }
     apLoadSchedules(); apLoadQueue();
   }catch(e){ toast('Could not activate: '+e.message); }
   finally{ btn.disabled=false; btn.textContent='⚡ Activate Auto-Pilot'; }
@@ -4681,7 +4727,7 @@ async function apClearAll(){
 async function apSchedAction(id, action){
   if(action==='delete' && !confirm('Delete this schedule?')) return;
   try{ await fetch(BACKEND+'/api/auto/schedule/'+id+'/'+action,{method:'POST'}); }catch(e){}
-  if(action==='runnow'){ await fetch(BACKEND+'/api/auto/cron?key=ener2026',{method:'POST'}).catch(function(){}); toast('Creating a new item…'); }
+  if(action==='runnow'){ await fetch(BACKEND+'/api/auto/cron',{method:'POST'}).catch(function(){}); toast('Creating a new item…'); }
   apLoadSchedules(); apLoadQueue();
 }
 var apVtypeName={faceless:'Faceless',quote:'Quote',slides:'Slides',productad:'Product Ad',cinematic:'Cinematic',spokesperson:'Spokesperson'};
@@ -5644,7 +5690,7 @@ function updateCreditDisplay(){
 // ADMIN UNLOCK — passcode protected, invisible to customers
 function unlockAdmin(){
   var code = prompt('Admin access code:');
-  if(code === 'ener2026'){
+  if(code === 'ES-ops-9317'){
     var panel = document.getElementById('adminPanel');
     if(panel){ panel.style.display = 'block'; loadAdminCredits(); toast('Admin panel unlocked'); }
   } else if(code !== null){
