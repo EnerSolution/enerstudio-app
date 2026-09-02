@@ -1408,7 +1408,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.86.0</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.87.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1433,7 +1433,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.86.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.87.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -1614,6 +1614,7 @@ async function obFinish(){
   var ov=document.getElementById('onboard'); if(ov) ov.style.display='none';
   applyAuthUser();
   toast('🎁 Welcome! Your first 3 videos are free — no card needed.');
+  try{ if(!localStorage.getItem('enerstudio_onboarded')) setTimeout(openFirstRunWizard, 600); }catch(e){}
 }
 // After returning from Stripe checkout (success), finish entering the app
 function obHandleCheckoutReturn(){
@@ -5825,6 +5826,82 @@ updatePlanButtons();
 // Initialize the default video type so the highlighted tile and its config section match on load
 try { selectVtype('avatar', document.getElementById('vt-avatar')); } catch(e){}
 
+// ===== FIRST-RUN WIZARD LOGIC =====
+var WIZ_NICHES = [
+  { key:'restaurant', label:'\ud83c\udf7d\ufe0f Restaurant / Caf\u00e9' },
+  { key:'realestate', label:'\ud83c\udfe1 Real Estate' },
+  { key:'contractor', label:'\ud83d\udd27 Contractor / Solar' },
+  { key:'fitness',    label:'\ud83d\udcaa Gym / Fitness' },
+  { key:'beauty',     label:'\u2702\ufe0f Salon / Beauty' },
+  { key:'ecommerce',  label:'\ud83d\uded2 Online Store' },
+  { key:'coach',      label:'\ud83c\udf93 Coach / Creator' },
+  { key:'other',      label:'\u2728 Something else' }
+];
+var WIZ_PROMPTS = {
+  restaurant: 'A short, mouth-watering promo video for {BIZ}, a restaurant. Highlight our signature dishes and warm atmosphere, and invite locals to come in this week. Friendly, appetizing tone.',
+  realestate: 'A short, scroll-stopping listing video for {BIZ}, a real estate agent. Show off a beautiful home and invite buyers to book a viewing. Polished, professional tone.',
+  contractor: 'A short promo video for {BIZ}, a contractor and home-services company. Show quality workmanship and invite customers to book a free quote. Trustworthy, confident tone.',
+  fitness:    'A short, high-energy promo video for {BIZ}, a gym. Motivate viewers to join this week and highlight our classes and community. Upbeat, inspiring tone.',
+  beauty:     'A short, stylish promo video for {BIZ}, a salon and beauty studio. Show beautiful results and invite clients to book an appointment. Elegant, inviting tone.',
+  ecommerce:  'A short, scroll-stopping product video for {BIZ}, an online store. Highlight our best product and drive shoppers to buy today. Punchy, exciting tone.',
+  coach:      'A short, engaging video for {BIZ}, a coach and creator. Share one valuable tip and invite viewers to follow and work with us. Confident, friendly tone.',
+  other:      'A short, professional promo video for {BIZ}. Introduce what we do and invite customers to get in touch today. Warm, upbeat tone.'
+};
+var _wizNiche = 'other';
+function openFirstRunWizard(){
+  try{
+    var grid=document.getElementById('wizNiches');
+    if(grid){
+      grid.innerHTML = WIZ_NICHES.map(function(n){
+        return '<div onclick="wizPickNiche(\''+n.key+'\')" style="background:var(--sur,#1a1e26);border:1.5px solid var(--bdr,#2a2f3a);border-radius:11px;padding:14px 8px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:#fff;">'+n.label+'</div>';
+      }).join('');
+    }
+    document.getElementById('wizStep1').style.display='block';
+    document.getElementById('wizStep2').style.display='none';
+    var w=document.getElementById('firstRunWiz'); if(w) w.style.display='flex';
+  }catch(e){}
+}
+function wizPickNiche(k){
+  _wizNiche = k || 'other';
+  document.getElementById('wizStep1').style.display='none';
+  document.getElementById('wizStep2').style.display='block';
+  try{
+    var pre=(pilotUser&&pilotUser.company)||'';
+    var el=document.getElementById('wizBizName'); if(el){ el.value=pre; el.focus(); }
+  }catch(e){}
+}
+function wizSkip(){
+  try{ localStorage.setItem('enerstudio_onboarded','1'); }catch(e){}
+  var w=document.getElementById('firstRunWiz'); if(w) w.style.display='none';
+}
+function wizFinish(){
+  try{
+    var biz=((document.getElementById('wizBizName')||{}).value||'').trim() || (pilotUser&&pilotUser.company) || 'my business';
+    // set the brand if none exists yet
+    try{
+      if(biz && (!userBrands || !userBrands.length)){ userBrands.push({name:biz, site:''}); persistBrands(); setBrand(0, biz, ''); renderBrandList(); }
+    }catch(e){}
+    // pre-fill the topic box with a ready-made, niche-specific prompt
+    var tmpl = WIZ_PROMPTS[_wizNiche] || WIZ_PROMPTS.other;
+    var promptText = tmpl.replace('{BIZ}', biz);
+    var pEl=document.getElementById('prompt'); if(pEl) pEl.value = promptText;
+    // pick a fast, social-friendly starter type
+    try{ selectVtype('faceless', document.getElementById('vt-faceless')); }catch(e){}
+    localStorage.setItem('enerstudio_onboarded','1');
+    var w=document.getElementById('firstRunWiz'); if(w) w.style.display='none';
+    // guide them to the one button that matters
+    try{
+      var btn=document.getElementById('scriptBtn');
+      if(btn){
+        btn.scrollIntoView({behavior:'smooth', block:'center'});
+        btn.style.boxShadow='0 0 0 4px rgba(99,102,241,0.45)';
+        setTimeout(function(){ btn.style.boxShadow=''; }, 4000);
+      }
+    }catch(e){}
+    toast('\u2728 Your video is set up \u2014 just tap \u201cCreate My Video\u201d!');
+  }catch(e){}
+}
+
 // ── Auto build-date on the version label (updates itself on every deploy) ──
 try{
   var _vl = document.getElementById('appVersionLabel');
@@ -5832,5 +5909,25 @@ try{
   if(_vl && !isNaN(_bd)) _vl.textContent = _vl.textContent + ' \u2014 Build ' + _bd.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
 }catch(e){}
 </script>
+<!-- ===== FIRST-RUN WIZARD (60-second first video) ===== -->
+<div id="firstRunWiz" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(8,10,15,0.72);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
+  <div style="width:100%;max-width:440px;background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:18px;padding:1.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div id="wizStep1">
+      <div style="font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#fff;margin-bottom:4px;">Let's make your first video 🎬</div>
+      <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1rem;">Step 1 of 2 · What kind of business are you?</div>
+      <div id="wizNiches" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      </div>
+      <div onclick="wizSkip()" style="text-align:center;margin-top:14px;font-size:11.5px;color:var(--tm,#94a3b8);cursor:pointer;">Skip — I'll explore on my own</div>
+    </div>
+    <div id="wizStep2" style="display:none;">
+      <div style="font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#fff;margin-bottom:4px;">Almost there ✨</div>
+      <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1rem;">Step 2 of 2 · What's your business name?</div>
+      <input id="wizBizName" type="text" placeholder="e.g. Bella Vista Bistro" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:10px;padding:12px;font-size:14px;color:#fff;outline:none;margin-bottom:14px;box-sizing:border-box;">
+      <button onclick="wizFinish()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:11px;padding:14px;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">Make My First Video →</button>
+      <div onclick="wizSkip()" style="text-align:center;margin-top:12px;font-size:11.5px;color:var(--tm,#94a3b8);cursor:pointer;">Skip for now</div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
