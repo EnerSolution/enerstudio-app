@@ -1408,7 +1408,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.87.0</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.88.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1433,7 +1433,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.87.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.88.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -5837,16 +5837,26 @@ var WIZ_NICHES = [
   { key:'coach',      label:'\ud83c\udf93 Coach / Creator' },
   { key:'other',      label:'\u2728 Something else' }
 ];
-var WIZ_PROMPTS = {
-  restaurant: 'A short, mouth-watering promo video for {BIZ}, a restaurant. Highlight our signature dishes and warm atmosphere, and invite locals to come in this week. Friendly, appetizing tone.',
-  realestate: 'A short, scroll-stopping listing video for {BIZ}, a real estate agent. Show off a beautiful home and invite buyers to book a viewing. Polished, professional tone.',
-  contractor: 'A short promo video for {BIZ}, a contractor and home-services company. Show quality workmanship and invite customers to book a free quote. Trustworthy, confident tone.',
-  fitness:    'A short, high-energy promo video for {BIZ}, a gym. Motivate viewers to join this week and highlight our classes and community. Upbeat, inspiring tone.',
-  beauty:     'A short, stylish promo video for {BIZ}, a salon and beauty studio. Show beautiful results and invite clients to book an appointment. Elegant, inviting tone.',
-  ecommerce:  'A short, scroll-stopping product video for {BIZ}, an online store. Highlight our best product and drive shoppers to buy today. Punchy, exciting tone.',
-  coach:      'A short, engaging video for {BIZ}, a coach and creator. Share one valuable tip and invite viewers to follow and work with us. Confident, friendly tone.',
-  other:      'A short, professional promo video for {BIZ}. Introduce what we do and invite customers to get in touch today. Warm, upbeat tone.'
+var WIZ_DESC = {
+  restaurant: 'a restaurant/caf\u00e9',
+  realestate: 'a real estate agent/brokerage',
+  contractor: 'a contractor / home-services company',
+  fitness:    'a gym / fitness studio',
+  beauty:     'a salon / beauty studio',
+  ecommerce:  'an online store / e-commerce brand',
+  coach:      'a coach / creator',
+  other:      'a small business'
 };
+var WIZ_TOPIC_PH = {
+  restaurant: 'e.g. This weekend\u2019s special: wood-fired pizza + happy hour 4\u20136pm',
+  realestate: 'e.g. New listing: 3-bed bungalow in Riverside \u2014 open house Saturday',
+  contractor: 'e.g. Attic insulation upgrade + apply for the government rebate',
+  fitness:    'e.g. New 6-week transformation challenge starting Monday',
+  beauty:     'e.g. Fall hair color special \u2014 20% off new clients',
+  ecommerce:  'e.g. Our best-selling water bottle \u2014 now in 3 new colors',
+  coach:      'e.g. Free masterclass: how to land your first 5 clients',
+  other:      'e.g. Our most popular service or current offer'
+}
 var _wizNiche = 'other';
 function openFirstRunWizard(){
   try{
@@ -5858,6 +5868,7 @@ function openFirstRunWizard(){
     }
     document.getElementById('wizStep1').style.display='block';
     document.getElementById('wizStep2').style.display='none';
+    var _s3=document.getElementById('wizStep3'); if(_s3) _s3.style.display='none';
     var w=document.getElementById('firstRunWiz'); if(w) w.style.display='flex';
   }catch(e){}
 }
@@ -5870,6 +5881,15 @@ function wizPickNiche(k){
     var el=document.getElementById('wizBizName'); if(el){ el.value=pre; el.focus(); }
   }catch(e){}
 }
+function wizToStep3(){
+  // carry business name forward; move to the topic step with a niche-specific example
+  document.getElementById('wizStep2').style.display='none';
+  document.getElementById('wizStep3').style.display='block';
+  try{
+    var ph = WIZ_TOPIC_PH[_wizNiche] || WIZ_TOPIC_PH.other;
+    var t=document.getElementById('wizTopic'); if(t){ t.setAttribute('placeholder', ph); t.focus(); }
+  }catch(e){}
+}
 function wizSkip(){
   try{ localStorage.setItem('enerstudio_onboarded','1'); }catch(e){}
   var w=document.getElementById('firstRunWiz'); if(w) w.style.display='none';
@@ -5877,13 +5897,19 @@ function wizSkip(){
 function wizFinish(){
   try{
     var biz=((document.getElementById('wizBizName')||{}).value||'').trim() || (pilotUser&&pilotUser.company) || 'my business';
+    var topic=((document.getElementById('wizTopic')||{}).value||'').trim();
+    var desc = WIZ_DESC[_wizNiche] || WIZ_DESC.other;
     // set the brand if none exists yet
     try{
       if(biz && (!userBrands || !userBrands.length)){ userBrands.push({name:biz, site:''}); persistBrands(); setBrand(0, biz, ''); renderBrandList(); }
     }catch(e){}
-    // pre-fill the topic box with a ready-made, niche-specific prompt
-    var tmpl = WIZ_PROMPTS[_wizNiche] || WIZ_PROMPTS.other;
-    var promptText = tmpl.replace('{BIZ}', biz);
+    // Build a SPECIFIC, useful prompt from the business + the exact topic they entered
+    var promptText;
+    if(topic){
+      promptText = 'A short, engaging promo video for ' + biz + ', ' + desc + '. This video is specifically about: ' + topic + '. Clearly explain what it is and why the customer should care, highlight any offer, price, or deadline mentioned, and end with a clear call to action to get in touch or take the next step. Keep it punchy and benefit-focused.';
+    } else {
+      promptText = 'A short, engaging promo video for ' + biz + ', ' + desc + '. Introduce what we do, highlight our main service, and invite customers to take the next step. Warm, confident tone.';
+    }
     var pEl=document.getElementById('prompt'); if(pEl) pEl.value = promptText;
     // pick a fast, social-friendly starter type
     try{ selectVtype('faceless', document.getElementById('vt-faceless')); }catch(e){}
@@ -5920,9 +5946,17 @@ try{
       <div onclick="wizSkip()" style="text-align:center;margin-top:14px;font-size:11.5px;color:var(--tm,#94a3b8);cursor:pointer;">Skip — I'll explore on my own</div>
     </div>
     <div id="wizStep2" style="display:none;">
-      <div style="font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#fff;margin-bottom:4px;">Almost there ✨</div>
-      <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1rem;">Step 2 of 2 · What's your business name?</div>
+      <div style="font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#fff;margin-bottom:4px;">What's your business name?</div>
+      <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1rem;">Step 2 of 3</div>
       <input id="wizBizName" type="text" placeholder="e.g. Bella Vista Bistro" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:10px;padding:12px;font-size:14px;color:#fff;outline:none;margin-bottom:14px;box-sizing:border-box;">
+      <button onclick="wizToStep3()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:11px;padding:14px;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">Next →</button>
+      <div onclick="wizSkip()" style="text-align:center;margin-top:12px;font-size:11.5px;color:var(--tm,#94a3b8);cursor:pointer;">Skip for now</div>
+    </div>
+    <div id="wizStep3" style="display:none;">
+      <div style="font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#fff;margin-bottom:4px;">What's this video about? ✨</div>
+      <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1rem;">Step 3 of 3 · The service, product, or offer you want to promote</div>
+      <textarea id="wizTopic" rows="3" placeholder="e.g. Attic insulation upgrade + apply for the government rebate" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:10px;padding:12px;font-size:14px;color:#fff;outline:none;margin-bottom:6px;box-sizing:border-box;resize:vertical;font-family:'DM Sans',sans-serif;"></textarea>
+      <div id="wizTopicHint" style="font-size:11px;color:var(--tm,#94a3b8);margin-bottom:14px;">Tip: the more specific you are, the better your video. Mention the offer, price, or deadline if you have one.</div>
       <button onclick="wizFinish()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:11px;padding:14px;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">Make My First Video →</button>
       <div onclick="wizSkip()" style="text-align:center;margin-top:12px;font-size:11.5px;color:var(--tm,#94a3b8);cursor:pointer;">Skip for now</div>
     </div>
