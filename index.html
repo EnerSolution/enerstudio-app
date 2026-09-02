@@ -1408,7 +1408,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.88.0</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.89.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1433,7 +1433,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.88.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.89.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -5903,16 +5903,16 @@ function wizFinish(){
     try{
       if(biz && (!userBrands || !userBrands.length)){ userBrands.push({name:biz, site:''}); persistBrands(); setBrand(0, biz, ''); renderBrandList(); }
     }catch(e){}
-    // Build a SPECIFIC, useful prompt from the business + the exact topic they entered
+    // Build a CINEMATIC, specific prompt so the first video is a genuine "wow"
     var promptText;
     if(topic){
-      promptText = 'A short, engaging promo video for ' + biz + ', ' + desc + '. This video is specifically about: ' + topic + '. Clearly explain what it is and why the customer should care, highlight any offer, price, or deadline mentioned, and end with a clear call to action to get in touch or take the next step. Keep it punchy and benefit-focused.';
+      promptText = 'Create a cinematic, visually stunning promo video for ' + biz + ', ' + desc + '. The video is specifically about: ' + topic + '. Use dramatic, high-quality cinematic scenes with beautiful lighting that bring this to life, a confident professional voiceover that explains the benefit to the customer and highlights any offer, price or deadline, and end with a strong, clear call to action. Premium, scroll-stopping, movie-quality feel.';
     } else {
-      promptText = 'A short, engaging promo video for ' + biz + ', ' + desc + '. Introduce what we do, highlight our main service, and invite customers to take the next step. Warm, confident tone.';
+      promptText = 'Create a cinematic, visually stunning promo video for ' + biz + ', ' + desc + '. Use dramatic, high-quality cinematic scenes with beautiful lighting, a confident professional voiceover introducing what we do, and a strong call to action. Premium, movie-quality feel.';
     }
     var pEl=document.getElementById('prompt'); if(pEl) pEl.value = promptText;
-    // pick a fast, social-friendly starter type
-    try{ selectVtype('faceless', document.getElementById('vt-faceless')); }catch(e){}
+    // FIRST VIDEO = CINEMATIC AI (the most impressive, surprising type on the platform)
+    try{ selectVtype('cinematic', document.getElementById('vt-cinematic')); }catch(e){}
     localStorage.setItem('enerstudio_onboarded','1');
     var w=document.getElementById('firstRunWiz'); if(w) w.style.display='none';
     // guide them to the one button that matters
@@ -5924,7 +5924,7 @@ function wizFinish(){
         setTimeout(function(){ btn.style.boxShadow=''; }, 4000);
       }
     }catch(e){}
-    toast('\u2728 Your video is set up \u2014 just tap \u201cCreate My Video\u201d!');
+    toast('\u2728 Your cinematic video is set up \u2014 just tap \u201cGenerate\u201d!');
   }catch(e){}
 }
 
