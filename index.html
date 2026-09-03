@@ -1433,7 +1433,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.95.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.96.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -2065,6 +2065,16 @@ function freeTierBlocked(){
 async function generateCinematicPro(){
   var prompt=((document.getElementById('prompt')||{}).value||'').trim();
   if(!prompt){ try{ showerr('Please describe your video first.'); }catch(e){} return; }
+  // Cinematic Pro is a PREMIUM (paid) feature — it runs our most advanced, most costly AI film engine.
+  // Free users are stopped here BEFORE any generation happens, so it can never spend credits on the free tier.
+  if(!isPaidMember()){
+    try{
+      if(confirm('🎬 Cinematic Pro is a premium feature.\n\nIt uses our most advanced, most realistic AI film engine — the same one that made the showcase video. Upgrade to create your own cinematic videos.\n\nPlans start at $49/mo with a 7-day free trial. Open secure checkout now?')){
+        changePlan((pilotUser && pilotUser.plan) || 'starter');
+      }
+    }catch(e){}
+    return;
+  }
   try{ clearerr(); }catch(e){}
   var btn=document.getElementById('scriptBtn'); if(btn){ btn.disabled=true; }
   try{ setprog('scriptPbar','scriptPfill','scriptPtxt',15,'Creating your cinematic video (AI is filming)\u2026'); }catch(e){}
