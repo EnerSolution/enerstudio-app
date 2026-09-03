@@ -1433,7 +1433,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.94.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.95.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -5908,6 +5908,7 @@ function openFirstRunWizard(){
     document.getElementById('wizStep1').style.display='block';
     document.getElementById('wizStep2').style.display='none';
     var _s3=document.getElementById('wizStep3'); if(_s3) _s3.style.display='none';
+    var _s4=document.getElementById('wizStep4'); if(_s4) _s4.style.display='none';
     var w=document.getElementById('firstRunWiz'); if(w) w.style.display='flex';
   }catch(e){}
 }
@@ -5953,18 +5954,27 @@ function wizFinish(){
     // FIRST VIDEO = CINEMATIC AI (the most impressive, surprising type on the platform)
     try{ selectVtype('cinematic', document.getElementById('vt-cinematic')); }catch(e){}
     localStorage.setItem('enerstudio_onboarded','1');
-    var w=document.getElementById('firstRunWiz'); if(w) w.style.display='none';
-    // guide them to the one button that matters
+    // Reveal the showcase promo (auto-plays) \u2014 the "wow" moment. No video is generated here, so it costs nothing.
+    var s3=document.getElementById('wizStep3'); if(s3) s3.style.display='none';
+    var s4=document.getElementById('wizStep4'); if(s4) s4.style.display='block';
     try{
-      var btn=document.getElementById('scriptBtn');
-      if(btn){
-        btn.scrollIntoView({behavior:'smooth', block:'center'});
-        btn.style.boxShadow='0 0 0 4px rgba(99,102,241,0.45)';
-        setTimeout(function(){ btn.style.boxShadow=''; }, 4000);
-      }
+      var pv=document.getElementById('wizPromoVid');
+      if(pv){ pv.currentTime=0; pv.muted=false; var pr=pv.play(); if(pr&&pr.catch){ pr.catch(function(){ try{ pv.muted=true; pv.play(); }catch(e){} }); } }
     }catch(e){}
-    toast('\u2728 Your cinematic video is set up \u2014 just tap \u201cGenerate\u201d!');
   }catch(e){}
+}
+function wizGoCreate(){
+  try{ var pv=document.getElementById('wizPromoVid'); if(pv){ pv.pause(); } }catch(e){}
+  var w=document.getElementById('firstRunWiz'); if(w) w.style.display='none';
+  try{
+    var btn=document.getElementById('scriptBtn');
+    if(btn){
+      btn.scrollIntoView({behavior:'smooth', block:'center'});
+      btn.style.boxShadow='0 0 0 4px rgba(99,102,241,0.45)';
+      setTimeout(function(){ btn.style.boxShadow=''; }, 4000);
+    }
+  }catch(e){}
+  toast('\u2728 Your cinematic video is set up \u2014 just tap \u201cGenerate\u201d!');
 }
 
 // ── Auto build-date on the version label (updates itself on every deploy) ──
@@ -5979,7 +5989,7 @@ try{
   <div style="width:100%;max-width:440px;background:var(--card,#15181f);border:1px solid var(--bdr,#2a2f3a);border-radius:18px;padding:1.6rem;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
     <div id="wizStep1">
       <div style="font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#fff;margin-bottom:4px;">Let's make your first video 🎬</div>
-      <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1rem;">Step 1 of 2 · What kind of business are you?</div>
+      <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:1rem;">Step 1 of 3 · What kind of business are you?</div>
       <div id="wizNiches" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       </div>
       <div onclick="wizSkip()" style="text-align:center;margin-top:14px;font-size:11.5px;color:var(--tm,#94a3b8);cursor:pointer;">Skip — I'll explore on my own</div>
@@ -5998,6 +6008,12 @@ try{
       <div id="wizTopicHint" style="font-size:11px;color:var(--tm,#94a3b8);margin-bottom:14px;">Tip: the more specific you are, the better your video. Mention the offer, price, or deadline if you have one.</div>
       <button onclick="wizFinish()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:11px;padding:14px;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">Make My First Video →</button>
       <div onclick="wizSkip()" style="text-align:center;margin-top:12px;font-size:11.5px;color:var(--tm,#94a3b8);cursor:pointer;">Skip for now</div>
+    </div>
+    <div id="wizStep4" style="display:none;">
+      <div style="font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#fff;margin-bottom:4px;">This is what EnerStudio creates 🎬</div>
+      <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:12px;">A real video made by EnerStudio — and yours is set up and ready to generate.</div>
+      <video id="wizPromoVid" src="https://enerstudio.io/promo.mp4" playsinline controls autoplay loop preload="auto" style="width:100%;max-height:52vh;border-radius:12px;background:#000;display:block;margin-bottom:14px;"></video>
+      <button onclick="wizGoCreate()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:11px;padding:14px;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">Make My First Video →</button>
     </div>
   </div>
 </div>
