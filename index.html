@@ -1408,7 +1408,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.89.0</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.90.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1433,7 +1433,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.89.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.90.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -2062,8 +2062,47 @@ function freeTierBlocked(){
   }
   return true;
 }
+async function generateCinematicPro(){
+  var prompt=((document.getElementById('prompt')||{}).value||'').trim();
+  if(!prompt){ try{ showerr('Please describe your video first.'); }catch(e){} return; }
+  try{ clearerr(); }catch(e){}
+  var btn=document.getElementById('scriptBtn'); if(btn){ btn.disabled=true; }
+  try{ setprog('scriptPbar','scriptPfill','scriptPtxt',15,'Creating your cinematic video (AI is filming)\u2026'); }catch(e){}
+  try{
+    var aspect='vertical';
+    var ft = !isPaidMember();
+    var sr=await fetch(BACKEND+'/api/cinematicpro/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt, aspect:aspect, freeTier:ft})});
+    var sd=await sr.json();
+    if(!sr.ok || !sd.taskId) throw new Error((sd&&sd.error)?(''+sd.error).slice(0,200):'Could not start Cinematic Pro');
+    var taskId=sd.taskId; var ftq = sd.freeTier ? 'true' : 'false';
+    var done=null, tries=0;
+    while(tries<45){
+      await new Promise(function(r){ setTimeout(r,8000); });
+      tries++;
+      try{ setprog('scriptPbar','scriptPfill','scriptPtxt',Math.min(92,15+tries*3),'Filming your cinematic scene\u2026 ('+(tries*8)+'s)'); }catch(e){}
+      var pr, pd;
+      try{ pr=await fetch(BACKEND+'/api/cinematicpro/status?id='+encodeURIComponent(taskId)+'&freeTier='+ftq); pd=await pr.json(); }
+      catch(e){ continue; }
+      if(pd && pd.status==='completed'){ done=pd; break; }
+      if(pd && pd.status==='error'){ throw new Error(pd.error||'Generation failed'); }
+    }
+    if(!done) throw new Error('Still rendering \u2014 it will appear in your Library shortly.');
+    try{ clearprog('scriptPbar'); }catch(e){}
+    var inline=done.videoData||null;
+    var url=inline||(BACKEND+'/api/video/'+done.videoId);
+    var vid=document.getElementById('finalVideo'); if(vid){ vid.src=url; vid.style.display='block'; try{ vid.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+    try{ saveToLibrary((typeof activeBrand!=='undefined'?activeBrand:''), '8s', 'Cinematic Pro', url, done.videoId, 'Cinematic Pro', 'vertical'); }catch(e){}
+    try{ toast('\ud83c\udfac Your cinematic video is ready \u2014 saved to your Library!'); }catch(e){}
+  }catch(e){
+    try{ clearprog('scriptPbar'); }catch(_e){}
+    try{ showerr('Cinematic Pro: '+e.message); }catch(_e){}
+  } finally {
+    var b=document.getElementById('scriptBtn'); if(b) b.disabled=false;
+  }
+}
 async function generateScript(){
   if(freeTierBlocked()) return;
+  if(activeVtype === 'cinematic'){ return generateCinematicPro(); }
   if(activeVtype === 'slides'){ return generateSlides(false); }
   if(activeVtype === 'quote'){ return generateQuotes(false); }
   if(activeVtype === 'faceless'){ return generateFaceless(false); }
