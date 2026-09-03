@@ -1433,7 +1433,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.93.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.94.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -2083,13 +2083,13 @@ async function generateCinematicPro(){
       var pr, pd;
       try{ pr=await fetch(BACKEND+'/api/cinematicpro/status?id='+encodeURIComponent(taskId)+'&freeTier='+ftq); pd=await pr.json(); }
       catch(e){ continue; }
-      if(pd && pd.status==='completed'){ done=pd; break; }
+      if(pd && pd.status==='completed' && pd.videoId){ done=pd; break; }
+      if(pd && pd.status==='finalizing'){ try{ setprog('scriptPbar','scriptPfill','scriptPtxt',95,'Finishing your video\u2026'); }catch(e){} }
       if(pd && pd.status==='error'){ throw new Error(pd.error||'Generation failed'); }
     }
     if(!done) throw new Error('Still rendering \u2014 it will appear in your Library shortly.');
     try{ clearprog('scriptPbar'); }catch(e){}
-    var inline=done.videoData||null;
-    var url=inline||(BACKEND+'/api/video/'+done.videoId);
+    var url=BACKEND+'/api/video/'+done.videoId;
     var vid=document.getElementById('finalVideo'); if(vid){ vid.src=url; vid.style.display='block'; try{ vid.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
     try{ saveToLibrary((typeof activeBrand!=='undefined'?activeBrand:''), '8s', 'Cinematic Pro', url, done.videoId, 'Cinematic Pro', 'vertical'); }catch(e){}
     try{ toast('\ud83c\udfac Your cinematic video is ready \u2014 saved to your Library!'); }catch(e){}
