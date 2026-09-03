@@ -1433,7 +1433,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.92.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.93.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -2076,7 +2076,7 @@ async function generateCinematicPro(){
     if(!sr.ok || !sd.taskId) throw new Error((sd&&sd.error)?(''+sd.error).slice(0,200):'Could not start Cinematic Pro');
     var taskId=sd.taskId; var ftq = sd.freeTier ? 'true' : 'false';
     var done=null, tries=0;
-    while(tries<45){
+    while(tries<80){
       await new Promise(function(r){ setTimeout(r,8000); });
       tries++;
       try{ setprog('scriptPbar','scriptPfill','scriptPtxt',Math.min(92,15+tries*3),'Filming your cinematic scene\u2026 ('+(tries*8)+'s)'); }catch(e){}
