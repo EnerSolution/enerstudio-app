@@ -1408,7 +1408,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.91.0</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.92.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1433,7 +1433,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.91.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.92.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -5942,13 +5942,13 @@ function wizFinish(){
     try{
       if(biz && (!userBrands || !userBrands.length)){ userBrands.push({name:biz, site:''}); persistBrands(); setBrand(0, biz, ''); renderBrandList(); }
     }catch(e){}
-    // Build a CINEMATIC, specific prompt so the first video is a genuine "wow"
+    // Build a CINEMATIC, PHOTOREALISTIC, VISUAL prompt (these engines render what you describe visually)
     var promptText;
-    if(topic){
-      promptText = 'Create a cinematic, visually stunning promo video for ' + biz + ', ' + desc + '. The video is specifically about: ' + topic + '. Use dramatic, high-quality cinematic scenes with beautiful lighting that bring this to life, a confident professional voiceover that explains the benefit to the customer and highlights any offer, price or deadline, and end with a strong, clear call to action. Premium, scroll-stopping, movie-quality feel.';
-    } else {
-      promptText = 'Create a cinematic, visually stunning promo video for ' + biz + ', ' + desc + '. Use dramatic, high-quality cinematic scenes with beautiful lighting, a confident professional voiceover introducing what we do, and a strong call to action. Premium, movie-quality feel.';
-    }
+    var topicLine = topic ? (' The video should visually show real, believable scenes related to: ' + topic + '.') : '';
+    promptText = 'Ultra-realistic, cinematic, high-end commercial promotional video for ' + biz + ', ' + desc + '.' + topicLine +
+      ' Professional cinematography with natural lighting, realistic people and real environments, smooth camera movement, shallow depth of field, and premium color grading.' +
+      ' Include a confident, professional voiceover promoting the business and its offer, with subtle background music.' +
+      ' Photorealistic and believable \u2014 must look like a real filmed TV commercial, NOT cartoonish, NOT animated, and NOT obviously AI-generated. End with the business name and a clear call to action.';
     var pEl=document.getElementById('prompt'); if(pEl) pEl.value = promptText;
     // FIRST VIDEO = CINEMATIC AI (the most impressive, surprising type on the platform)
     try{ selectVtype('cinematic', document.getElementById('vt-cinematic')); }catch(e){}
