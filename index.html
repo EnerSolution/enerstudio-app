@@ -1433,7 +1433,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.96.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.97.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -2061,6 +2061,25 @@ function freeTierBlocked(){
     changePlan((pilotUser && pilotUser.plan) || 'starter');
   }
   return true;
+}
+// Check this month's plan allowance BEFORE starting a paid generation, so an over-limit
+// member is stopped up front (no wasted AI cost). The server enforces this too as a backstop.
+// Returns true if allowed to proceed, false if blocked (and shows an upgrade/refresh prompt).
+async function checkAllowance(type, amount){
+  amount = amount || 1;
+  try{
+    var r = await fetch(BACKEND + '/api/usage');
+    if(!r.ok) return true;                      // couldn't check → let the server decide
+    var d = await r.json();
+    if(!d || !d.caps || d.caps[type] == null) return true; // uncapped type → allow
+    var rem = (d.remaining && d.remaining[type] != null) ? d.remaining[type] : d.caps[type];
+    if(rem >= amount) return true;
+    var label = (type === 'avatarMin') ? 'talking-avatar minutes' : type;
+    if(confirm('📊 You’ve used all your ' + (d.plan ? (d.plan + ' ') : '') + label + ' for this month.\n\nUse Plan Refresh (same price, resets your allowance now) or upgrade for higher limits.\n\nOpen your plan page?')){
+      try{ showPage('membership', document.getElementById('nav-membership')); }catch(e){ try{ changePlan((pilotUser && pilotUser.plan) || 'pro'); }catch(_e){} }
+    }
+    return false;
+  }catch(e){ return true; }                      // network issue → let the server decide
 }
 async function generateCinematicPro(){
   var prompt=((document.getElementById('prompt')||{}).value||'').trim();
@@ -4089,6 +4108,7 @@ async function generateProductAd(){
 // Product ad now uses Runway Gen-4 Turbo image-to-video (real AI motion) + caption overlay
 var productAdData = null; // { headline, sub, price, motionPrompt }
 async function _generateProductAdInner(){
+  if(!(await checkAllowance('productad', 1))) return;
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){ showerr('Please describe your product (what it is and its main benefit).'); return; }
   if(!productImages.length){ showerr('Please upload at least one product photo first.'); return; }
@@ -4366,6 +4386,7 @@ async function generateTalkingPhoto(){
 async function _generateTalkingPhotoInner(){
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){ showerr('Please describe what the photo should say.'); return; }
+  if(!(await checkAllowance('talkingphoto', 1))) return;
   if(tpMode==='upload' && !tpImage){ showerr('Please upload a photo first.'); return; }
   if(tpMode==='ai' && !tpCharUrl){ showerr('Please generate a character preview first (in the "Describe a character" section).'); return; }
   clearerr();
@@ -4449,6 +4470,7 @@ async function generateSpokesperson(){
 async function _generateSpokespersonInner(){
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){ showerr('Please describe what your character should say.'); return; }
+  if(!(await checkAllowance('spokesperson', 1))) return;
   if(!tpImage){ showerr('Please upload your character image first (e.g. Enzo).'); return; }
   clearerr();
   document.getElementById('scriptBtn').disabled=true;
@@ -4543,6 +4565,7 @@ async function generateAvatarVideo(){
   }
 }
 async function _generateAvatarVideoInner(){
+  if(!(await checkAllowance('avatarMin', 1))) return;
   function dbg(msg){
     var s=document.getElementById('slidesResultSub'); if(s) s.textContent='⏳ '+msg;
     var eb=document.getElementById('errbox'); if(eb){ eb.textContent='⏳ '+msg; eb.classList.add('on'); eb.style.background='rgba(99,102,241,0.1)'; eb.style.borderColor='var(--ba)'; eb.style.color='var(--ac)'; }
