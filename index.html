@@ -218,11 +218,11 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <input id="ob-email" type="email" placeholder="you@company.com" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
         <label style="font-size:12px;color:var(--tm,#94a3b8);">Password *</label>
         <input id="ob-pass" type="password" placeholder="At least 6 characters" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
-        <label style="font-size:12px;color:var(--tm,#94a3b8);">Your name</label>
+        <label style="font-size:12px;color:var(--tm,#94a3b8);">Your name *</label>
         <input id="ob-name" type="text" placeholder="Jane Smith" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
-        <label style="font-size:12px;color:var(--tm,#94a3b8);">Company / brand</label>
+        <label style="font-size:12px;color:var(--tm,#94a3b8);">Company / brand *</label>
         <input id="ob-company" type="text" placeholder="Acme Inc." style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 14px;box-sizing:border-box;">
-        <label style="font-size:12px;color:var(--tm,#94a3b8);">Phone (for support &amp; updates)</label>
+        <label style="font-size:12px;color:var(--tm,#94a3b8);">Phone * (for support &amp; updates)</label>
         <input id="ob-phone" type="tel" placeholder="(555) 123-4567" style="width:100%;background:var(--sur,#1a1e26);border:1px solid var(--bdr,#2a2f3a);border-radius:9px;padding:11px;font-size:14px;color:#fff;outline:none;margin:5px 0 18px;box-sizing:border-box;">
         <button id="ob-signup-btn" onclick="obCreateAccount()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">Continue →</button>
         <div id="ob-err" style="display:none;font-size:12px;color:var(--re,#f87171);margin-top:10px;text-align:center;"></div>
@@ -333,6 +333,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <div class="nitem" id="nav-settings" onclick="showPage('settings',this)">⚙️ Settings</div>
     <div class="nitem" onclick="window.open('https://enerstudio.io','_blank')">🌐 EnerStudio.io</div>
     <div class="nitem" id="nav-support" onclick="showPage('support',this)">💬 Support & Help</div>
+    <div class="nitem" id="nav-admin" style="display:none;color:var(--gr);" onclick="showPage('admin',this)">🛠️ Admin</div>
   </div>
   <div class="main">
     <div class="ptitle">Create New Video</div>
@@ -1399,6 +1400,16 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       </div>
     </div>
   </div>
+  <div id="page-admin" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
+    <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--tx);">🛠️ Admin — Leads</div>
+    <div style="font-size:13.5px;color:var(--ts);margin-bottom:1.25rem;">Everyone who has signed up, whether they've paid, and how many videos they've made — live from your data.</div>
+    <div id="adminLeadsStats" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:1.25rem;"></div>
+    <button onclick="loadAdminLeads()" style="background:var(--card);border:1px solid var(--bdr);color:var(--tx);border-radius:9px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:1rem;">↻ Refresh</button>
+    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:8px;overflow-x:auto;">
+      <div id="adminLeadsTable"></div>
+    </div>
+    <div style="font-size:11.5px;color:var(--tm);margin-top:12px;">Tip: click any email to write to that lead. Auto follow-up emails (from Enzo) are sent separately by the platform.</div>
+  </div>
   <div id="page-settings" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
     <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">⚙️ Settings</div>
     <div style="font-size:14px;color:var(--ts);margin-bottom:2rem;">Platform preferences, brand logos, and configuration</div>
@@ -1408,7 +1419,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.97.0</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.99.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1433,7 +1444,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.97.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.99.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -1561,6 +1572,9 @@ async function obCreateAccount(){
   var err=document.getElementById('ob-err');
   if(!email || email.indexOf('@')<1 || email.indexOf('.')<0){ err.textContent='Please enter a valid email.'; err.style.display='block'; return; }
   if(pass.length<6){ err.textContent='Password must be at least 6 characters.'; err.style.display='block'; return; }
+  if(!name){ err.textContent='Please enter your name.'; err.style.display='block'; return; }
+  if(!company){ err.textContent='Please enter your company or brand name.'; err.style.display='block'; return; }
+  if(phone.replace(/[^0-9]/g,'').length < 7){ err.textContent='Please enter a valid phone number.'; err.style.display='block'; return; }
   err.style.display='none';
   var btn=document.getElementById('ob-signup-btn'); btn.disabled=true; btn.textContent='Creating account…';
   try{
@@ -1701,6 +1715,8 @@ function applyAuthUser(){
     if(who) who.textContent='👤 '+firstName+' · Log out';
     var an=document.getElementById('acctName'); if(an) an.textContent=pilotUser.name||'—';
     var ac=document.getElementById('acctCompany'); if(ac) ac.textContent=pilotUser.company||'—';
+    // Reveal the Admin menu only for the EnerStudio admin account
+    try{ var _na=document.getElementById('nav-admin'); if(_na) _na.style.display = isAdminUser() ? 'block' : 'none'; }catch(e){}
     // show current plan badge wherever present
     var planName=({starter:'Starter',pro:'Pro',business:'Business'})[pilotUser.plan]||'Pro';
     var pb=document.getElementById('currentPlanBadge'); if(pb) pb.textContent=planName+' plan';
@@ -4691,7 +4707,7 @@ function showPage(pageId, navEl){
   var mainDiv = document.querySelector('.main');
   if(mainDiv) mainDiv.style.display = pageId === 'create' ? 'block' : 'none';
   // Hide all secondary pages
-  ['library','membership','settings','analytics','support','autopilot'].forEach(function(p){
+  ['library','membership','settings','analytics','support','autopilot','admin'].forEach(function(p){
     var el = document.getElementById('page-'+p);
     if(el){ el.style.display = 'none'; el.style.flex = ''; }
   });
@@ -4717,8 +4733,46 @@ function showPage(pageId, navEl){
   if(pageId === 'settings'){ renderLogoGrid(); loadAdminCredits(); }
   if(pageId === 'membership') updateMembershipCredits();
   if(pageId === 'autopilot'){ initAutopilot(); }
+  if(pageId === 'admin'){ loadAdminLeads(); }
   // Scroll to top of page
   window.scrollTo(0,0);
+}
+var ADMIN_EMAIL = 'enerstudio.io@gmail.com';
+function isAdminUser(){ return !!(pilotUser && pilotUser.email && pilotUser.email.toLowerCase() === ADMIN_EMAIL); }
+function escHtml(s){ return String(s==null?'':s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function adminStatCard(label, val, color){ return '<div style="background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px 16px;min-width:120px;"><div style="font-size:26px;font-weight:800;font-family:\'Syne\',sans-serif;color:'+(color||'var(--tx)')+';">'+val+'</div><div style="font-size:11px;color:var(--tm);">'+label+'</div></div>'; }
+async function loadAdminLeads(){
+  var tbl=document.getElementById('adminLeadsTable'); var stats=document.getElementById('adminLeadsStats');
+  if(!tbl) return;
+  tbl.innerHTML='<div style="color:var(--tm);padding:16px;">Loading leads…</div>';
+  try{
+    var r=await fetch(BACKEND+'/api/admin/leads'); var d=await r.json();
+    if(!r.ok) throw new Error((d&&d.error)||'Failed to load');
+    var leads=d.leads||[];
+    var paidS=['trialing','active','past_due'];
+    var total=leads.length;
+    var paid=leads.filter(function(l){return paidS.indexOf(l.sub_status)>=0;}).length;
+    var activated=leads.filter(function(l){return (l.videos_made||0)>0;}).length;
+    if(stats) stats.innerHTML = adminStatCard('Total signups', total) + adminStatCard('Paying / trial', paid, 'var(--gr)') + adminStatCard('Made a video', activated, 'var(--gr)') + adminStatCard('Not activated', total-activated, '#f87171');
+    if(!leads.length){ tbl.innerHTML='<div style="color:var(--tm);padding:16px;">No signups yet.</div>'; return; }
+    var head='<tr style="text-align:left;color:var(--tm);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;"><th style="padding:8px 10px;">Name</th><th style="padding:8px 10px;">Company</th><th style="padding:8px 10px;">Email</th><th style="padding:8px 10px;">Phone</th><th style="padding:8px 10px;">Plan</th><th style="padding:8px 10px;">Status</th><th style="padding:8px 10px;text-align:center;">Videos</th><th style="padding:8px 10px;">Joined</th></tr>';
+    var body=leads.map(function(l){
+      var isPaid=paidS.indexOf(l.sub_status)>=0;
+      var statusBadge = isPaid ? '<span style="color:var(--gr);font-weight:700;">'+escHtml(l.sub_status)+'</span>' : '<span style="color:var(--tm);">free</span>';
+      var vids = (l.videos_made||0)>0 ? '<span style="color:var(--gr);font-weight:700;">'+l.videos_made+'</span>' : '<span style="color:#f87171;font-weight:700;">0</span>';
+      var joined = l.signed_up ? new Date(l.signed_up).toLocaleDateString() : '—';
+      return '<tr style="border-top:1px solid var(--bdr);">'
+        +'<td style="padding:8px 10px;">'+escHtml(l.name||'—')+'</td>'
+        +'<td style="padding:8px 10px;">'+escHtml(l.company||'—')+'</td>'
+        +'<td style="padding:8px 10px;"><a href="mailto:'+escHtml(l.email)+'" style="color:var(--pl);">'+escHtml(l.email)+'</a></td>'
+        +'<td style="padding:8px 10px;">'+escHtml(l.phone||'—')+'</td>'
+        +'<td style="padding:8px 10px;">'+escHtml(l.plan||'—')+'</td>'
+        +'<td style="padding:8px 10px;">'+statusBadge+'</td>'
+        +'<td style="padding:8px 10px;text-align:center;">'+vids+'</td>'
+        +'<td style="padding:8px 10px;font-size:11px;color:var(--tm);">'+joined+'</td></tr>';
+    }).join('');
+    tbl.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:13px;min-width:760px;"><thead>'+head+'</thead><tbody>'+body+'</tbody></table>';
+  }catch(e){ tbl.innerHTML='<div style="color:#f87171;padding:16px;">Could not load leads: '+escHtml(e.message||e)+'</div>'; }
 }
 // ════════ AUTO-PILOT CONTENT ENGINE (frontend) ════════
 var apAspect='vertical', apFreq='daily', apPlatforms=[];
