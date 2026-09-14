@@ -1419,7 +1419,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">8.99.0</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.0.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1444,7 +1444,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v8.99.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.0.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -1717,6 +1717,8 @@ function applyAuthUser(){
     var ac=document.getElementById('acctCompany'); if(ac) ac.textContent=pilotUser.company||'—';
     // Reveal the Admin menu only for the EnerStudio admin account
     try{ var _na=document.getElementById('nav-admin'); if(_na) _na.style.display = isAdminUser() ? 'block' : 'none'; }catch(e){}
+    // Check whether this account is locked (trial ended without payment) and gate the UI if so.
+    try{ enforceLockGate(); }catch(e){}
     // show current plan badge wherever present
     var planName=({starter:'Starter',pro:'Pro',business:'Business'})[pilotUser.plan]||'Pro';
     var pb=document.getElementById('currentPlanBadge'); if(pb) pb.textContent=planName+' plan';
@@ -4701,8 +4703,39 @@ function comingSoon(name){
 }
 // PAGE NAVIGATION
 var mainContent = null;
+// ── ACCOUNT LOCK (trial ended without payment) ──
+// The backend flags these accounts (GET /api/usage → locked:true) and refuses all paid generation.
+// Here we mirror it in the UI: a full-screen "trial ended — subscribe" gate they can't create past.
+async function enforceLockGate(){
+  try{
+    var r = await fetch(BACKEND + '/api/usage');
+    if(!r.ok) return;
+    var d = await r.json();
+    window.__accountLocked = !!(d && d.locked);
+    if(window.__accountLocked){ showLockedScreen(); } else { hideLockedScreen(); }
+  }catch(e){}
+}
+function showLockedScreen(){
+  if(document.getElementById('lockedOverlay')) return;
+  var ov=document.createElement('div');
+  ov.id='lockedOverlay';
+  ov.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(8,10,18,.93);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;';
+  ov.innerHTML='<div style="max-width:440px;width:100%;background:var(--card,#151a26);border:1px solid var(--bdr,#2a3346);border-radius:18px;padding:34px 28px;text-align:center;color:var(--tx,#e8edf5);box-shadow:0 20px 60px rgba(0,0,0,.55);">'
+    +'<div style="font-size:46px;line-height:1;margin-bottom:12px;">🎬</div>'
+    +'<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:23px;margin-bottom:10px;">Your free trial has ended</div>'
+    +'<div style="color:var(--tm,#9aa6bd);font-size:15px;line-height:1.6;margin-bottom:24px;">Your account is paused — but everything you made is safe. Choose a plan to reactivate instantly and keep creating videos.</div>'
+    +'<button id="lockedSubBtn" style="width:100%;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:0;border-radius:11px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:14px;">Reactivate my account →</button>'
+    +'<div style="font-size:13px;"><a href="#" id="lockedLogout" style="color:var(--tm,#9aa6bd);text-decoration:underline;">Log out</a></div>'
+    +'</div>';
+  document.body.appendChild(ov);
+  var b=document.getElementById('lockedSubBtn'); if(b) b.onclick=function(){ hideLockedScreen(); try{ showPage('membership', document.getElementById('nav-membership')); }catch(e){} };
+  var lo=document.getElementById('lockedLogout'); if(lo) lo.onclick=function(ev){ ev.preventDefault(); try{ pilotReset(); }catch(e){} };
+}
+function hideLockedScreen(){ var o=document.getElementById('lockedOverlay'); if(o) o.remove(); }
 function showPage(pageId, navEl){
   try{ closeSidebarMobile(); }catch(e){}
+  // If the account is locked (trial ended, not paid), keep them on the plans page and re-show the lock everywhere else.
+  if(window.__accountLocked && pageId!=='membership'){ try{ showLockedScreen(); }catch(e){} return; }
   // Hide main content area
   var mainDiv = document.querySelector('.main');
   if(mainDiv) mainDiv.style.display = pageId === 'create' ? 'block' : 'none';
