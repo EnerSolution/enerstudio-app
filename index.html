@@ -412,11 +412,12 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Animated mascot + voice</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">LIVE</div>
         </div>
-        <div id="vt-slideshow" class="vtile soon" onclick="comingSoon('Slideshow')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
+        <div id="vt-slideshow" class="vtile" onclick="selectVtype('slideshow',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div class="vinfo" onclick="vtInfo(event,'slideshow')" onmouseenter="vtInfo(event,'slideshow')">?</div>
           <div style="font-size:22px;margin-bottom:4px;">🖼️</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Slideshow</div>
-          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Photo montage</div>
-          <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
+          <div style="font-size:9px;color:var(--tm);margin-top:2px;">Your photos → video</div>
+          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">NEW</div>
         </div>
         <div id="vt-cartoon" class="vtile soon" onclick="comingSoon('Cartoon')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
           <div style="font-size:22px;margin-bottom:4px;">🎨</div>
@@ -647,6 +648,58 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         </div>
       </div>
     </div>
+    <!-- SLIDESHOW CONFIG SECTION -->
+    <div id="slideshow-config-section" style="display:none;">
+      <div class="card">
+        <div class="ch"><div class="ct">🖼️ Slideshow Setup</div><div class="csub">Turn your own photos into a polished cinematic montage — smooth zoom & pan, your captions, and music</div></div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Your Photos <span style="text-transform:none;color:var(--tm);">(3–8 recommended, in order)</span></div>
+        <input type="file" id="showImgInput" accept="image/*" multiple onchange="handleShowImages(event)" style="display:none;">
+        <div onclick="document.getElementById('showImgInput').click()" style="border:1.5px dashed var(--bdr);border-radius:10px;padding:18px;text-align:center;cursor:pointer;margin-bottom:8px;background:var(--sur);">
+          <div style="font-size:22px;">📷</div>
+          <div style="font-size:12px;font-weight:600;color:var(--ts);margin-top:4px;">Tap to upload your photos</div>
+          <div style="font-size:10px;color:var(--tm);margin-top:2px;">They play in the order shown below · tap × to remove</div>
+        </div>
+        <div id="showImgThumbs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;"></div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Captions <span style="text-transform:none;color:var(--tm);">(optional — one line per photo, in order)</span></div>
+        <textarea id="showCaptions" rows="4" placeholder="Modern 3-bed home&#10;Bright open kitchen&#10;Landscaped backyard&#10;Book a viewing today" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:14px;box-sizing:border-box;resize:vertical;"></textarea>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Aspect Ratio</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <div id="sar-vertical" onclick="selectShowAspect('vertical',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">📱</div><div style="font-size:11px;font-weight:600;color:#fff;margin-top:3px;">Vertical</div><div style="font-size:8px;color:rgba(255,255,255,0.7);">9:16 Reels</div>
+          </div>
+          <div id="sar-square" onclick="selectShowAspect('square',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">⬛</div><div style="font-size:11px;font-weight:600;color:var(--ts);margin-top:3px;">Square</div><div style="font-size:8px;color:var(--tm);">1:1 Feed</div>
+          </div>
+          <div id="sar-landscape" onclick="selectShowAspect('landscape',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+            <div style="font-size:18px;">🖥️</div><div style="font-size:11px;font-weight:600;color:var(--ts);margin-top:3px;">Landscape</div><div style="font-size:8px;color:var(--tm);">16:9 Web</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Seconds per photo</div>
+        <select id="showPerPhoto" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:14px;">
+          <option value="2.5">2.5s — snappy</option>
+          <option value="3.5" selected>3.5s — balanced</option>
+          <option value="5">5s — relaxed</option>
+        </select>
+        <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Music</div>
+        <select id="showMusic" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-family:DM Sans,sans-serif;font-size:13px;color:var(--tx);outline:none;margin-bottom:14px;">
+          <option value="uplift" selected>Music — Uplifting</option>
+          <option value="energetic">Music — Energetic</option>
+          <option value="calm">Music — Calm</option>
+          <option value="">No music (silent)</option>
+        </select>
+        <button id="showGenBtn" onclick="generateSlideshow()" style="width:100%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:0;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;">🖼️ Create My Slideshow</button>
+        <div style="margin-top:12px;padding:8px 10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;font-size:11px;color:var(--tm);">
+          💡 Your photos get smooth cinematic zoom & pan, your captions, and music — a polished montage in seconds. Great for listings, dishes, events and before/after. Costs pennies (no AI video credits used).
+        </div>
+        <!-- SLIDESHOW RESULT -->
+        <div id="showResultCard" style="display:none;margin-top:16px;">
+          <div style="height:6px;background:var(--sur);border-radius:4px;overflow:hidden;margin-bottom:10px;"><div id="showPfill" style="height:100%;width:0%;background:linear-gradient(90deg,#6366f1,#8b5cf6);transition:width 0.4s;"></div></div>
+          <div id="showPtxt" style="font-size:12px;color:var(--tm);text-align:center;margin-bottom:10px;"></div>
+          <video id="showVideo" controls playsinline style="display:none;width:100%;border-radius:10px;background:#000;"></video>
+          <button id="showDlBtn" onclick="downloadShowVideo()" disabled style="width:100%;margin-top:10px;background:var(--card);border:1px solid var(--bdr);color:var(--tx);border-radius:9px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;">⬇️ Download</button>
+        </div>
+      </div>
+    </div>
     <!-- TALKING PHOTO CONFIG SECTION -->
     <div id="talkingphoto-config-section" style="display:none;">
       <div class="card">
@@ -812,7 +865,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       </div>
     </div>
     <!-- STEP 1: DESCRIBE -->
-    <div class="card">
+    <div class="card" id="describe-step-card">
       <div class="ch"><div class="ct">✍️ Step 1 — Describe Your Video</div><div class="csub">EnerStudio AI writes your script</div></div>
       <textarea id="prompt" rows="4" placeholder="Describe your video in detail... e.g. We're a coffee subscription brand. Target busy professionals who want great coffee at home. Friendly, upbeat tone. Visit ourwebsite.com."></textarea>
       <div class="opts">
@@ -1419,7 +1472,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.0.1</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.1.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1444,7 +1497,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.0.1</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.1.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -1802,7 +1855,8 @@ var VT_INFO = {
   slides:{ icon:'📊', name:'Animated Slides', what:'Kinetic text and animated slides in your brand colors — clear, professional, information-rich.', use:'Best for educational content, how-tos, summaries, and key-point presentations.', tip:'Upload your logo and AI matches your brand colors automatically.' },
   whiteboard:{ icon:'✏️', name:'Whiteboard', what:'A hand draws your message on a whiteboard — the classic engaging explainer style.', use:'Great for teaching, simplifying complex ideas, and tutorials that hold attention.', tip:'Keep the script focused on one clear idea for the strongest whiteboard effect.' },
   talkingphoto:{ icon:'🗣️', name:'Talking Photo', what:'Upload ANY photo — a person, a mascot, even a pet — and our most advanced AI brings it to life speaking your script, with lifelike lip-sync and natural expressions.', use:'Perfect for personal spokespeople, founders, testimonials, characters, and scroll-stopping social content.', tip:'A clear, front-facing portrait gives the most realistic result. Powered by HeyGen Avatar IV at 1080p.' },
-  spokesperson:{ icon:'🤖', name:'Spokesperson', what:'Bring a mascot, character, logo or any image to life — AI adds cinematic motion and a natural spoken voiceover of your script.', use:'Perfect for brand mascots and characters (like Enzo!), intros, and explainers where a human face is not needed.', tip:'Best for non-human characters. Upload your image, pick a voice, and AI animates it with motion + voiceover (not lip-sync).' }
+  spokesperson:{ icon:'🤖', name:'Spokesperson', what:'Bring a mascot, character, logo or any image to life — AI adds cinematic motion and a natural spoken voiceover of your script.', use:'Perfect for brand mascots and characters (like Enzo!), intros, and explainers where a human face is not needed.', tip:'Best for non-human characters. Upload your image, pick a voice, and AI animates it with motion + voiceover (not lip-sync).' },
+  slideshow:{ icon:'🖼️', name:'Slideshow', what:'Turn YOUR photos into a polished cinematic montage — smooth zoom & pan on each photo, your captions, and music, in seconds.', use:'Perfect for realtors (listing tours), restaurants (dishes), events, before/after, product galleries, and recaps.', tip:'Upload 3–8 of your best photos in the order you want them, add a short caption to each (optional), pick music, and go.' }
 };
 var _vtPopEl=null;
 function vtInfo(ev, type){
@@ -3002,7 +3056,7 @@ function closeSidebarMobile(){
 }
 // VIDEO TYPE
 var activeVtype = 'cinematic';
-var SOON_TYPES = ['slideshow','cartoon','motion'];
+var SOON_TYPES = ['cartoon','motion'];
 function selectVtype(type, el){
   activeVtype = type;
   // Clear any stale preview/scenes from a previous type so nothing looks left over
@@ -3016,7 +3070,7 @@ function selectVtype(type, el){
   var _rt2=document.getElementById('slidesResultTitle'); if(_rt2) _rt2.textContent='Your Video';
   var _rs2=document.getElementById('slidesResultSub'); if(_rs2) _rs2.textContent='Rendered in your brand colors';
   if(typeof slidesData!=='undefined') slidesData=[];
-  ['avatar','faceless','productad','cinematic','quote','slides','whiteboard','talkingphoto','spokesperson'].forEach(function(t){
+  ['avatar','faceless','productad','cinematic','quote','slides','whiteboard','talkingphoto','spokesperson','slideshow'].forEach(function(t){
     var card = document.getElementById('vt-'+t);
     if(!card) return;
     if(t === type){
@@ -3042,6 +3096,9 @@ function selectVtype(type, el){
   var _fc = document.getElementById('faceless-config-section'); if(_fc && type!=='faceless') _fc.style.display='none';
   var _pc = document.getElementById('productad-config-section'); if(_pc && type!=='productad') _pc.style.display='none';
   var _tpc = document.getElementById('talkingphoto-config-section'); if(_tpc && type!=='talkingphoto' && type!=='spokesperson') _tpc.style.display='none';
+  var _shc = document.getElementById('slideshow-config-section'); if(_shc && type!=='slideshow') _shc.style.display='none';
+  // Slideshow is photo-based and needs no written prompt → hide the whole "Describe" step for it, show it otherwise.
+  var _dsc = document.getElementById('describe-step-card'); if(_dsc) _dsc.style.display = (type==='slideshow') ? 'none' : 'block';
   var _sb = document.getElementById('scriptBtn');
   if(_sb){ _sb.disabled=false; }
   if(_sb) _sb.textContent = (type==='slides') ? '⚡ Design My Slides' : (type==='quote' ? '⚡ Create My Quote Cards' : (type==='faceless' ? '⚡ Create My Video' : (type==='productad' ? '⚡ Create My Product Ad' : (type==='talkingphoto' ? '⚡ Bring My Photo to Life' : '⚡ Generate Script'))));
@@ -3110,6 +3167,12 @@ function selectVtype(type, el){
     var tpTitle2=document.getElementById('tpConfigTitle'); if(tpTitle2) tpTitle2.textContent='🤖 Spokesperson Setup';
     try{ loadTpVoices(); }catch(e){}
     toast('🤖 Spokesperson selected — upload your character (e.g. Enzo) and describe what it should say');
+  } else if(type === 'slideshow'){
+    // Slideshow is photo-based: hide the AI prompt area entirely; the panel has its own button.
+    if(avatarSection) avatarSection.style.display = 'none';
+    if(cinematicSection) cinematicSection.style.display = 'none';
+    var shc = document.getElementById('slideshow-config-section'); if(shc) shc.style.display='block';
+    toast('🖼️ Slideshow selected — upload your photos, add captions, pick music');
   } else {
     if(avatarSection) avatarSection.style.display = 'none';
     if(cinematicSection) cinematicSection.style.display = 'block';
@@ -4086,6 +4149,88 @@ function selectAvatarCard(av){
   if(desc) desc.textContent = (av.premium ? 'Premium avatar' : 'Standard avatar') + (av.previewVideo ? ' · video preview available' : '');
 }
 // ===== PRODUCT ADS: upload photo(s) -> AI ad copy -> Ken Burns motion video =====
+// ── SLIDESHOW (photo montage) — turns the member's own photos into a Ken-Burns montage ──
+var showPhotos = [];           // uploaded photo data URLs, in order
+var showAspect = 'vertical';
+var showLastVideoId = null, showLastInline = null;
+function handleShowImages(ev){
+  var files = ev.target.files;
+  if(!files || !files.length) return;
+  var thumbs=document.getElementById('showImgThumbs');
+  Array.prototype.forEach.call(files, function(file){
+    if(!file.type || file.type.indexOf('image/')!==0) return;
+    if(showPhotos.length>=8){ toast('Up to 8 photos per slideshow'); return; }
+    var reader=new FileReader();
+    reader.onload=function(e){
+      if(showPhotos.length>=8) return;
+      showPhotos.push(e.target.result);
+      var t=document.createElement('div');
+      t.style.cssText='position:relative;width:54px;height:54px;border-radius:8px;overflow:hidden;border:1px solid var(--bdr);';
+      var im=document.createElement('img'); im.src=e.target.result; im.style.cssText='width:100%;height:100%;object-fit:cover;';
+      var x=document.createElement('div'); x.textContent='×'; x.title='Remove';
+      x.style.cssText='position:absolute;top:0;right:0;background:rgba(0,0,0,0.6);color:#fff;width:18px;height:18px;line-height:16px;text-align:center;cursor:pointer;font-weight:700;';
+      var thisUrl=e.target.result;
+      x.onclick=function(){ var i=showPhotos.indexOf(thisUrl); if(i>=0) showPhotos.splice(i,1); t.remove(); };
+      t.appendChild(im); t.appendChild(x); thumbs.appendChild(t);
+    };
+    reader.readAsDataURL(file);
+  });
+  ev.target.value='';
+}
+function selectShowAspect(a, el){
+  showAspect=a;
+  ['vertical','square','landscape'].forEach(function(k){
+    var c=document.getElementById('sar-'+k);
+    if(!c) return;
+    if(k===a){ c.style.background='var(--p)'; c.style.borderColor='var(--p)'; c.querySelectorAll('div').forEach(function(d,i){ if(i===1) d.style.color='#fff'; else if(i===2) d.style.color='rgba(255,255,255,0.7)'; }); }
+    else { c.style.background='var(--card)'; c.style.borderColor='var(--bdr)'; c.querySelectorAll('div').forEach(function(d,i){ d.style.color = (i===1)?'var(--ts)':'var(--tm)'; }); }
+  });
+}
+async function generateSlideshow(){
+  if(showPhotos.length < 2){ toast('Please upload at least 2 photos for a slideshow.'); return; }
+  if(freeTierBlocked()) return;
+  var btn=document.getElementById('showGenBtn'); if(btn){ btn.disabled=true; btn.textContent='Creating…'; }
+  var card=document.getElementById('showResultCard'); if(card) card.style.display='block';
+  var vid=document.getElementById('showVideo'); if(vid) vid.style.display='none';
+  var dl=document.getElementById('showDlBtn'); if(dl) dl.disabled=true;
+  var capLines=(((document.getElementById('showCaptions')||{}).value)||'').split('\n').map(function(s){ return s.trim(); });
+  var perPhoto=parseFloat(((document.getElementById('showPerPhoto')||{}).value)||'3.5');
+  var slides=showPhotos.map(function(_p, i){
+    var cap=capLines[i]||'';
+    return { blocks: cap ? [{ text:cap, size:0.055, weight:'bold', color:'text' }] : [] };
+  });
+  var music=((document.getElementById('showMusic')||{}).value)||'';
+  var pal = (typeof slidesPalette!=='undefined' && slidesPalette) ? slidesPalette : {bg_dark:'#0B1F3A',bg_mid:'#16305A',accent:'#3B82F6',accent2:'#2563EB',text:'#FFFFFF',text_soft:'#BFD4EA',ink:'#0B1F3A'};
+  startClimb('showPbarNil','showPfill','showPtxt','Building your slideshow…',10,95);
+  try{
+    var body={ freeTier:!isPaidMember(), videoType:'slideshow', productImages:showPhotos, slides:slides, palette:pal, aspect:showAspect, durationSecs: Math.max(4, Math.round(perPhoto*showPhotos.length)), musicTrack:music, audioMode:'music' };
+    var r=await fetch(BACKEND+'/api/slides/animate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok) throw new Error('Render failed ('+r.status+')');
+    var d=await r.json();
+    if(!d.videoId) throw new Error('No video returned');
+    finishClimb('showPfill','showPtxt','Ready!');
+    showLastVideoId=d.videoId; showLastInline=d.videoData||null;
+    var url=showLastInline || (BACKEND+'/api/video/'+d.videoId);
+    if(vid){ vid.src=url; vid.style.display='block'; }
+    if(dl) dl.disabled=false;
+    try{ downloadShowVideo(); }catch(_e){}
+    try{ saveToLibrary(activeBrand, Math.round(perPhoto*showPhotos.length)+'s', 'Slideshow', url, d.videoId, 'slideshow', showAspect); }catch(_e){}
+    if(card) card.scrollIntoView({behavior:'smooth'});
+    toast('Slideshow ready! Saved to Library.');
+  }catch(e){
+    stopClimb();
+    var _pt=document.getElementById('showPtxt'); if(_pt) _pt.textContent='Slideshow failed: '+e.message;
+    toast('Slideshow failed: '+e.message);
+  }
+  if(btn){ btn.disabled=false; btn.textContent='🖼️ Create My Slideshow'; }
+}
+function downloadShowVideo(){
+  var fname='enerstudio-slideshow-'+(activeBrand||'video').replace(/\s/g,'-')+'.mp4';
+  if(showLastInline){
+    try{ var a=document.createElement('a'); a.href=showLastInline; a.download=fname; document.body.appendChild(a); a.click(); a.remove(); toast('Download started!'); return; }catch(e){}
+  }
+  if(showLastVideoId){ var a2=document.createElement('a'); a2.href=BACKEND+'/api/video/'+showLastVideoId; a2.download=fname; document.body.appendChild(a2); a2.click(); a2.remove(); }
+}
 var productImages = [];        // array of data URLs
 var productAspect = 'vertical';
 function handleProductImages(ev){
