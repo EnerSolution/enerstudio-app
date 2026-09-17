@@ -419,17 +419,19 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Your photos → video</div>
           <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">NEW</div>
         </div>
-        <div id="vt-cartoon" class="vtile soon" onclick="comingSoon('Cartoon')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
+        <div id="vt-cartoon" class="vtile" onclick="selectVtype('cartoon',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div class="vinfo" onclick="vtInfo(event,'cartoon')" onmouseenter="vtInfo(event,'cartoon')">?</div>
           <div style="font-size:22px;margin-bottom:4px;">🎨</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Cartoon</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">2D Animation</div>
-          <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
+          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">NEW</div>
         </div>
-        <div id="vt-motion" class="vtile soon" onclick="comingSoon('Motion Graphics')" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;opacity:0.6;">
+        <div id="vt-motion" class="vtile" onclick="selectVtype('motion',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;">
+          <div class="vinfo" onclick="vtInfo(event,'motion')" onmouseenter="vtInfo(event,'motion')">?</div>
           <div style="font-size:22px;margin-bottom:4px;">⚡</div>
           <div style="font-size:11px;font-weight:600;color:var(--ts);">Motion</div>
           <div style="font-size:9px;color:var(--tm);margin-top:2px;">Graphics</div>
-          <div style="font-size:9px;background:rgba(251,191,36,0.2);color:var(--go);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">SOON</div>
+          <div style="font-size:9px;background:rgba(52,211,153,0.2);color:var(--gr);padding:1px 5px;border-radius:3px;margin-top:3px;display:inline-block;">NEW</div>
         </div>
       </div>
     </div>
@@ -1198,11 +1200,13 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:1.25rem;font-size:12.5px;color:var(--ts);">
         <div>🎤 Avatar IV: <strong style="color:var(--tx);">2 min/mo</strong></div>
         <div>🎬 Cinematic: <strong style="color:var(--tx);">4 videos</strong></div>
+        <div>🎨 Cartoon: <strong style="color:var(--tx);">2</strong></div>
         <div>🛍️ Product Ads: <strong style="color:var(--tx);">10</strong></div>
         <div>🤖 Spokesperson: <strong style="color:var(--tx);">5</strong></div>
         <div>🎞️ Faceless: <strong style="color:var(--tx);">20</strong></div>
         <div>💬 Quote/Slides: <strong style="color:var(--tx);">40</strong></div>
         <div>🖼️ Slideshow: <strong style="color:var(--tx);">Unlimited</strong></div>
+        <div>⚡ Motion Graphics: <strong style="color:var(--tx);">Unlimited</strong></div>
       </div>
       <button id="planbtn-starter" onclick="changePlan('starter')" style="width:100%;padding:11px;border-radius:10px;background:transparent;border:1px solid var(--bdr);color:var(--tx);font-size:13px;font-weight:600;cursor:pointer;">Choose Starter</button>
     </div>
@@ -1218,11 +1222,13 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:1.25rem;font-size:12.5px;color:var(--ts);">
         <div>🎤 Avatar IV: <strong style="color:var(--tx);">4 min/mo</strong></div>
         <div>🎬 Cinematic: <strong style="color:var(--tx);">8 videos</strong></div>
+        <div>🎨 Cartoon: <strong style="color:var(--tx);">4</strong></div>
         <div>🛍️ Product Ads: <strong style="color:var(--tx);">25</strong></div>
         <div>🤖 Spokesperson: <strong style="color:var(--tx);">10</strong></div>
         <div>🎞️ Faceless: <strong style="color:var(--tx);">50</strong></div>
         <div>💬 Quote/Slides: <strong style="color:var(--tx);">100</strong></div>
         <div>🖼️ Slideshow: <strong style="color:var(--tx);">Unlimited</strong></div>
+        <div>⚡ Motion Graphics: <strong style="color:var(--tx);">Unlimited</strong></div>
       </div>
       <button id="planbtn-pro" onclick="changePlan('pro')" style="width:100%;padding:11px;border-radius:10px;background:linear-gradient(135deg,var(--p),var(--pd));border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Choose Pro</button>
     </div>
@@ -1237,11 +1243,13 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:1.25rem;font-size:12.5px;color:var(--ts);">
         <div>🎤 Avatar IV: <strong style="color:var(--tx);">8 min/mo</strong></div>
         <div>🎬 Cinematic: <strong style="color:var(--tx);">16 videos</strong></div>
+        <div>🎨 Cartoon: <strong style="color:var(--tx);">8</strong></div>
         <div>🛍️ Product Ads: <strong style="color:var(--tx);">50</strong></div>
         <div>🤖 Spokesperson: <strong style="color:var(--tx);">20</strong></div>
         <div>🎞️ Faceless: <strong style="color:var(--tx);">120</strong></div>
         <div>💬 Quote/Slides: <strong style="color:var(--tx);">250</strong></div>
         <div>🖼️ Slideshow: <strong style="color:var(--tx);">Unlimited</strong></div>
+        <div>⚡ Motion Graphics: <strong style="color:var(--tx);">Unlimited</strong></div>
       </div>
       <button id="planbtn-business" onclick="changePlan('business')" style="width:100%;padding:11px;border-radius:10px;background:transparent;border:1px solid var(--bdr);color:var(--tx);font-size:13px;font-weight:600;cursor:pointer;">Choose Business</button>
     </div>
@@ -1475,7 +1483,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.1.1</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.2.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1500,7 +1508,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.1.1</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.2.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -1859,7 +1867,9 @@ var VT_INFO = {
   whiteboard:{ icon:'✏️', name:'Whiteboard', what:'A hand draws your message on a whiteboard — the classic engaging explainer style.', use:'Great for teaching, simplifying complex ideas, and tutorials that hold attention.', tip:'Keep the script focused on one clear idea for the strongest whiteboard effect.' },
   talkingphoto:{ icon:'🗣️', name:'Talking Photo', what:'Upload ANY photo — a person, a mascot, even a pet — and our most advanced AI brings it to life speaking your script, with lifelike lip-sync and natural expressions.', use:'Perfect for personal spokespeople, founders, testimonials, characters, and scroll-stopping social content.', tip:'A clear, front-facing portrait gives the most realistic result. Powered by HeyGen Avatar IV at 1080p.' },
   spokesperson:{ icon:'🤖', name:'Spokesperson', what:'Bring a mascot, character, logo or any image to life — AI adds cinematic motion and a natural spoken voiceover of your script.', use:'Perfect for brand mascots and characters (like Enzo!), intros, and explainers where a human face is not needed.', tip:'Best for non-human characters. Upload your image, pick a voice, and AI animates it with motion + voiceover (not lip-sync).' },
-  slideshow:{ icon:'🖼️', name:'Slideshow', what:'Turn YOUR photos into a polished cinematic montage — smooth zoom & pan on each photo, your captions, and music, in seconds.', use:'Perfect for realtors (listing tours), restaurants (dishes), events, before/after, product galleries, and recaps.', tip:'Upload 3–8 of your best photos in the order you want them, add a short caption to each (optional), pick music, and go.' }
+  slideshow:{ icon:'🖼️', name:'Slideshow', what:'Turn YOUR photos into a polished cinematic montage — smooth zoom & pan on each photo, your captions, and music, in seconds.', use:'Perfect for realtors (listing tours), restaurants (dishes), events, before/after, product galleries, and recaps.', tip:'Upload 3–8 of your best photos in the order you want them, add a short caption to each (optional), pick music, and go.' },
+  cartoon:{ icon:'🎨', name:'Cartoon', what:'A fun 2D animated cartoon scene generated from your description — vibrant colors, playful characters, smooth cartoon motion.', use:'Great for explainers, kids/education, mascots, storytelling, and standing out on social with a playful style.', tip:'Describe the scene and characters in one or two sentences. Premium type (uses the same AI film engine as Cinematic). Paid plans only.' },
+  motion:{ icon:'⚡', name:'Motion Graphics', what:'High-energy animated graphics — bold kinetic text, big numbers and stats, animated shapes, set to music. The punchy promo/bumper style.', use:'Perfect for stats and results, quick promos, feature highlights, announcements, and scroll-stopping social posts.', tip:'Describe your message or the stats you want to show; AI designs energetic animated slides in vibrant colors.' }
 };
 var _vtPopEl=null;
 function vtInfo(ev, type){
@@ -2157,13 +2167,15 @@ async function checkAllowance(type, amount){
   }catch(e){ return true; }                      // network issue → let the server decide
 }
 async function generateCinematicPro(){
+  var isCartoon = (activeVtype === 'cartoon');
+  var kindLabel = isCartoon ? 'Cartoon' : 'Cinematic';
   var prompt=((document.getElementById('prompt')||{}).value||'').trim();
   if(!prompt){ try{ showerr('Please describe your video first.'); }catch(e){} return; }
   // Cinematic Pro is a PREMIUM (paid) feature — it runs our most advanced, most costly AI film engine.
   // Free users are stopped here BEFORE any generation happens, so it can never spend credits on the free tier.
   if(!isPaidMember()){
     try{
-      if(confirm('🎬 Cinematic Pro is a premium feature.\n\nIt uses our most advanced, most realistic AI film engine — the same one that made the showcase video. Upgrade to create your own cinematic videos.\n\nPlans start at $49/mo with a 7-day free trial. Open secure checkout now?')){
+      if(confirm((isCartoon?'🎨 Cartoon is a premium feature.':'🎬 Cinematic Pro is a premium feature.')+'\n\nIt uses our most advanced AI film engine. Upgrade to create your own '+(isCartoon?'cartoon':'cinematic')+' videos.\n\nPlans start at $49/mo with a 7-day free trial. Open secure checkout now?')){
         changePlan((pilotUser && pilotUser.plan) || 'starter');
       }
     }catch(e){}
@@ -2171,13 +2183,13 @@ async function generateCinematicPro(){
   }
   try{ clearerr(); }catch(e){}
   var btn=document.getElementById('scriptBtn'); if(btn){ btn.disabled=true; }
-  try{ setprog('scriptPbar','scriptPfill','scriptPtxt',15,'Creating your cinematic video (AI is filming)\u2026'); }catch(e){}
+  try{ setprog('scriptPbar','scriptPfill','scriptPtxt',15,'Creating your '+(isCartoon?'cartoon':'cinematic')+' video (AI is '+(isCartoon?'animating':'filming')+')\u2026'); }catch(e){}
   try{
     var aspect='vertical';
     var ft = !isPaidMember();
-    var sr=await fetch(BACKEND+'/api/cinematicpro/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt, aspect:aspect, freeTier:ft})});
+    var sr=await fetch(BACKEND+'/api/cinematicpro/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt, aspect:aspect, freeTier:ft, style:(isCartoon?'cartoon':undefined)})});
     var sd=await sr.json();
-    if(!sr.ok || !sd.taskId) throw new Error((sd&&sd.error)?(''+sd.error).slice(0,200):'Could not start Cinematic Pro');
+    if(!sr.ok || !sd.taskId) throw new Error((sd&&sd.error)?(''+sd.error).slice(0,200):'Could not start '+kindLabel);
     var taskId=sd.taskId; var ftq = sd.freeTier ? 'true' : 'false';
     var done=null, tries=0;
     while(tries<80){
@@ -2195,11 +2207,11 @@ async function generateCinematicPro(){
     try{ clearprog('scriptPbar'); }catch(e){}
     var url=BACKEND+'/api/video/'+done.videoId;
     var vid=document.getElementById('finalVideo'); if(vid){ vid.src=url; vid.style.display='block'; try{ vid.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
-    try{ saveToLibrary((typeof activeBrand!=='undefined'?activeBrand:''), '8s', 'Cinematic Pro', url, done.videoId, 'Cinematic Pro', 'vertical'); }catch(e){}
-    try{ toast('\ud83c\udfac Your cinematic video is ready \u2014 saved to your Library!'); }catch(e){}
+    try{ saveToLibrary((typeof activeBrand!=='undefined'?activeBrand:''), '8s', kindLabel, url, done.videoId, (isCartoon?'cartoon':'cinematic'), 'vertical'); }catch(e){}
+    try{ toast((isCartoon?'\ud83c\udfa8 Your cartoon':'\ud83c\udfac Your cinematic')+' video is ready \u2014 saved to your Library!'); }catch(e){}
   }catch(e){
     try{ clearprog('scriptPbar'); }catch(_e){}
-    try{ showerr('Cinematic Pro: '+e.message); }catch(_e){}
+    try{ showerr(kindLabel+': '+e.message); }catch(_e){}
   } finally {
     var b=document.getElementById('scriptBtn'); if(b) b.disabled=false;
   }
@@ -2207,6 +2219,8 @@ async function generateCinematicPro(){
 async function generateScript(){
   if(freeTierBlocked()) return;
   if(activeVtype === 'cinematic'){ return generateCinematicPro(); }
+  if(activeVtype === 'cartoon'){ return generateCinematicPro(); }
+  if(activeVtype === 'motion'){ return generateSlides(false); }
   if(activeVtype === 'slides'){ return generateSlides(false); }
   if(activeVtype === 'quote'){ return generateQuotes(false); }
   if(activeVtype === 'faceless'){ return generateFaceless(false); }
@@ -3059,7 +3073,7 @@ function closeSidebarMobile(){
 }
 // VIDEO TYPE
 var activeVtype = 'cinematic';
-var SOON_TYPES = ['cartoon','motion'];
+var SOON_TYPES = [];
 function selectVtype(type, el){
   activeVtype = type;
   // Clear any stale preview/scenes from a previous type so nothing looks left over
@@ -3073,7 +3087,7 @@ function selectVtype(type, el){
   var _rt2=document.getElementById('slidesResultTitle'); if(_rt2) _rt2.textContent='Your Video';
   var _rs2=document.getElementById('slidesResultSub'); if(_rs2) _rs2.textContent='Rendered in your brand colors';
   if(typeof slidesData!=='undefined') slidesData=[];
-  ['avatar','faceless','productad','cinematic','quote','slides','whiteboard','talkingphoto','spokesperson','slideshow'].forEach(function(t){
+  ['avatar','faceless','productad','cinematic','quote','slides','whiteboard','talkingphoto','spokesperson','slideshow','cartoon','motion'].forEach(function(t){
     var card = document.getElementById('vt-'+t);
     if(!card) return;
     if(t === type){
@@ -3176,6 +3190,21 @@ function selectVtype(type, el){
     if(cinematicSection) cinematicSection.style.display = 'none';
     var shc = document.getElementById('slideshow-config-section'); if(shc) shc.style.display='block';
     toast('🖼️ Slideshow selected — upload your photos, add captions, pick music');
+  } else if(type === 'cartoon'){
+    // Cartoon uses the Cinematic (Veo) engine with a cartoon style — same describe-and-generate flow.
+    if(avatarSection) avatarSection.style.display = 'none';
+    if(cinematicSection) cinematicSection.style.display = 'block';
+    var slc0 = document.getElementById('slides-config-section'); if(slc0) slc0.style.display='none';
+    var cb = document.getElementById('scriptBtn'); if(cb) cb.textContent='🎨 Create My Cartoon';
+    toast('🎨 Cartoon selected — describe your scene and characters (premium type)');
+  } else if(type === 'motion'){
+    // Motion Graphics uses the proven Slides engine with an energetic style.
+    if(avatarSection) avatarSection.style.display = 'none';
+    if(cinematicSection) cinematicSection.style.display = 'block';
+    var slc = document.getElementById('slides-config-section'); if(slc) slc.style.display='block';
+    var vwM = document.getElementById('voiceSelectorWrap'); if(vwM) vwM.style.display='none';
+    var mb = document.getElementById('scriptBtn'); if(mb) mb.textContent='⚡ Create Motion Graphics';
+    toast('⚡ Motion Graphics selected — describe your message or stats; AI animates it');
   } else {
     if(avatarSection) avatarSection.style.display = 'none';
     if(cinematicSection) cinematicSection.style.display = 'block';
@@ -3251,7 +3280,9 @@ function selectAspect(a, el){
 var PALETTE_SLOTS = ['bg_dark','bg_mid','accent','accent2','text','text_soft','ink'];
 var DEFAULT_PALETTE = {bg_dark:'#0B1F3A',bg_mid:'#10314F',accent:'#3B82F6',accent2:'#2563EB',text:'#FFFFFF',text_soft:'#BFD4EA',ink:'#0B1F3A'};
 // STEP 1 (slides): AI designs slide specs, extract brand palette, render preview
+var MOTION_PALETTE = {bg_dark:'#1a0b2e',bg_mid:'#3d1766',accent:'#ff2e88',accent2:'#00e0ff',text:'#FFFFFF',text_soft:'#ffd6f2',ink:'#1a0b2e'};
 async function generateSlides(isRegen){
+  var isMotion = (activeVtype === 'motion');
   var prompt=document.getElementById('prompt').value.trim();
   if(!prompt){showerr('Please describe your video first.');return;}
   clearerr();
@@ -3277,7 +3308,8 @@ async function generateSlides(isRegen){
       if(pr.ok){ var pd=await pr.json(); if(pd.palette) slidesPalette=pd.palette; }
     }
   }catch(e){ /* keep default */ }
-  setprog('slidesPbar','slidesPfill','slidesPtxt',55,'AI is designing your slides...');
+  if(isMotion){ slidesPalette = MOTION_PALETTE; }   // Motion Graphics = vibrant high-energy palette
+  setprog('slidesPbar','slidesPfill','slidesPtxt',55,isMotion?'AI is designing your motion graphics...':'AI is designing your slides...');
   // 2) Ask Claude to design slide specs as JSON
   var sys='You are a professional motion-graphics slide designer. You output ONLY valid JSON, no markdown, no commentary. You design animated marketing slides.';
   var palHint=PALETTE_SLOTS.join(', ');
@@ -3299,7 +3331,9 @@ async function generateSlides(isRegen){
     +'Use large bold headlines (size 0.10-0.14) and smaller subtext (0.04-0.06). Add 1-2 shapes per slide. First slide = title/hook, last = call to action with the website. '
     +'NEVER place two text blocks at the same or nearly the same y position — they must be vertically separated by at least 0.12 so they never overlap. '
     +'CRITICAL — COMPLETE LISTS: if the brief names a list of audiences or items (e.g. beginners, electricians, HVAC technicians, energy advisors, entrepreneurs), you MUST include EVERY item — never drop or shorten the list. Put the full list as ONE text block with items separated by "  •  " (so it stays on one readable line and fits), and the voiceText for that slide must read out every item too. Do not summarize the list. '
-    +'NO text longer than 6 words per block (lists joined with bullets are exempt). Output ONLY the JSON. (v:'+Math.random().toString(36).slice(2,7)+')';
+    +'NO text longer than 6 words per block (lists joined with bullets are exempt). '
+    +(isMotion?'STYLE — MOTION GRAPHICS: make it HIGH ENERGY like a promo bumper or stat reveal. Use very large bold headlines (0.12-0.14), big numbers/percentages/stats where they fit, punchy 2-4 word phrases, vibrant high-contrast colors, and 2-3 animated shapes per slide (rings, bars, circles) using pop/zoom/dropin/grow animations with staggered delays. Fast and punchy, NOT a calm presentation. ':'')
+    +'Output ONLY the JSON. (v:'+Math.random().toString(36).slice(2,7)+')';
   try{
     var r=await fetch(BACKEND+'/api/claude/generate',{
       method:'POST',headers:{'Content-Type':'application/json'},
@@ -3512,9 +3546,10 @@ async function renderSlides(){
     try{ downloadSlidesVideo(d.videoId, inlineData); }catch(_ad){} // auto-download when ready
     var ol=document.getElementById('slidesOpenLink'); if(ol){ ol.href=url; ol.style.display='block'; }
     // Save to Library — store inline data when available so it always plays/downloads
-    saveToLibrary(activeBrand, dur+'s', 'Animated Slides', url, d.videoId, 'Animated Slides', slidesAspect);
+    var _slLabel = (activeVtype==='motion') ? 'Motion Graphics' : 'Animated Slides';
+    saveToLibrary(activeBrand, dur+'s', _slLabel, url, d.videoId, (activeVtype==='motion'?'motion':'slides'), slidesAspect);
     document.getElementById('slidesResultCard').scrollIntoView({behavior:'smooth'});
-    toast('Animated Slides video ready! Saved to Library.');
+    toast(_slLabel+' video ready! Saved to Library.');
   }catch(e){
     stopClimb(); clearprog('slidesRenderPbar');
     document.getElementById('renderSlidesBtn').disabled=false;
