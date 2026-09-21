@@ -312,6 +312,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
   <div class="sidebar" id="appSidebar">
     <span class="slabel">Platform</span>
     <div class="nitem on" id="nav-create" onclick="showPage('create',this)">⚡ Create Video</div>
+    <div class="nitem" id="nav-vip" onclick="showPage('vip',this)" style="color:#fbbf24;">💎 VIP Studio</div>
     <div class="nitem" id="nav-library" onclick="showPage('library',this)">📁 Library</div>
     <div class="nitem" id="nav-autopilot" onclick="showPage('autopilot',this)">🤖 Auto-Pilot</div>
     <div class="nitem" id="nav-analytics" onclick="showPage('analytics',this)">📊 Analytics</div>
@@ -1261,6 +1262,79 @@ video{width:100%;border-radius:10px;margin-top:10px;}
   </div>
   </div>
 </div>
+<!-- VIP STUDIO PAGE (premium, credit-based — NOT part of the monthly plan) -->
+<div id="page-vip" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
+  <!-- Hero -->
+  <div style="background:linear-gradient(135deg,rgba(251,191,36,0.14),rgba(99,102,241,0.08));border:1px solid rgba(251,191,36,0.35);border-radius:16px;padding:1.6rem 1.8rem;margin-bottom:1.25rem;">
+    <div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--tx);">💎 VIP Studio</div>
+    <div style="font-size:14px;color:var(--ts);margin-top:6px;max-width:640px;line-height:1.7;">The absolute top tier of AI video — our <strong style="color:#fbbf24;">Rolls-Royce engine</strong> (Google Veo 3.1), the same technology used for premium, cinema-grade production. This is separate from your monthly plan: pay only when you want the very best, using <strong>VIP Credits</strong>.</div>
+  </div>
+
+  <!-- Credit balance + buy -->
+  <div style="display:grid;grid-template-columns:1fr 2fr;gap:1rem;margin-bottom:1.25rem;" id="vipTopGrid">
+    <div style="background:var(--card);border:1px solid rgba(251,191,36,0.4);border-radius:14px;padding:1.4rem;text-align:center;display:flex;flex-direction:column;justify-content:center;">
+      <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.5px;">Your VIP Credits</div>
+      <div style="font-family:'Syne',sans-serif;font-size:44px;font-weight:800;color:#fbbf24;line-height:1.1;margin:6px 0;" id="vipBalance">…</div>
+      <div style="font-size:11px;color:var(--tm);" id="vipCostNote">Each VIP video costs 6 credits</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.2rem;">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:2px;">Buy VIP Credits</div>
+      <div style="font-size:12px;color:var(--tm);margin-bottom:12px;">One-time purchase · never expires · secure Stripe checkout</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;" id="vipPacks">
+        <div style="grid-column:1/-1;text-align:center;color:var(--tm);font-size:12px;padding:12px;">Loading packs…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Premium type picker -->
+  <div class="card">
+    <div class="ch"><div class="ct">💎 Choose a VIP Production</div><div class="csub">Premium engine · cinema quality · 8-second scene with audio</div></div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+      <div id="vt-cinematicultra" onclick="selectVipType('cinematicultra',this)" style="background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(99,102,241,0.06));border:1.5px solid #fbbf24;border-radius:12px;padding:16px;cursor:pointer;">
+        <div style="font-size:26px;margin-bottom:6px;">🎬</div>
+        <div style="font-size:14px;font-weight:700;color:var(--tx);">Cinematic Ultra <span style="font-size:10px;background:#fbbf24;color:#3a2a00;padding:1px 6px;border-radius:4px;vertical-align:middle;">💎 VIP</span></div>
+        <div style="font-size:11px;color:var(--ts);margin-top:4px;line-height:1.5;">Hollywood-grade real-scene footage. The Rolls-Royce of AI film. 6 credits.</div>
+      </div>
+      <div id="vt-cartoonultra" onclick="selectVipType('cartoonultra',this)" style="background:var(--card);border:1.5px solid var(--bdr);border-radius:12px;padding:16px;cursor:pointer;">
+        <div style="font-size:26px;margin-bottom:6px;">🎨</div>
+        <div style="font-size:14px;font-weight:700;color:var(--tx);">Cartoon Ultra <span style="font-size:10px;background:#fbbf24;color:#3a2a00;padding:1px 6px;border-radius:4px;vertical-align:middle;">💎 VIP</span></div>
+        <div style="font-size:11px;color:var(--ts);margin-top:4px;line-height:1.5;">Premium animated cartoon with the top engine. Vivid, smooth, studio-quality. 6 credits.</div>
+      </div>
+    </div>
+
+    <!-- Aspect -->
+    <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:16px 0 8px;">Aspect Ratio</div>
+    <div style="display:flex;gap:10px;">
+      <div id="vipar-vertical" onclick="selectVipAspect('vertical',this)" style="flex:1;background:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+        <div style="font-size:18px;">📱</div><div style="font-size:11px;font-weight:600;color:#fff;margin-top:2px;">Vertical 9:16</div>
+      </div>
+      <div id="vipar-landscape" onclick="selectVipAspect('landscape',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+        <div style="font-size:18px;">🖥️</div><div style="font-size:11px;font-weight:600;color:var(--ts);margin-top:2px;">Landscape 16:9</div>
+      </div>
+      <div id="vipar-square" onclick="selectVipAspect('square',this)" style="flex:1;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+        <div style="font-size:18px;">⬛</div><div style="font-size:11px;font-weight:600;color:var(--ts);margin-top:2px;">Square 1:1</div>
+      </div>
+    </div>
+
+    <!-- Prompt -->
+    <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:16px 0 8px;">Describe Your Scene</div>
+    <textarea id="vipPrompt" placeholder="e.g. A sleek electric car driving along a coastal highway at golden hour, cinematic drone shot, waves crashing below…" style="width:100%;min-height:90px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);resize:vertical;box-sizing:border-box;"></textarea>
+
+    <button id="vipGenBtn" onclick="generateVip()" style="margin-top:14px;width:100%;background:linear-gradient(135deg,#fbbf24,#d97706);border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#3a2a00;cursor:pointer;">💎 Create VIP Video — 6 credits</button>
+    <div id="vipErr" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);border-radius:8px;font-size:12px;color:#fca5a5;"></div>
+
+    <!-- Progress -->
+    <div id="vipPbar" style="display:none;margin-top:16px;">
+      <div style="height:8px;background:var(--sur);border-radius:99px;overflow:hidden;"><div id="vipPfill" style="height:100%;width:0%;background:linear-gradient(90deg,#fbbf24,#d97706);transition:width 0.4s;"></div></div>
+      <div id="vipPtxt" style="font-size:12px;color:var(--tm);margin-top:6px;text-align:center;">Starting…</div>
+    </div>
+
+    <!-- Result -->
+    <div style="margin-top:16px;text-align:center;">
+      <video id="vipVideo" controls playsinline style="display:none;max-width:100%;border-radius:12px;border:1px solid rgba(251,191,36,0.4);"></video>
+    </div>
+  </div>
+</div>
 <!-- SETTINGS PAGE -->
   <!-- SUPPORT PAGE -->
   <div id="page-support" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
@@ -1483,7 +1557,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.2.0</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.3.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1508,7 +1582,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.2.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.3.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -1844,6 +1918,16 @@ async function obShowIfNeeded(){
     return;
   } else if(co==='cancel'){
     toast('Checkout canceled — pick a plan again anytime.');
+    history.replaceState({}, '', location.pathname);
+  }
+  // Returning from a VIP CREDITS purchase (one-time Stripe checkout)
+  var cr=qs.get('credits');
+  if(cr==='success'){
+    try{ toast('💎 Credits added! Your VIP balance is updated.'); }catch(e){}
+    history.replaceState({}, '', location.pathname);
+    if(hasSession){ ov.style.display='none'; try{ setTimeout(function(){ showPage('vip', document.getElementById('nav-vip')); }, 400); }catch(e){} return; }
+  } else if(cr==='cancel'){
+    try{ toast('Credit purchase canceled — no charge was made.'); }catch(e){}
     history.replaceState({}, '', location.pathname);
   }
   if(hasSession){ ov.style.display='none'; }
@@ -2214,6 +2298,96 @@ async function generateCinematicPro(){
     try{ showerr(kindLabel+': '+e.message); }catch(_e){}
   } finally {
     var b=document.getElementById('scriptBtn'); if(b) b.disabled=false;
+  }
+}
+// ══════════════ VIP STUDIO (premium Veo engine, paid with credits — separate from the monthly plan) ══════════════
+var vipType = 'cinematicultra';
+var vipAspect = 'vertical';
+var VIP_COST = 6;
+function selectVipType(t, el){
+  vipType = t;
+  ['cinematicultra','cartoonultra'].forEach(function(x){
+    var c=document.getElementById('vt-'+x); if(!c) return;
+    if(x===t){ c.style.borderColor='#fbbf24'; c.style.background='linear-gradient(135deg,rgba(251,191,36,0.18),rgba(99,102,241,0.08))'; }
+    else { c.style.borderColor='var(--bdr)'; c.style.background='var(--card)'; }
+  });
+}
+function selectVipAspect(a, el){
+  vipAspect = a;
+  ['vertical','landscape','square'].forEach(function(x){
+    var c=document.getElementById('vipar-'+x); if(!c) return;
+    var on=(x===a);
+    c.style.background=on?'var(--p)':'var(--card)'; c.style.borderColor=on?'var(--p)':'var(--bdr)';
+    c.querySelectorAll('div').forEach(function(d,i){ if(d.style&&i===1) d.style.color=on?'#fff':'var(--ts)'; });
+  });
+}
+function vipShowErr(msg){ var e=document.getElementById('vipErr'); if(e){ e.textContent=msg; e.style.display='block'; } }
+function vipClearErr(){ var e=document.getElementById('vipErr'); if(e){ e.style.display='none'; } }
+async function loadVipStudio(){
+  try{
+    var r=await fetch(BACKEND+'/api/credits/balance'); var d=await r.json();
+    var b=document.getElementById('vipBalance'); if(b) b.textContent=(d&&typeof d.credits==='number')?d.credits:0;
+    if(d&&d.vipCost){ VIP_COST=d.vipCost; var cn=document.getElementById('vipCostNote'); if(cn) cn.textContent='Each VIP video costs '+d.vipCost+' credits'; var gb=document.getElementById('vipGenBtn'); if(gb) gb.textContent='💎 Create VIP Video — '+d.vipCost+' credits'; }
+  }catch(e){ var b2=document.getElementById('vipBalance'); if(b2) b2.textContent='0'; }
+  try{
+    var pr=await fetch(BACKEND+'/api/credits/packs'); var pd=await pr.json();
+    var wrap=document.getElementById('vipPacks'); if(wrap && pd && pd.packs){
+      wrap.innerHTML = pd.packs.map(function(p){
+        return '<div style="background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px;text-align:center;cursor:pointer;" onclick="buyCredits(\''+p.id+'\')" onmouseover="this.style.borderColor=\'#fbbf24\'" onmouseout="this.style.borderColor=\'var(--bdr)\'">'+
+          '<div style="font-family:\'Syne\',sans-serif;font-size:22px;font-weight:800;color:#fbbf24;">'+p.credits+'</div>'+
+          '<div style="font-size:10px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;">credits</div>'+
+          '<div style="margin-top:8px;font-size:15px;font-weight:700;color:var(--tx);">$'+p.price+'</div>'+
+          '<div style="margin-top:8px;background:linear-gradient(135deg,#fbbf24,#d97706);color:#3a2a00;border-radius:8px;padding:6px;font-size:12px;font-weight:700;">Buy</div>'+
+        '</div>';
+      }).join('');
+    }
+  }catch(e){}
+}
+async function buyCredits(pack){
+  vipClearErr();
+  try{
+    var email=(typeof pilotUser!=='undefined' && pilotUser && pilotUser.email)||'';
+    var r=await fetch(BACKEND+'/api/credits/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pack:pack,email:email})});
+    var d=await r.json();
+    if(d&&d.url){ window.location.href=d.url; return; }
+    vipShowErr((d&&d.error)?d.error:'Could not start checkout. Please try again.');
+  }catch(e){ vipShowErr('Could not start checkout: '+e.message); }
+}
+async function generateVip(){
+  vipClearErr();
+  var prompt=((document.getElementById('vipPrompt')||{}).value||'').trim();
+  if(!prompt){ vipShowErr('Please describe your scene first.'); return; }
+  var isCartoon=(vipType==='cartoonultra');
+  var kindLabel=isCartoon?'Cartoon Ultra':'Cinematic Ultra';
+  var btn=document.getElementById('vipGenBtn'); if(btn) btn.disabled=true;
+  var setP=function(pct,txt){ var bar=document.getElementById('vipPbar'),f=document.getElementById('vipPfill'),t=document.getElementById('vipPtxt'); if(bar)bar.style.display='block'; if(f)f.style.width=pct+'%'; if(t)t.textContent=txt; };
+  var clearP=function(){ var bar=document.getElementById('vipPbar'); if(bar) bar.style.display='none'; };
+  try{
+    setP(12,'Reserving credits and starting the premium engine…');
+    var sr=await fetch(BACKEND+'/api/cinematicpro/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt,aspect:vipAspect,freeTier:false,vip:true,style:(isCartoon?'cartoon':undefined)})});
+    var sd=await sr.json();
+    if(sr.status===402 && sd && sd.code==='NO_CREDITS'){ clearP(); vipShowErr(sd.error||'Not enough credits — buy a pack above to continue.'); loadVipStudio(); if(btn)btn.disabled=false; return; }
+    if(!sr.ok || !sd.taskId) throw new Error((sd&&sd.error)?(''+sd.error).slice(0,200):'Could not start VIP video');
+    loadVipStudio(); // credits just reserved server-side → refresh the balance shown
+    var taskId=sd.taskId; var done=null, tries=0;
+    while(tries<80){
+      await new Promise(function(r){ setTimeout(r,8000); }); tries++;
+      setP(Math.min(92,12+tries*3),'Rendering your premium video… ('+(tries*8)+'s)');
+      var pr,pd; try{ pr=await fetch(BACKEND+'/api/cinematicpro/status?id='+encodeURIComponent(taskId)+'&freeTier=false'); pd=await pr.json(); }catch(e){ continue; }
+      if(pd && pd.status==='completed' && pd.videoId){ done=pd; break; }
+      if(pd && pd.status==='error'){ throw new Error(pd.error||'Generation failed'); }
+    }
+    if(!done) throw new Error('Still rendering — it will appear in your Library shortly. Your credits are safe.');
+    clearP();
+    var url=BACKEND+'/api/video/'+done.videoId;
+    var vid=document.getElementById('vipVideo'); if(vid){ vid.src=url; vid.style.display='block'; try{ vid.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+    try{ saveToLibrary((typeof activeBrand!=='undefined'?activeBrand:''),'8s',kindLabel,url,done.videoId,(isCartoon?'cartoon':'cinematic'),vipAspect); }catch(e){}
+    try{ toast('💎 Your VIP '+kindLabel+' video is ready — saved to your Library!'); }catch(e){}
+    loadVipStudio();
+  }catch(e){
+    clearP(); vipShowErr(kindLabel+': '+e.message); loadVipStudio(); // refresh in case a failed job refunded the credits
+  } finally {
+    if(btn) btn.disabled=false;
   }
 }
 async function generateScript(){
@@ -4925,7 +5099,7 @@ function showPage(pageId, navEl){
   var mainDiv = document.querySelector('.main');
   if(mainDiv) mainDiv.style.display = pageId === 'create' ? 'block' : 'none';
   // Hide all secondary pages
-  ['library','membership','settings','analytics','support','autopilot','admin'].forEach(function(p){
+  ['library','membership','settings','analytics','support','autopilot','admin','vip'].forEach(function(p){
     var el = document.getElementById('page-'+p);
     if(el){ el.style.display = 'none'; el.style.flex = ''; }
   });
@@ -4941,7 +5115,7 @@ function showPage(pageId, navEl){
   document.querySelectorAll('.nitem').forEach(function(n){ n.classList.remove('on'); });
   if(navEl) navEl.classList.add('on');
   else {
-    var navMap = {'create':'nav-create','library':'nav-library','membership':'nav-membership','settings':'nav-settings','autopilot':'nav-autopilot'};
+    var navMap = {'create':'nav-create','library':'nav-library','membership':'nav-membership','settings':'nav-settings','autopilot':'nav-autopilot','vip':'nav-vip'};
     var el = document.getElementById(navMap[pageId]);
     if(el) el.classList.add('on');
   }
@@ -4950,6 +5124,7 @@ function showPage(pageId, navEl){
   if(pageId === 'library') renderLibrary();
   if(pageId === 'settings'){ renderLogoGrid(); loadAdminCredits(); }
   if(pageId === 'membership') updateMembershipCredits();
+  if(pageId === 'vip'){ loadVipStudio(); }
   if(pageId === 'autopilot'){ initAutopilot(); }
   if(pageId === 'admin'){ loadAdminLeads(); }
   // Scroll to top of page
