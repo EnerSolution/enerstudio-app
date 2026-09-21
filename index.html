@@ -1547,6 +1547,18 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <div id="adminLeadsTable"></div>
     </div>
     <div style="font-size:11.5px;color:var(--tm);margin-top:12px;">Tip: click any email to write to that lead. Auto follow-up emails (from Enzo) are sent separately by the platform.</div>
+
+    <!-- ═══════ MEMBER MANAGEMENT ═══════ -->
+    <div style="margin-top:2rem;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--tx);">👤 Member Management</div>
+    <div style="font-size:13px;color:var(--ts);margin-bottom:1rem;">Look up any member, grant VIP credits, lock/unlock accounts, change plans, or refresh monthly limits — no SQL needed.</div>
+    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.25rem;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <input id="amEmail" type="email" placeholder="member@email.com" style="flex:1;min-width:220px;background:var(--sur);border:1px solid var(--bdr);border-radius:9px;padding:10px 12px;font-size:13px;color:var(--tx);">
+        <button onclick="amLookup()" style="background:linear-gradient(135deg,var(--p),var(--pd));border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;">🔍 Look up</button>
+      </div>
+      <div id="amMsg" style="display:none;margin-top:10px;padding:9px 12px;border-radius:8px;font-size:12.5px;"></div>
+      <div id="amCard" style="display:none;margin-top:14px;"></div>
+    </div>
   </div>
   <div id="page-settings" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
     <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:4px;color:var(--tx);">⚙️ Settings</div>
@@ -1557,7 +1569,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.3.0</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.3.1</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1582,7 +1594,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.3.0</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.3.1</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -5166,6 +5178,110 @@ async function loadAdminLeads(){
     }).join('');
     tbl.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:13px;min-width:760px;"><thead>'+head+'</thead><tbody>'+body+'</tbody></table>';
   }catch(e){ tbl.innerHTML='<div style="color:#f87171;padding:16px;">Could not load leads: '+escHtml(e.message||e)+'</div>'; }
+}
+// ════════ MEMBER MANAGEMENT (admin console) ════════
+var amCurrent = null; // last looked-up member
+function amShowMsg(text, ok){
+  var m=document.getElementById('amMsg'); if(!m) return;
+  m.style.display='block'; m.textContent=text;
+  m.style.background = ok ? 'rgba(52,211,153,0.12)' : 'rgba(248,113,113,0.12)';
+  m.style.border = '1px solid '+(ok ? 'rgba(52,211,153,0.4)' : 'rgba(248,113,113,0.4)');
+  m.style.color = ok ? 'var(--gr)' : '#fca5a5';
+}
+function amEmailVal(){ return ((document.getElementById('amEmail')||{}).value||'').trim(); }
+async function amPost(path, body){
+  var r=await fetch(BACKEND+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})});
+  var d=await r.json().catch(function(){return {};});
+  if(!r.ok) throw new Error((d&&d.error)||('Request failed ('+r.status+')'));
+  return d;
+}
+async function amLookup(){
+  var email=amEmailVal(); if(!email){ amShowMsg('Enter a member email first.', false); return; }
+  amShowMsg('Looking up '+email+'…', true);
+  try{
+    var d=await amPost('/api/admin/member/lookup', { email: email });
+    amCurrent=d; amRenderCard(d);
+    var m=document.getElementById('amMsg'); if(m) m.style.display='none';
+  }catch(e){ var c=document.getElementById('amCard'); if(c) c.style.display='none'; amShowMsg(e.message, false); }
+}
+function amBadge(txt, color){ return '<span style="font-size:11px;font-weight:700;background:'+color+'22;color:'+color+';border:1px solid '+color+'55;padding:2px 9px;border-radius:20px;">'+txt+'</span>'; }
+function amRenderCard(d){
+  var c=document.getElementById('amCard'); if(!c) return;
+  var lockBadge = d.locked ? amBadge('🔒 LOCKED','#f87171') : amBadge('✓ Active','#34d399');
+  var statusColor = (['trialing','active','past_due'].indexOf(d.sub_status)>=0) ? '#34d399' : '#94a3b8';
+  c.style.display='block';
+  c.innerHTML =
+    '<div style="background:var(--sur);border:1px solid var(--bdr);border-radius:12px;padding:1rem 1.2rem;">'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">'
+      + '<div><div style="font-size:15px;font-weight:700;color:var(--tx);">'+escHtml(d.name||d.email)+'</div>'
+      + '<div style="font-size:12px;color:var(--tm);">'+escHtml(d.email)+'</div></div>'
+      + '<div style="display:flex;gap:6px;align-items:center;">'+lockBadge+'</div>'
+    + '</div>'
+    + '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-top:14px;">'
+      + '<div><div style="font-size:10px;color:var(--tm);text-transform:uppercase;">VIP Credits</div><div style="font-size:22px;font-weight:800;color:#fbbf24;font-family:\'Syne\',sans-serif;" id="amCredVal">'+(d.credits||0)+'</div></div>'
+      + '<div><div style="font-size:10px;color:var(--tm);text-transform:uppercase;">Plan</div><div style="font-size:15px;font-weight:700;color:var(--tx);text-transform:capitalize;">'+escHtml(d.plan||'free')+'</div></div>'
+      + '<div><div style="font-size:10px;color:var(--tm);text-transform:uppercase;">Status</div><div style="font-size:14px;font-weight:700;color:'+statusColor+';">'+escHtml(d.sub_status||'free')+'</div></div>'
+      + '<div><div style="font-size:10px;color:var(--tm);text-transform:uppercase;">Cycle</div><div style="font-size:14px;color:var(--tx);">'+escHtml(d.sub_cycle||'—')+'</div></div>'
+      + '<div><div style="font-size:10px;color:var(--tm);text-transform:uppercase;">Trial used</div><div style="font-size:14px;color:var(--tx);">'+(d.trial_used?'yes':'no')+'</div></div>'
+      + '<div><div style="font-size:10px;color:var(--tm);text-transform:uppercase;">Paid ever</div><div style="font-size:14px;color:var(--tx);">'+(d.paid_ever?'yes':'no')+'</div></div>'
+    + '</div>'
+    // VIP credits controls
+    + '<div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--bdr);">'
+      + '<div style="font-size:12px;font-weight:700;color:var(--tx);margin-bottom:8px;">💎 VIP Credits</div>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">'
+        + '<input id="amCreditAmt" type="number" value="30" style="width:90px;background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--tx);">'
+        + '<button onclick="amCredits(\'add\')" style="background:linear-gradient(135deg,#fbbf24,#d97706);border:none;border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:700;color:#3a2a00;cursor:pointer;">+ Add</button>'
+        + '<button onclick="amCredits(\'set\')" style="background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--tx);cursor:pointer;">Set exactly</button>'
+        + '<span style="font-size:11px;color:var(--tm);">(add can be negative to deduct)</span>'
+      + '</div>'
+    + '</div>'
+    // Account controls
+    + '<div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--bdr);">'
+      + '<div style="font-size:12px;font-weight:700;color:var(--tx);margin-bottom:8px;">🔧 Account</div>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">'
+        + (d.locked
+            ? '<button onclick="amLock(false)" style="background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.4);border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:700;color:#34d399;cursor:pointer;">🔓 Unlock account</button>'
+            : '<button onclick="amLock(true)" style="background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.4);border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:700;color:#f87171;cursor:pointer;">🔒 Lock account</button>')
+        + '<select id="amPlanSel" style="background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--tx);">'
+          + '<option value="starter"'+(d.plan==='starter'?' selected':'')+'>Starter</option>'
+          + '<option value="pro"'+(d.plan==='pro'?' selected':'')+'>Pro</option>'
+          + '<option value="business"'+(d.plan==='business'?' selected':'')+'>Business</option>'
+        + '</select>'
+        + '<button onclick="amPlan()" style="background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--tx);cursor:pointer;">Change plan</button>'
+        + '<button onclick="amResetUsage()" style="background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--tx);cursor:pointer;">↻ Refresh monthly limits</button>'
+      + '</div>'
+    + '</div>';
+}
+async function amCredits(mode){
+  var amt=parseInt((document.getElementById('amCreditAmt')||{}).value,10);
+  if(isNaN(amt)){ amShowMsg('Enter a number of credits.', false); return; }
+  try{
+    var d=await amPost('/api/admin/member/credits', { email: amCurrent.email, amount: amt, mode: mode });
+    var cv=document.getElementById('amCredVal'); if(cv) cv.textContent=d.credits;
+    if(amCurrent) amCurrent.credits=d.credits;
+    amShowMsg((mode==='set'?'Set to ':'Balance now ')+d.credits+' VIP credits for '+d.email+'.', true);
+  }catch(e){ amShowMsg(e.message, false); }
+}
+async function amLock(lock){
+  try{
+    var d=await amPost('/api/admin/member/lock', { email: amCurrent.email, locked: lock });
+    amShowMsg(d.email+' is now '+(d.locked?'LOCKED':'unlocked')+'.', true);
+    amCurrent.locked=d.locked; amRenderCard(amCurrent);
+  }catch(e){ amShowMsg(e.message, false); }
+}
+async function amPlan(){
+  var plan=(document.getElementById('amPlanSel')||{}).value;
+  try{
+    var d=await amPost('/api/admin/member/plan', { email: amCurrent.email, plan: plan });
+    amShowMsg(d.email+' plan changed to '+d.plan+'.', true);
+    amCurrent.plan=d.plan; amRenderCard(amCurrent);
+  }catch(e){ amShowMsg(e.message, false); }
+}
+async function amResetUsage(){
+  try{
+    var d=await amPost('/api/admin/member/reset-usage', { email: amCurrent.email });
+    amShowMsg('Monthly limits refreshed for '+d.email+' — all counters reset to zero.', true);
+  }catch(e){ amShowMsg(e.message, false); }
 }
 // ════════ AUTO-PILOT CONTENT ENGINE (frontend) ════════
 var apAspect='vertical', apFreq='daily', apPlatforms=[];
