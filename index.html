@@ -1320,7 +1320,15 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:16px 0 8px;">Describe Your Scene</div>
     <textarea id="vipPrompt" placeholder="e.g. A sleek electric car driving along a coastal highway at golden hour, cinematic drone shot, waves crashing below…" style="width:100%;min-height:90px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);resize:vertical;box-sizing:border-box;"></textarea>
 
-    <button id="vipGenBtn" onclick="generateVip()" style="margin-top:14px;width:100%;background:linear-gradient(135deg,#fbbf24,#d97706);border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#3a2a00;cursor:pointer;">💎 Create VIP Video — 6 credits</button>
+    <div style="margin-top:14px;padding:10px 12px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.3);border-radius:9px;font-size:11.5px;color:var(--ts);line-height:1.6;">
+      ℹ️ Each VIP video is <strong>one 8-second clip</strong> at premium quality, spends <strong>6 credits</strong>, and runs the top engine (a real provider cost of ~$4). You'll get a confirmation before it charges.
+    </div>
+    <!-- Admin-only free test toggle -->
+    <label id="vipTestModeWrap" style="display:none;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--tm);cursor:pointer;">
+      <input type="checkbox" id="vipTestMode" style="width:15px;height:15px;cursor:pointer;">
+      🧪 Admin test mode — use the cheap engine, no premium charge and no credits spent
+    </label>
+    <button id="vipGenBtn" onclick="generateVip()" style="margin-top:14px;width:100%;background:linear-gradient(135deg,#fbbf24,#d97706);border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#3a2a00;cursor:pointer;">💎 Create VIP Video — 6 credits (one 8-sec clip)</button>
     <div id="vipErr" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);border-radius:8px;font-size:12px;color:#fca5a5;"></div>
 
     <!-- Progress -->
@@ -1569,7 +1577,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.3.1</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.3.2</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1594,7 +1602,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.3.1</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.3.2</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -2336,6 +2344,7 @@ function selectVipAspect(a, el){
 function vipShowErr(msg){ var e=document.getElementById('vipErr'); if(e){ e.textContent=msg; e.style.display='block'; } }
 function vipClearErr(){ var e=document.getElementById('vipErr'); if(e){ e.style.display='none'; } }
 async function loadVipStudio(){
+  try{ var tw=document.getElementById('vipTestModeWrap'); if(tw) tw.style.display = (typeof isAdminUser==='function' && isAdminUser()) ? 'flex' : 'none'; }catch(e){}
   try{
     var r=await fetch(BACKEND+'/api/credits/balance'); var d=await r.json();
     var b=document.getElementById('vipBalance'); if(b) b.textContent=(d&&typeof d.credits==='number')?d.credits:0;
@@ -2371,12 +2380,25 @@ async function generateVip(){
   if(!prompt){ vipShowErr('Please describe your scene first.'); return; }
   var isCartoon=(vipType==='cartoonultra');
   var kindLabel=isCartoon?'Cartoon Ultra':'Cinematic Ultra';
+  // Admin-only "test mode": exercises the whole VIP flow on the CHEAP engine with NO premium charge and NO credit cost.
+  var testMode = false;
+  try{ var tc=document.getElementById('vipTestMode'); testMode = !!(tc && tc.checked && isAdminUser()); }catch(e){}
+  // ── HARD MONEY STOP: never let a real premium charge happen without an explicit, informed OK ──
+  if(!testMode){
+    var confirmMsg = '💎 Create a PREMIUM VIP video?\n\n'
+      + '• Produces ONE 8-second clip (this is the full length of the premium engine).\n'
+      + '• Spends '+ (VIP_COST||6) +' VIP credits.\n'
+      + '• Runs the top Veo engine, which charges a REAL cost (about $4) to your AIMLAPI provider balance the moment it starts.\n\n'
+      + 'This charge is NOT refundable once the video is made. Continue?';
+    var ok=false; try{ ok=window.confirm(confirmMsg); }catch(e){ ok=false; }
+    if(!ok){ return; } // stopped before any money is spent
+  }
   var btn=document.getElementById('vipGenBtn'); if(btn) btn.disabled=true;
   var setP=function(pct,txt){ var bar=document.getElementById('vipPbar'),f=document.getElementById('vipPfill'),t=document.getElementById('vipPtxt'); if(bar)bar.style.display='block'; if(f)f.style.width=pct+'%'; if(t)t.textContent=txt; };
   var clearP=function(){ var bar=document.getElementById('vipPbar'); if(bar) bar.style.display='none'; };
   try{
-    setP(12,'Reserving credits and starting the premium engine…');
-    var sr=await fetch(BACKEND+'/api/cinematicpro/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt,aspect:vipAspect,freeTier:false,vip:true,style:(isCartoon?'cartoon':undefined)})});
+    setP(12, testMode ? 'Admin test — using the cheap engine (no premium charge)…' : 'Reserving credits and starting the premium engine…');
+    var sr=await fetch(BACKEND+'/api/cinematicpro/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt,aspect:vipAspect,freeTier:false,vip:true,testMode:testMode,style:(isCartoon?'cartoon':undefined)})});
     var sd=await sr.json();
     if(sr.status===402 && sd && sd.code==='NO_CREDITS'){ clearP(); vipShowErr(sd.error||'Not enough credits — buy a pack above to continue.'); loadVipStudio(); if(btn)btn.disabled=false; return; }
     if(!sr.ok || !sd.taskId) throw new Error((sd&&sd.error)?(''+sd.error).slice(0,200):'Could not start VIP video');
