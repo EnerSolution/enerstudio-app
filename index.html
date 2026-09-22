@@ -1344,7 +1344,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <!-- Admin-only free test toggle -->
     <label id="vipTestModeWrap" style="display:none;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--tm);cursor:pointer;">
       <input type="checkbox" id="vipTestMode" style="width:15px;height:15px;cursor:pointer;">
-      🧪 Admin test mode — use the cheap engine, no premium charge and no credits spent
+      🧪 Admin test mode — 100% FREE: builds a placeholder video to test the flow (no AI engine, $0, no credits)
     </label>
     <button id="vipGenBtn" onclick="generateVip()" style="margin-top:14px;width:100%;background:linear-gradient(135deg,#fbbf24,#d97706);border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#3a2a00;cursor:pointer;">💎 Create VIP Video — 8s · 6 credits</button>
     <div id="vipErr" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);border-radius:8px;font-size:12px;color:#fca5a5;"></div>
@@ -1595,7 +1595,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.3.3</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.3.5</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1620,7 +1620,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.3.3</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.3.5</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -2431,7 +2431,7 @@ async function generateVip(){
   var setP=function(pct,txt){ var bar=document.getElementById('vipPbar'),f=document.getElementById('vipPfill'),t=document.getElementById('vipPtxt'); if(bar)bar.style.display='block'; if(f)f.style.width=pct+'%'; if(t)t.textContent=txt; };
   var clearP=function(){ var bar=document.getElementById('vipPbar'); if(bar) bar.style.display='none'; };
   try{
-    setP(8, testMode ? 'Admin test — cheap engine, no premium charge…' : 'Reserving credits and starting the premium engine…');
+    setP(8, testMode ? 'Admin test — building a FREE placeholder video (no engine cost)…' : 'Reserving credits and starting the premium engine…');
     var sr=await fetch(BACKEND+'/api/vip/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt,aspect:vipAspect,clips:nClips,testMode:testMode,style:(isCartoon?'cartoon':undefined)})});
     var sd=await sr.json();
     if(sr.status===402 && sd && sd.code==='NO_CREDITS'){ clearP(); vipShowErr(sd.error||'Not enough credits — buy a pack above to continue.'); loadVipStudio(); if(btn)btn.disabled=false; return; }
@@ -2447,8 +2447,8 @@ async function generateVip(){
       if(pd && pd.status==='error'){ throw new Error(pd.error||'Generation failed'); }
       if(pd && pd.status==='rendering'){
         var cd=pd.clipsDone||0, ct=pd.clipsTotal||nClips;
-        var pct=Math.min(94, 8 + (cd/ct)*80 + (tries%6)); // creep within the current clip
-        setP(pct, nClips>1 ? ('Rendering premium shot '+Math.min(cd+1,ct)+' of '+ct+'… then stitching') : 'Rendering your premium video…');
+        var pct=Math.min(94, 8 + (cd/ct)*80 + (tries%6)); // creep so the bar never looks frozen
+        setP(pct, nClips>1 ? ('Rendering '+ct+' premium shots at once… '+cd+'/'+ct+' done, then stitching (a few minutes)') : 'Rendering your premium video… (a minute or two)');
       }
     }
     if(!done) throw new Error('Still rendering — it will appear shortly. Your credits are safe if it fails.');
