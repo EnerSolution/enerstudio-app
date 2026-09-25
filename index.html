@@ -313,6 +313,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     <span class="slabel">Platform</span>
     <div class="nitem on" id="nav-create" onclick="showPage('create',this)">⚡ Create Video</div>
     <div class="nitem" id="nav-vip" onclick="showPage('vip',this)" style="color:#fbbf24;">💎 VIP Studio</div>
+    <div class="nitem" id="nav-music" onclick="showPage('music',this)" style="color:#ec4899;">🎵 Music Studio</div>
     <div class="nitem" id="nav-library" onclick="showPage('library',this)">📁 Library</div>
     <div class="nitem" id="nav-autopilot" onclick="showPage('autopilot',this)">🤖 Auto-Pilot</div>
     <div class="nitem" id="nav-analytics" onclick="showPage('analytics',this)">📊 Analytics</div>
@@ -1361,6 +1362,119 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
   </div>
 </div>
+<!-- MUSIC STUDIO PAGE -->
+<style>
+  .mztile{background:var(--sur);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;font-size:20px;color:var(--ts);}
+  .mztile div{font-size:11px;font-weight:600;margin-top:3px;color:var(--ts);}
+  .mztile.on{background:linear-gradient(135deg,#c026d3,#6366f1);border-color:transparent;}
+  .mztile.on div{color:#fff;}
+  .mzchip{background:var(--sur);border:1px solid var(--bdr);border-radius:20px;padding:6px 14px;font-size:12.5px;color:var(--ts);cursor:pointer;}
+  .mzchip.on{background:rgba(236,72,153,0.18);border-color:#ec4899;color:#fff;font-weight:600;}
+  .mzseg{flex:1;background:var(--sur);border:1.5px solid var(--bdr);border-radius:9px;padding:10px;text-align:center;font-size:12.5px;color:var(--ts);cursor:pointer;font-weight:600;}
+  .mzseg.on{background:linear-gradient(135deg,#c026d3,#6366f1);border-color:transparent;color:#fff;}
+</style>
+<div id="page-music" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
+  <div style="background:linear-gradient(135deg,rgba(236,72,153,0.14),rgba(99,102,241,0.08));border:1px solid rgba(236,72,153,0.35);border-radius:16px;padding:1.6rem 1.8rem;margin-bottom:1.25rem;">
+    <div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--tx);">🎵 Music Studio</div>
+    <div style="font-size:14px;color:var(--ts);margin-top:6px;max-width:660px;line-height:1.7;">Make an original song from one idea — any genre, any language, with vocals. Download it, or turn it into a professional <strong style="color:#ec4899;">music video</strong> with your own footage.</div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ct">🎼 Genre</div><div class="csub">Pick the style of your track</div></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;" id="mzGenres">
+      <div class="mztile on" onclick="selMzGenre('Pop',this)">🎤<div>Pop</div></div>
+      <div class="mztile" onclick="selMzGenre('Rock',this)">🎸<div>Rock</div></div>
+      <div class="mztile" onclick="selMzGenre('Rap / Hip-Hop',this)">🎧<div>Rap</div></div>
+      <div class="mztile" onclick="selMzGenre('R&B',this)">💜<div>R&amp;B</div></div>
+      <div class="mztile" onclick="selMzGenre('EDM / Dance',this)">🔊<div>EDM</div></div>
+      <div class="mztile" onclick="selMzGenre('Lo-Fi',this)">☕<div>Lo-Fi</div></div>
+      <div class="mztile" onclick="selMzGenre('Country',this)">🪕<div>Country</div></div>
+      <div class="mztile" onclick="selMzGenre('Afrobeat',this)">🥁<div>Afrobeat</div></div>
+      <div class="mztile" onclick="selMzGenre('Latin',this)">💃<div>Latin</div></div>
+      <div class="mztile" onclick="selMzGenre('Cinematic score',this)">🎬<div>Cinematic</div></div>
+      <div class="mztile" onclick="selMzGenre('Jazz',this)">🎷<div>Jazz</div></div>
+      <div class="mztile" onclick="selMzGenre('Acoustic',this)">🎻<div>Acoustic</div></div>
+    </div>
+
+    <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:18px 0 8px;">Mood</div>
+    <div id="mzMoods" style="display:flex;flex-wrap:wrap;gap:7px;">
+      <span class="mzchip on" onclick="selMzMood('Upbeat',this)">Upbeat</span>
+      <span class="mzchip" onclick="selMzMood('Chill',this)">Chill</span>
+      <span class="mzchip" onclick="selMzMood('Emotional',this)">Emotional</span>
+      <span class="mzchip" onclick="selMzMood('Epic',this)">Epic</span>
+      <span class="mzchip" onclick="selMzMood('Romantic',this)">Romantic</span>
+      <span class="mzchip" onclick="selMzMood('Dark',this)">Dark</span>
+      <span class="mzchip" onclick="selMzMood('Motivational',this)">Motivational</span>
+    </div>
+
+    <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:18px 0 8px;">Language</div>
+    <div id="mzLangs" style="display:flex;flex-wrap:wrap;gap:7px;">
+      <span class="mzchip on" onclick="selMzLang('English',this)">English</span>
+      <span class="mzchip" onclick="selMzLang('French',this)">French</span>
+      <span class="mzchip" onclick="selMzLang('Spanish',this)">Spanish</span>
+      <span class="mzchip" onclick="selMzLang('Farsi',this)">Farsi</span>
+      <span class="mzchip" onclick="selMzLang('Arabic',this)">Arabic</span>
+      <span class="mzchip" onclick="selMzLang('Hindi',this)">Hindi</span>
+    </div>
+
+    <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:18px 0 8px;">Lyrics</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;" id="mzLyrModes">
+      <div class="mzseg on" onclick="selMzLyr('ai',this)">✨ Write them for me</div>
+      <div class="mzseg" onclick="selMzLyr('own',this)">📝 I'll paste my own</div>
+      <div class="mzseg" onclick="selMzLyr('instrumental',this)">🎹 Instrumental</div>
+    </div>
+    <textarea id="mzTopic" placeholder="What's the song about? e.g. chasing your dreams in a new country" style="width:100%;margin-top:10px;min-height:60px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);resize:vertical;box-sizing:border-box;"></textarea>
+    <textarea id="mzOwnLyrics" placeholder="Paste your own lyrics here…" style="display:none;width:100%;margin-top:10px;min-height:100px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);resize:vertical;box-sizing:border-box;"></textarea>
+
+    <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:18px 0 8px;">Vocal</div>
+    <div style="display:flex;gap:8px;" id="mzVocals">
+      <div class="mzseg on" onclick="selMzVocal('female',this)">Female</div>
+      <div class="mzseg" onclick="selMzVocal('male',this)">Male</div>
+      <div class="mzseg" onclick="selMzVocal('duet',this)">Duet</div>
+    </div>
+
+    <label id="mzTestWrap" style="display:none;align-items:center;gap:8px;margin-top:14px;font-size:12px;color:var(--tm);cursor:pointer;">
+      <input type="checkbox" id="mzTestMode" style="width:15px;height:15px;cursor:pointer;">
+      🧪 Admin test mode — 100% FREE placeholder song (no engine cost, no cap used)
+    </label>
+
+    <button id="mzGenBtn" onclick="generateMusic()" style="margin-top:16px;width:100%;background:linear-gradient(135deg,#ec4899,#c026d3);border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">🎵 Generate my song</button>
+    <div id="mzErr" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);border-radius:8px;font-size:12px;color:#fca5a5;"></div>
+    <div id="mzPbar" style="display:none;margin-top:16px;">
+      <div style="height:8px;background:var(--sur);border-radius:99px;overflow:hidden;"><div id="mzPfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ec4899,#c026d3);transition:width 0.4s;"></div></div>
+      <div id="mzPtxt" style="font-size:12px;color:var(--tm);margin-top:6px;text-align:center;">Composing…</div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="mzResult" class="card" style="display:none;">
+    <div class="ch"><div class="ct">🎧 Your song</div><div class="csub">Play it, download it, or make a music video</div></div>
+    <audio id="mzAudio" controls style="width:100%;background:#0b0d12;border-radius:10px;"></audio>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+      <button onclick="mzDownload()" style="flex:1;min-width:140px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:10px;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;">⬇️ Download song</button>
+      <button onclick="mzSaveSong()" style="flex:1;min-width:140px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:10px;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;">💾 Save to Library</button>
+    </div>
+    <details id="mzLyricsWrap" style="margin-top:12px;">
+      <summary style="cursor:pointer;font-size:13px;color:var(--ts);">📝 View lyrics</summary>
+      <pre id="mzLyricsOut" style="white-space:pre-wrap;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:12px;font-size:13px;color:var(--ts);margin-top:8px;font-family:inherit;"></pre>
+    </details>
+
+    <!-- MUSIC VIDEO -->
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--bdr);">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--tx);">🎬 Make a Music Video</div>
+      <div style="font-size:12.5px;color:var(--tm);margin:4px 0 10px;">Put this song under one of your videos. We loop the video to the song and blend them into one file.</div>
+      <select id="mzMvSelect" style="width:100%;background:var(--sur);border:1px solid var(--bdr);border-radius:9px;padding:10px;font-size:13px;color:var(--tx);"></select>
+      <button id="mzMvBtn" onclick="makeMusicVideo()" style="margin-top:10px;width:100%;background:linear-gradient(135deg,#c026d3,#6366f1);border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;">🎬 Create Music Video</button>
+      <div id="mzMvPbar" style="display:none;margin-top:12px;">
+        <div style="height:8px;background:var(--sur);border-radius:99px;overflow:hidden;"><div id="mzMvPfill" style="height:100%;width:0%;background:linear-gradient(90deg,#c026d3,#6366f1);transition:width 0.4s;"></div></div>
+        <div id="mzMvPtxt" style="font-size:12px;color:var(--tm);margin-top:6px;text-align:center;">Blending…</div>
+      </div>
+      <div style="margin-top:12px;text-align:center;">
+        <video id="mzMvVideo" controls playsinline style="display:none;max-width:100%;border-radius:12px;border:1px solid rgba(192,38,211,0.4);"></video>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- SETTINGS PAGE -->
   <!-- SUPPORT PAGE -->
   <div id="page-support" style="display:none;flex:1;padding:2rem;overflow-y:auto;">
@@ -1595,7 +1709,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.3.5</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.4.0</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1620,7 +1734,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.3.5</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.4.0</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -2463,6 +2577,103 @@ async function generateVip(){
   } finally {
     if(btn) btn.disabled=false;
   }
+}
+// ══════════════ MUSIC STUDIO ══════════════
+var mzGenre='Pop', mzMood='Upbeat', mzLang='English', mzLyrMode='ai', mzVocal='female';
+var mzAudioId=null, mzAudioUrl=null;
+function mzToggle(containerSel, el){ document.querySelectorAll(containerSel).forEach(function(t){ t.classList.remove('on'); }); if(el) el.classList.add('on'); }
+function selMzGenre(g,el){ mzGenre=g; mzToggle('#mzGenres .mztile', el); }
+function selMzMood(m,el){ mzMood=m; mzToggle('#mzMoods .mzchip', el); }
+function selMzLang(l,el){ mzLang=l; mzToggle('#mzLangs .mzchip', el); }
+function selMzVocal(v,el){ mzVocal=v; mzToggle('#mzVocals .mzseg', el); }
+function selMzLyr(mode,el){
+  mzLyrMode=mode; mzToggle('#mzLyrModes .mzseg', el);
+  var topic=document.getElementById('mzTopic'), own=document.getElementById('mzOwnLyrics');
+  if(topic) topic.style.display = (mode==='ai') ? 'block' : 'none';
+  if(own) own.style.display = (mode==='own') ? 'block' : 'none';
+}
+function mzShowErr(m){ var e=document.getElementById('mzErr'); if(e){ e.textContent=m; e.style.display='block'; } }
+function mzClearErr(){ var e=document.getElementById('mzErr'); if(e) e.style.display='none'; }
+function mzEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function mzPopulateVideos(){
+  var sel=document.getElementById('mzMvSelect'); if(!sel) return;
+  var vids=(typeof videoLibrary!=='undefined'?videoLibrary:[]).filter(function(v){ return v.aspect!=='audio' && v.videoType!=='Song' && v.videoType!=='Music Video' && v.videoUrl && v.videoUrl.indexOf('blob:')!==0 && v.videoUrl.indexOf('data:')!==0; });
+  if(!vids.length){ sel.innerHTML='<option value="">— Make a video first in Create Video —</option>'; return; }
+  sel.innerHTML=vids.slice(0,30).map(function(v){ return '<option value="'+encodeURIComponent(v.videoUrl)+'">'+mzEsc((v.brand||'Video')+' · '+(v.videoType||'')+' · '+(v.date||''))+'</option>'; }).join('');
+}
+function loadMusicStudio(){
+  try{ var w=document.getElementById('mzTestWrap'); if(w) w.style.display=(typeof isAdminUser==='function' && isAdminUser())?'flex':'none'; }catch(e){}
+  mzPopulateVideos();
+}
+async function generateMusic(){
+  mzClearErr();
+  var testMode=false; try{ var tc=document.getElementById('mzTestMode'); testMode=!!(tc&&tc.checked&&isAdminUser()); }catch(e){}
+  var body={ genre:mzGenre, mood:mzMood, language:mzLang, lyricsMode:mzLyrMode, vocals:mzVocal, testMode:testMode };
+  if(mzLyrMode==='own') body.lyrics=((document.getElementById('mzOwnLyrics')||{}).value||'');
+  else if(mzLyrMode==='ai') body.topic=((document.getElementById('mzTopic')||{}).value||'');
+  else if(mzLyrMode==='instrumental') body.instrumental=true;
+  if(mzLyrMode==='own' && (!body.lyrics || body.lyrics.trim().length<10)){ mzShowErr('Paste at least a few lines of lyrics, or choose “Write them for me”.'); return; }
+  var btn=document.getElementById('mzGenBtn'); if(btn) btn.disabled=true;
+  var setP=function(p,t){ var b=document.getElementById('mzPbar'),f=document.getElementById('mzPfill'),x=document.getElementById('mzPtxt'); if(b)b.style.display='block'; if(f)f.style.width=p+'%'; if(x)x.textContent=t; };
+  var clearP=function(){ var b=document.getElementById('mzPbar'); if(b) b.style.display='none'; };
+  try{
+    setP(12, testMode?'Admin test — building a free placeholder song…':'Writing lyrics and composing your song…');
+    var sr=await fetch(BACKEND+'/api/music/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    var sd=await sr.json();
+    if(sr.status===402){ clearP(); mzShowErr(sd.error||'You have reached your monthly song limit for your plan.'); if(btn)btn.disabled=false; return; }
+    if(!sr.ok || !sd.taskId) throw new Error((sd&&sd.error)?(''+sd.error).slice(0,200):'Could not start the music engine');
+    var lyrics=sd.lyrics||''; var taskId=sd.taskId; var done=null, tries=0;
+    while(tries<80){
+      await new Promise(function(r){ setTimeout(r,6000); }); tries++;
+      setP(Math.min(92,12+tries*4),'Composing your song… ('+(tries*6)+'s)');
+      var pr,pd; try{ pr=await fetch(BACKEND+'/api/music/status?id='+encodeURIComponent(taskId)); pd=await pr.json(); }catch(e){ continue; }
+      if(pd && pd.status==='completed' && pd.audioId){ done=pd; break; }
+      if(pd && pd.status==='error'){ throw new Error(pd.error||'Composition failed'); }
+    }
+    if(!done) throw new Error('Still composing — it will appear in your Library shortly.');
+    clearP();
+    mzAudioId=done.audioId; mzAudioUrl=BACKEND+'/api/video/'+done.audioId;
+    var au=document.getElementById('mzAudio'); if(au){ au.src=mzAudioUrl; }
+    var lo=document.getElementById('mzLyricsOut'); if(lo) lo.textContent=lyrics||'(instrumental — no lyrics)';
+    var lw=document.getElementById('mzLyricsWrap'); if(lw) lw.style.display=lyrics?'block':'none';
+    var mr=document.getElementById('mzResult'); if(mr) mr.style.display='block';
+    mzPopulateVideos();
+    try{ mr.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
+    try{ toast('🎵 Your song is ready!'); }catch(e){}
+  }catch(e){ clearP(); mzShowErr('Music: '+e.message); }
+  finally{ if(btn) btn.disabled=false; }
+}
+function mzDownload(){ if(!mzAudioUrl){ return; } try{ var a=document.createElement('a'); a.href=mzAudioUrl+'?dl=1'; a.download='enerstudio-song.mp3'; document.body.appendChild(a); a.click(); document.body.removeChild(a); }catch(e){ window.open(mzAudioUrl+'?dl=1'); } }
+function mzSaveSong(){ if(!mzAudioUrl){ return; } try{ saveToLibrary((typeof activeBrand!=='undefined'&&activeBrand)?activeBrand:'My Music','song','AI Song',mzAudioUrl,mzAudioId,'Song','audio'); toast('💾 Song saved to your Library!'); }catch(e){ mzShowErr('Could not save: '+e.message); } }
+async function makeMusicVideo(){
+  mzClearErr();
+  var sel=document.getElementById('mzMvSelect'); var videoUrl=sel?decodeURIComponent(sel.value||''):'';
+  if(!videoUrl){ mzShowErr('Pick one of your videos first (or make one in Create Video).'); return; }
+  if(!mzAudioId && !mzAudioUrl){ mzShowErr('Generate a song first.'); return; }
+  var btn=document.getElementById('mzMvBtn'); if(btn) btn.disabled=true;
+  var bar=document.getElementById('mzMvPbar'); if(bar) bar.style.display='block';
+  var setP=function(p,t){ var f=document.getElementById('mzMvPfill'),x=document.getElementById('mzMvPtxt'); if(f)f.style.width=p+'%'; if(x)x.textContent=t; };
+  try{
+    setP(15,'Blending your song and video…');
+    var sr=await fetch(BACKEND+'/api/musicvideo/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ audioId:mzAudioId, audioUrl:mzAudioUrl, videoUrl:videoUrl })});
+    var sd=await sr.json();
+    if(!sr.ok || !sd.jobId) throw new Error((sd&&sd.error)?(''+sd.error).slice(0,200):'Could not start');
+    var jobId=sd.jobId, done=null, tries=0;
+    while(tries<70){
+      await new Promise(function(r){ setTimeout(r,4000); }); tries++;
+      setP(Math.min(92,15+tries*5),'Rendering your music video…');
+      var pr,pd; try{ pr=await fetch(BACKEND+'/api/musicvideo/status?id='+encodeURIComponent(jobId)); pd=await pr.json(); }catch(e){ continue; }
+      if(pd && pd.status==='completed' && pd.videoId){ done=pd; break; }
+      if(pd && pd.status==='error'){ throw new Error(pd.error||'Render failed'); }
+    }
+    if(!done) throw new Error('Still rendering — try again in a moment.');
+    if(bar) bar.style.display='none';
+    var url=BACKEND+'/api/video/'+done.videoId;
+    var vid=document.getElementById('mzMvVideo'); if(vid){ vid.src=url; vid.style.display='block'; try{ vid.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+    try{ saveToLibrary((typeof activeBrand!=='undefined'&&activeBrand)?activeBrand:'My Music','music video','Music Video',url,done.videoId,'Music Video','vertical'); }catch(e){}
+    try{ toast('🎬 Your music video is ready — saved to your Library!'); }catch(e){}
+  }catch(e){ if(bar) bar.style.display='none'; mzShowErr('Music Video: '+e.message); }
+  finally{ if(btn) btn.disabled=false; }
 }
 async function generateScript(){
   if(freeTierBlocked()) return;
@@ -5173,7 +5384,7 @@ function showPage(pageId, navEl){
   var mainDiv = document.querySelector('.main');
   if(mainDiv) mainDiv.style.display = pageId === 'create' ? 'block' : 'none';
   // Hide all secondary pages
-  ['library','membership','settings','analytics','support','autopilot','admin','vip'].forEach(function(p){
+  ['library','membership','settings','analytics','support','autopilot','admin','vip','music'].forEach(function(p){
     var el = document.getElementById('page-'+p);
     if(el){ el.style.display = 'none'; el.style.flex = ''; }
   });
@@ -5189,7 +5400,7 @@ function showPage(pageId, navEl){
   document.querySelectorAll('.nitem').forEach(function(n){ n.classList.remove('on'); });
   if(navEl) navEl.classList.add('on');
   else {
-    var navMap = {'create':'nav-create','library':'nav-library','membership':'nav-membership','settings':'nav-settings','autopilot':'nav-autopilot','vip':'nav-vip'};
+    var navMap = {'create':'nav-create','library':'nav-library','membership':'nav-membership','settings':'nav-settings','autopilot':'nav-autopilot','vip':'nav-vip','music':'nav-music'};
     var el = document.getElementById(navMap[pageId]);
     if(el) el.classList.add('on');
   }
@@ -5199,6 +5410,7 @@ function showPage(pageId, navEl){
   if(pageId === 'settings'){ renderLogoGrid(); loadAdminCredits(); }
   if(pageId === 'membership') updateMembershipCredits();
   if(pageId === 'vip'){ loadVipStudio(); }
+  if(pageId === 'music'){ loadMusicStudio(); }
   if(pageId === 'autopilot'){ initAutopilot(); }
   if(pageId === 'admin'){ loadAdminLeads(); }
   // Scroll to top of page
@@ -5657,6 +5869,17 @@ function renderLibrary(){
   videoLibrary.forEach(function(v, i){
     var card = document.createElement('div');
     card.style.cssText = 'background:var(--card);border:1px solid var(--bdr);border-radius:12px;overflow:hidden;';
+    var isAudio = (v.aspect === 'audio' || v.videoType === 'Song' || v.videoType === 'Music');
+    if(isAudio){
+      var abox = document.createElement('div');
+      abox.style.cssText = 'width:100%;height:110px;background:linear-gradient(135deg,#c026d3,#6366f1);display:flex;align-items:center;justify-content:center;';
+      abox.innerHTML = '<div style="font-size:42px;">🎵</div>';
+      card.appendChild(abox);
+      var au = document.createElement('audio');
+      au.controls = true; au.src = v.videoUrl;
+      au.style.cssText = 'width:100%;display:block;background:#0b0d12;';
+      card.appendChild(au);
+    } else {
     var vid = document.createElement('video');
     vid.controls = true;
     vid.style.cssText = 'width:100%;height:140px;object-fit:cover;background:#000;display:block;';
@@ -5675,6 +5898,7 @@ function renderLibrary(){
       vid.src = v.videoUrl;
     }
     card.appendChild(vid);
+    }
     var info = document.createElement('div');
     info.style.padding = '12px';
     var title = document.createElement('div');
