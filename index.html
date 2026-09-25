@@ -1417,14 +1417,12 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <span class="mzchip" onclick="selMzLang('Hindi',this)">Hindi</span>
     </div>
 
-    <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:18px 0 8px;">Lyrics</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;" id="mzLyrModes">
-      <div class="mzseg on" onclick="selMzLyr('ai',this)">✨ Write them for me</div>
-      <div class="mzseg" onclick="selMzLyr('own',this)">📝 I'll paste my own</div>
-      <div class="mzseg" onclick="selMzLyr('instrumental',this)">🎹 Instrumental</div>
+    <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:18px 0 8px;">Tempo</div>
+    <div style="display:flex;gap:8px;" id="mzTempos">
+      <div class="mzseg" onclick="selMzTempo('slow',this)">🐢 Slow</div>
+      <div class="mzseg on" onclick="selMzTempo('medium',this)">🎵 Medium</div>
+      <div class="mzseg" onclick="selMzTempo('energetic',this)">⚡ Energetic</div>
     </div>
-    <textarea id="mzTopic" placeholder="What's the song about? e.g. chasing your dreams in a new country" style="width:100%;margin-top:10px;min-height:60px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);resize:vertical;box-sizing:border-box;"></textarea>
-    <textarea id="mzOwnLyrics" placeholder="Paste your own lyrics here…" style="display:none;width:100%;margin-top:10px;min-height:100px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);resize:vertical;box-sizing:border-box;"></textarea>
 
     <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:18px 0 8px;">Vocal</div>
     <div style="display:flex;gap:8px;" id="mzVocals">
@@ -1433,12 +1431,34 @@ video{width:100%;border-radius:10px;margin-top:10px;}
       <div class="mzseg" onclick="selMzVocal('duet',this)">Duet</div>
     </div>
 
+    <div style="font-size:12px;color:var(--tm);text-transform:uppercase;letter-spacing:0.4px;margin:18px 0 8px;">Lyrics</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;" id="mzLyrModes">
+      <div class="mzseg on" onclick="selMzLyr('ai',this)">✨ Write them for me</div>
+      <div class="mzseg" onclick="selMzLyr('own',this)">📝 I'll paste my own</div>
+      <div class="mzseg" onclick="selMzLyr('instrumental',this)">🎹 Instrumental</div>
+    </div>
+    <textarea id="mzTopic" placeholder="What's the song about? e.g. chasing your dreams in a new country" style="width:100%;margin-top:10px;min-height:56px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);resize:vertical;box-sizing:border-box;"></textarea>
+    <div id="mzLyricStep" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+      <button id="mzPreviewBtn" onclick="previewLyrics(false)" style="flex:1;min-width:180px;background:linear-gradient(135deg,#ec4899,#c026d3);border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;">✍️ Write / Preview Lyrics (free)</button>
+      <button onclick="surpriseMe()" style="background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px 16px;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;">✨ Surprise me</button>
+    </div>
+    <textarea id="mzOwnLyrics" placeholder="Paste your own lyrics here…" style="display:none;width:100%;margin-top:10px;min-height:120px;background:var(--sur);border:1px solid var(--bdr);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);resize:vertical;box-sizing:border-box;"></textarea>
+
+    <!-- Lyrics editor — review & edit BEFORE any money is spent -->
+    <div id="mzLyricEditor" style="display:none;margin-top:14px;background:var(--sur);border:1px solid rgba(236,72,153,0.4);border-radius:12px;padding:14px;">
+      <div style="font-size:12px;color:#ec4899;font-weight:700;margin-bottom:8px;">📝 Review &amp; edit your lyrics — nothing is charged until you approve</div>
+      <input id="mzTitleInput" placeholder="Song title" style="width:100%;margin-bottom:8px;background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:9px 12px;font-size:14px;font-weight:600;color:var(--tx);box-sizing:border-box;">
+      <textarea id="mzLyricsBox" style="width:100%;min-height:170px;background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:12px;font-size:13.5px;color:var(--tx);resize:vertical;box-sizing:border-box;line-height:1.7;"></textarea>
+      <button onclick="previewLyrics(true)" style="margin-top:8px;background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:9px 14px;font-size:12.5px;color:var(--tx);cursor:pointer;">🔄 Rewrite a fresh version (free)</button>
+    </div>
+
     <label id="mzTestWrap" style="display:none;align-items:center;gap:8px;margin-top:14px;font-size:12px;color:var(--tm);cursor:pointer;">
       <input type="checkbox" id="mzTestMode" style="width:15px;height:15px;cursor:pointer;">
       🧪 Admin test mode — 100% FREE placeholder song (no engine cost, no cap used)
     </label>
 
-    <button id="mzGenBtn" onclick="generateMusic()" style="margin-top:16px;width:100%;background:linear-gradient(135deg,#ec4899,#c026d3);border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">🎵 Generate my song</button>
+    <button id="mzGenBtn" onclick="produceSong()" style="margin-top:16px;width:100%;background:linear-gradient(135deg,#ec4899,#c026d3);border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;">✅ Approve &amp; Produce Song</button>
+    <div style="text-align:center;font-size:11px;color:var(--tm);margin-top:6px;">Writing &amp; editing lyrics is free — you only spend when you produce the song.</div>
     <div id="mzErr" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);border-radius:8px;font-size:12px;color:#fca5a5;"></div>
     <div id="mzPbar" style="display:none;margin-top:16px;">
       <div style="height:8px;background:var(--sur);border-radius:99px;overflow:hidden;"><div id="mzPfill" style="height:100%;width:0%;background:linear-gradient(90deg,#ec4899,#c026d3);transition:width 0.4s;"></div></div>
@@ -1448,7 +1468,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
 
   <!-- RESULT -->
   <div id="mzResult" class="card" style="display:none;">
-    <div class="ch"><div class="ct">🎧 Your song</div><div class="csub">Play it, download it, or make a music video</div></div>
+    <div class="ch"><div class="ct" id="mzResultTitle">🎧 Your song</div><div class="csub">Play it, download it, or make a music video</div></div>
     <audio id="mzAudio" controls style="width:100%;background:#0b0d12;border-radius:10px;"></audio>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
       <button onclick="mzDownload()" style="flex:1;min-width:140px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:10px;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;">⬇️ Download song</button>
@@ -1709,7 +1729,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.4.1</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.4.2</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1734,7 +1754,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.4.1</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.4.2</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -2579,20 +2599,23 @@ async function generateVip(){
   }
 }
 // ══════════════ MUSIC STUDIO ══════════════
-var mzGenre='Pop', mzMood='Upbeat', mzLang='English', mzLyrMode='ai', mzVocal='female';
+var mzGenre='Pop', mzMood='Upbeat', mzLang='English', mzLyrMode='ai', mzVocal='female', mzTempo='medium';
 var mzAudioId=null, mzAudioUrl=null;
 function mzToggle(containerSel, el){ document.querySelectorAll(containerSel).forEach(function(t){ t.classList.remove('on'); }); if(el) el.classList.add('on'); }
 function selMzGenre(g,el){ mzGenre=g; mzToggle('#mzGenres .mztile', el); }
 function selMzMood(m,el){ mzMood=m; mzToggle('#mzMoods .mzchip', el); }
 function selMzLang(l,el){ mzLang=l; mzToggle('#mzLangs .mzchip', el); }
 function selMzVocal(v,el){ mzVocal=v; mzToggle('#mzVocals .mzseg', el); }
+function selMzTempo(t,el){ mzTempo=t; mzToggle('#mzTempos .mzseg', el); }
 function selMzLyr(mode,el){
   mzLyrMode=mode; mzToggle('#mzLyrModes .mzseg', el);
-  var topic=document.getElementById('mzTopic'), own=document.getElementById('mzOwnLyrics');
-  if(topic) topic.style.display = (mode==='ai') ? 'block' : 'none';
-  if(own) own.style.display = (mode==='own') ? 'block' : 'none';
+  var topic=document.getElementById('mzTopic'), own=document.getElementById('mzOwnLyrics'), step=document.getElementById('mzLyricStep'), ed=document.getElementById('mzLyricEditor');
+  if(topic) topic.style.display=(mode==='ai')?'block':'none';
+  if(step) step.style.display=(mode==='ai')?'flex':'none';
+  if(own) own.style.display=(mode==='own')?'block':'none';
+  if(ed) ed.style.display='none';
 }
-function mzShowErr(m){ var e=document.getElementById('mzErr'); if(e){ e.textContent=m; e.style.display='block'; } }
+function mzShowErr(m){ var e=document.getElementById('mzErr'); if(e){ e.textContent=m; e.style.display='block'; try{ e.scrollIntoView({behavior:'smooth',block:'center'}); }catch(_e){} } }
 function mzClearErr(){ var e=document.getElementById('mzErr'); if(e) e.style.display='none'; }
 function mzEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
 function mzPopulateVideos(){
@@ -2605,24 +2628,59 @@ function loadMusicStudio(){
   try{ var w=document.getElementById('mzTestWrap'); if(w) w.style.display=(typeof isAdminUser==='function' && isAdminUser())?'flex':'none'; }catch(e){}
   mzPopulateVideos();
 }
-async function generateMusic(){
+function mzShowEditor(lyrics,title){
+  var ed=document.getElementById('mzLyricEditor'); if(ed) ed.style.display='block';
+  var lb=document.getElementById('mzLyricsBox'); if(lb) lb.value=lyrics||'';
+  var ti=document.getElementById('mzTitleInput'); if(ti && title) ti.value=title;
+  try{ ed.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){}
+}
+async function previewLyrics(isRewrite){
+  mzClearErr();
+  if(mzLyrMode==='instrumental'){ mzShowErr('Instrumental has no lyrics — just hit Produce.'); return; }
+  if(mzLyrMode==='own'){ mzShowEditor(((document.getElementById('mzOwnLyrics')||{}).value)||'',''); return; }
+  var topic=((document.getElementById('mzTopic')||{}).value)||'';
+  var btn=document.getElementById('mzPreviewBtn'); var oldT=btn?btn.textContent:''; if(btn){ btn.disabled=true; btn.textContent='✍️ Writing…'; }
+  try{
+    var r=await fetch(BACKEND+'/api/music/lyrics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({genre:mzGenre,mood:mzMood,language:mzLang,topic:topic})});
+    var d=await r.json();
+    if(!r.ok) throw new Error((d&&d.error)||'Could not write lyrics');
+    mzShowEditor(d.lyrics||'', d.title||'');
+  }catch(e){ mzShowErr('Lyrics: '+e.message); }
+  finally{ if(btn){ btn.disabled=false; btn.textContent=oldT||'✍️ Write / Preview Lyrics (free)'; } }
+}
+function mzPick(containerId, text){ var els=document.querySelectorAll('#'+containerId+' .mztile, #'+containerId+' .mzchip, #'+containerId+' .mzseg'); for(var i=0;i<els.length;i++){ if(els[i].textContent.trim().toLowerCase().indexOf(String(text).toLowerCase())>=0){ els[i].click(); return; } } }
+function surpriseMe(){
+  function rnd(a){ return a[Math.floor(Math.random()*a.length)]; }
+  mzPick('mzGenres', rnd(['Pop','Rock','Rap','R&B','EDM','Lo-Fi','Afrobeat','Latin']));
+  mzPick('mzMoods', rnd(['Upbeat','Emotional','Epic','Romantic','Motivational']));
+  mzPick('mzTempos', rnd(['Slow','Medium','Energetic']));
+  mzPick('mzLyrModes', 'Write them for me');
+  var topic=rnd(['chasing your dreams in a new country','a summer night you never forget','rising up after every fall','the people who believed in me','city lights and big ambitions','starting over and finding hope']);
+  var tb=document.getElementById('mzTopic'); if(tb) tb.value=topic;
+  previewLyrics(false);
+}
+async function produceSong(){
   mzClearErr();
   var testMode=false; try{ var tc=document.getElementById('mzTestMode'); testMode=!!(tc&&tc.checked&&isAdminUser()); }catch(e){}
-  var body={ genre:mzGenre, mood:mzMood, language:mzLang, lyricsMode:mzLyrMode, vocals:mzVocal, testMode:testMode };
-  if(mzLyrMode==='own') body.lyrics=((document.getElementById('mzOwnLyrics')||{}).value||'');
-  else if(mzLyrMode==='ai') body.topic=((document.getElementById('mzTopic')||{}).value||'');
-  else if(mzLyrMode==='instrumental') body.instrumental=true;
-  if(mzLyrMode==='own' && (!body.lyrics || body.lyrics.trim().length<10)){ mzShowErr('Paste at least a few lines of lyrics, or choose “Write them for me”.'); return; }
+  var lyrics='', title='';
+  if(mzLyrMode!=='instrumental'){
+    if(mzLyrMode==='own') lyrics=((document.getElementById('mzOwnLyrics')||{}).value||'').trim();
+    else lyrics=((document.getElementById('mzLyricsBox')||{}).value||'').trim();
+    title=((document.getElementById('mzTitleInput')||{}).value||'').trim();
+    if(lyrics.length<10){ mzShowErr(mzLyrMode==='own'?'Paste at least a few lines of lyrics first.':'Click “Write / Preview Lyrics” and approve them before producing.'); return; }
+  }
+  var body={ genre:mzGenre, mood:mzMood, language:mzLang, tempo:mzTempo, vocals:mzVocal, testMode:testMode, lyricsMode:(mzLyrMode==='instrumental'?'instrumental':'own') };
+  if(mzLyrMode==='instrumental') body.instrumental=true; else body.lyrics=lyrics;
   var btn=document.getElementById('mzGenBtn'); if(btn) btn.disabled=true;
   var setP=function(p,t){ var b=document.getElementById('mzPbar'),f=document.getElementById('mzPfill'),x=document.getElementById('mzPtxt'); if(b)b.style.display='block'; if(f)f.style.width=p+'%'; if(x)x.textContent=t; };
   var clearP=function(){ var b=document.getElementById('mzPbar'); if(b) b.style.display='none'; };
   try{
-    setP(12, testMode?'Admin test — building a free placeholder song…':'Writing lyrics and composing your song…');
+    setP(12, testMode?'Admin test — building a free placeholder song…':'Producing your song (this can take a minute or two)…');
     var sr=await fetch(BACKEND+'/api/music/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     var sd=await sr.json();
     if(sr.status===402){ clearP(); mzShowErr(sd.error||'You have reached your monthly song limit for your plan.'); if(btn)btn.disabled=false; return; }
     if(!sr.ok || !sd.taskId) throw new Error((sd&&sd.error)?(''+sd.error).slice(0,200):'Could not start the music engine');
-    var lyrics=sd.lyrics||''; var taskId=sd.taskId; var done=null, tries=0;
+    var taskId=sd.taskId; var done=null, tries=0;
     while(tries<80){
       await new Promise(function(r){ setTimeout(r,6000); }); tries++;
       setP(Math.min(92,12+tries*4),'Composing your song… ('+(tries*6)+'s)');
@@ -2634,8 +2692,9 @@ async function generateMusic(){
     clearP();
     mzAudioId=done.audioId; mzAudioUrl=BACKEND+'/api/video/'+done.audioId;
     var au=document.getElementById('mzAudio'); if(au){ au.src=mzAudioUrl; }
-    var lo=document.getElementById('mzLyricsOut'); if(lo) lo.textContent=lyrics||'(instrumental — no lyrics)';
-    var lw=document.getElementById('mzLyricsWrap'); if(lw) lw.style.display=lyrics?'block':'none';
+    var lo=document.getElementById('mzLyricsOut'); if(lo) lo.textContent=(mzLyrMode==='instrumental')?'(instrumental — no lyrics)':(lyrics||'');
+    var lw=document.getElementById('mzLyricsWrap'); if(lw) lw.style.display=(mzLyrMode==='instrumental')?'none':'block';
+    var rt=document.getElementById('mzResultTitle'); if(rt) rt.textContent=title?('🎧 '+title):'🎧 Your song';
     var mr=document.getElementById('mzResult'); if(mr) mr.style.display='block';
     mzPopulateVideos();
     try{ mr.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
