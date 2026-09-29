@@ -877,11 +877,11 @@ video{width:100%;border-radius:10px;margin-top:10px;}
           <option value="">— Select a brand —</option>
         </select>
         <select id="dsel">
-          <option value="20">20 seconds (4 clips)</option>
-          <option value="30" selected>30 seconds (6 clips)</option>
-          <option value="60">60 seconds (12 clips)</option>
-          <option value="90">90 seconds (18 clips)</option>
-          <option value="120">120 seconds (24 clips)</option>
+          <option value="20">20 seconds</option>
+          <option value="30" selected>30 seconds</option>
+          <option value="60">60 seconds</option>
+          <option value="90">90 seconds</option>
+          <option value="120">120 seconds</option>
         </select>
         <select id="lsel">
             <option>English</option>
@@ -1733,7 +1733,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.4.5</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.4.6</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1758,7 +1758,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.4.5</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.4.6</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -2439,32 +2439,42 @@ async function generateCinematicPro(){
   }
   try{ clearerr(); }catch(e){}
   var btn=document.getElementById('scriptBtn'); if(btn){ btn.disabled=true; }
-  try{ setprog('scriptPbar','scriptPfill','scriptPtxt',15,'Creating your '+(isCartoon?'cartoon':'cinematic')+' video (AI is '+(isCartoon?'animating':'filming')+')\u2026'); }catch(e){}
+  // Turn the chosen length into the number of 8-second cinematic shots we stitch together.
+  // (Capped at 4 shots \u2248 32s on the normal engine \u2014 for longer premium films, use VIP Studio.)
+  var chosenSec = parseInt((document.getElementById('dsel')||{}).value||'30',10) || 30;
+  var nClips = Math.max(1, Math.min(4, Math.round(chosenSec/8)));
+  var targetSec = nClips*8;
+  if(chosenSec>targetSec){ try{ toast('Cinematic videos are built in premium 8-second shots \u2014 your video will be about '+targetSec+'s. For longer films, try VIP Studio.'); }catch(e){} }
+  try{ setprog('scriptPbar','scriptPfill','scriptPtxt',12,'Creating your '+(isCartoon?'cartoon':'cinematic')+' video (AI is '+(isCartoon?'animating':'filming')+' '+targetSec+'s)\u2026'); }catch(e){}
   try{
     var aspect='vertical';
-    var ft = !isPaidMember();
-    var sr=await fetch(BACKEND+'/api/cinematicpro/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt, aspect:aspect, freeTier:ft, style:(isCartoon?'cartoon':undefined)})});
+    // Multi-clip engine (normal mode): honors the selected length, gated by your monthly plan (no extra credits).
+    var sr=await fetch(BACKEND+'/api/vip/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt, aspect:aspect, clips:nClips, normal:true, style:(isCartoon?'cartoon':undefined)})});
     var sd=await sr.json();
-    if(!sr.ok || !sd.taskId) throw new Error((sd&&sd.error)?(''+sd.error).slice(0,200):'Could not start '+kindLabel);
-    var taskId=sd.taskId; var ftq = sd.freeTier ? 'true' : 'false';
+    if(!sr.ok || !sd.jobId) throw new Error((sd&&sd.error)?(''+sd.error).slice(0,200):'Could not start '+kindLabel);
+    var jobId=sd.jobId; var totalClips=sd.clips||nClips;
     var done=null, tries=0;
-    while(tries<80){
+    while(tries<110){
       await new Promise(function(r){ setTimeout(r,8000); });
       tries++;
-      try{ setprog('scriptPbar','scriptPfill','scriptPtxt',Math.min(92,15+tries*3),'Filming your cinematic scene\u2026 ('+(tries*8)+'s)'); }catch(e){}
       var pr, pd;
-      try{ pr=await fetch(BACKEND+'/api/cinematicpro/status?id='+encodeURIComponent(taskId)+'&freeTier='+ftq); pd=await pr.json(); }
+      try{ pr=await fetch(BACKEND+'/api/vip/status?id='+encodeURIComponent(jobId)); pd=await pr.json(); }
       catch(e){ continue; }
+      if(pd && pd.status==='rendering'){
+        var cd=pd.clipsDone||0, ct=pd.clipsTotal||totalClips;
+        try{ setprog('scriptPbar','scriptPfill','scriptPtxt',Math.min(92,15+(cd/Math.max(1,ct))*70+tries),'Filming your scenes\u2026 ('+cd+'/'+ct+' shots ready)'); }catch(e){}
+      }
       if(pd && pd.status==='completed' && pd.videoId){ done=pd; break; }
-      if(pd && pd.status==='finalizing'){ try{ setprog('scriptPbar','scriptPfill','scriptPtxt',95,'Finishing your video\u2026'); }catch(e){} }
       if(pd && pd.status==='error'){ throw new Error(pd.error||'Generation failed'); }
     }
     if(!done) throw new Error('Still rendering \u2014 it will appear in your Library shortly.');
+    try{ setprog('scriptPbar','scriptPfill','scriptPtxt',96,'Stitching your final video\u2026'); }catch(e){}
     try{ clearprog('scriptPbar'); }catch(e){}
+    var secLabel=((done.seconds||targetSec))+'s';
     var url=BACKEND+'/api/video/'+done.videoId;
     var vid=document.getElementById('finalVideo'); if(vid){ vid.src=url; vid.style.display='block'; try{ vid.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
-    try{ saveToLibrary((typeof activeBrand!=='undefined'?activeBrand:''), '8s', kindLabel, url, done.videoId, (isCartoon?'cartoon':'cinematic'), 'vertical'); }catch(e){}
-    try{ toast((isCartoon?'\ud83c\udfa8 Your cartoon':'\ud83c\udfac Your cinematic')+' video is ready \u2014 saved to your Library!'); }catch(e){}
+    try{ saveToLibrary((typeof activeBrand!=='undefined'?activeBrand:''), secLabel, kindLabel, url, done.videoId, (isCartoon?'cartoon':'cinematic'), 'vertical'); }catch(e){}
+    try{ toast((isCartoon?'\ud83c\udfa8 Your cartoon':'\ud83c\udfac Your cinematic')+' video is ready ('+secLabel+') \u2014 saved to your Library!'); }catch(e){}
   }catch(e){
     try{ clearprog('scriptPbar'); }catch(_e){}
     try{ showerr(kindLabel+': '+e.message); }catch(_e){}
@@ -6898,12 +6908,13 @@ function wizFinish(){
     // FIRST VIDEO = CINEMATIC AI (the most impressive, surprising type on the platform)
     try{ selectVtype('cinematic', document.getElementById('vt-cinematic')); }catch(e){}
     localStorage.setItem('enerstudio_onboarded','1');
-    // Reveal the showcase promo (auto-plays) \u2014 the "wow" moment. No video is generated here, so it costs nothing.
+    // Reveal the showcase promo \u2014 the "wow" moment. Plays MUTED so it never blasts audio when the app opens;
+    // the user can tap the video's unmute control to hear the voiceover. No video is generated here, so it costs nothing.
     var s3=document.getElementById('wizStep3'); if(s3) s3.style.display='none';
     var s4=document.getElementById('wizStep4'); if(s4) s4.style.display='block';
     try{
       var pv=document.getElementById('wizPromoVid');
-      if(pv){ pv.currentTime=0; pv.muted=false; var pr=pv.play(); if(pr&&pr.catch){ pr.catch(function(){ try{ pv.muted=true; pv.play(); }catch(e){} }); } }
+      if(pv){ pv.currentTime=0; pv.muted=true; var pr=pv.play(); if(pr&&pr.catch){ pr.catch(function(){}); } }
     }catch(e){}
   }catch(e){}
 }
@@ -6963,7 +6974,7 @@ try{
     <div id="wizStep4" style="display:none;">
       <div style="font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#fff;margin-bottom:4px;">This is what EnerStudio creates 🎬</div>
       <div style="font-size:12.5px;color:var(--tm,#94a3b8);margin-bottom:12px;">A real video made by EnerStudio — and yours is set up and ready to generate.</div>
-      <video id="wizPromoVid" src="https://enerstudio.io/promo.mp4" playsinline controls autoplay loop preload="auto" style="width:100%;max-height:52vh;border-radius:12px;background:#000;display:block;margin-bottom:14px;"></video>
+      <video id="wizPromoVid" src="https://enerstudio.io/promo.mp4" playsinline controls muted loop preload="auto" style="width:100%;max-height:52vh;border-radius:12px;background:#000;display:block;margin-bottom:14px;"></video>
       <button onclick="wizGoCreate()" style="width:100%;background:linear-gradient(135deg,var(--p,#6366f1),var(--pd,#4f46e5));color:#fff;border:none;border-radius:11px;padding:14px;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">Make My First Video →</button>
     </div>
   </div>
