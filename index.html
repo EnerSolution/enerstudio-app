@@ -1733,7 +1733,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Name</div><div style="font-size:14px;color:var(--tx);" id="acctName">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Company</div><div style="font-size:14px;color:var(--tx);" id="acctCompany">—</div></div>
         <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Platform</div><div style="font-size:14px;color:var(--tx);">EnerStudio.io</div></div>
-        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.4.7</div></div>
+        <div><div style="font-size:11px;color:var(--tm);margin-bottom:4px;">Version</div><div style="font-size:14px;color:var(--tx);" id="appVersionLabel">9.4.8</div></div>
       </div>
     </div>
     <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;">
@@ -1758,7 +1758,7 @@ video{width:100%;border-radius:10px;margin-top:10px;}
     </div>
     <!-- ADMIN UNLOCK LINK (customers see only a tiny version label) -->
     <div style="text-align:center;margin-top:8px;">
-      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.4.7</span>
+      <span style="font-size:10px;color:var(--tm);opacity:0.5;">EnerStudio v9.4.8</span>
     </div>
     <!-- ADMIN SECTION - hidden until passcode entered -->
     <div id="adminPanel" style="display:none;background:var(--card);border:1px solid rgba(248,113,113,0.3);border-radius:14px;padding:1.5rem;margin-top:12px;">
@@ -1911,14 +1911,13 @@ async function obFinish(){
   pilotUser.plan = obSelectedPlan;
   pilotUser.cycle = obCycle;
   var perr=document.getElementById('ob-pay-err'); if(perr) perr.style.display='none';
-  // 1) write profile row to Supabase (durable lead capture) — happens BEFORE payment so we keep the lead even if they bail at checkout
+  // 1) create the profile row SERVER-SIDE (durable lead capture). The browser no longer writes the profiles
+  //    table directly — the backend sets only safe fields, so no one can forge sub_status/credits/plan here.
   try{
-    if(sb && pilotUser.uid){
-      await sb.from('profiles').upsert({
-        id: pilotUser.uid, email: pilotUser.email, name: pilotUser.name,
-        company: pilotUser.company, phone: pilotUser.phone, plan: pilotUser.plan,
-        sub_status: 'free'
-      });
+    if(pilotUser.uid){
+      await fetch(BACKEND+'/api/profile/init',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        name: pilotUser.name||'', company: pilotUser.company||'', phone: pilotUser.phone||'', plan: pilotUser.plan||''
+      })});
     }
   }catch(e){ console.warn('profile save', e); }
   // 2) alert the owner (Ali) of the new signup — via our own reliable backend (Resend), to EnerStudio.io@gmail.com
@@ -2076,12 +2075,9 @@ async function obShowIfNeeded(){
   var qs=new URLSearchParams(location.search);
   var co=qs.get('checkout');
   if(co==='success'){
-    // Returning from a successful Stripe checkout — mark plan active, enter app
-    try{
-      if(pilotUser && pilotUser.uid && sb){
-        await sb.from('profiles').update({ plan: pilotUser.plan||'pro', trial_start:new Date().toISOString() }).eq('id', pilotUser.uid);
-      }
-    }catch(e){}
+    // Returning from a successful Stripe checkout. The Stripe WEBHOOK sets plan + sub_status server-side
+    // (authoritative) — the browser no longer writes those columns. We just reflect it locally for instant UX;
+    // the real entitlement re-syncs from the server on the next load / usage check.
     if(pilotUser){ pilotUser.sub_status = 'trialing'; try{ localStorage.setItem('enerstudio_pilot_user', JSON.stringify(pilotUser)); }catch(e){} }
     toast('🎉 Trial started! Welcome to EnerStudio.');
     history.replaceState({}, '', location.pathname);
